@@ -3,16 +3,19 @@ package com.magichamster.grocerysamurai.model;
 import javax.persistence.*;
 
 /**
- * Table of grocery items
- * Created by rick on 4/9/17.
+ * Table of grocery lists
+ * Created by Rick on 4/14/17.
  */
 @Entity
-@Table(name = "item")
-public class Item {
+@Table(name = "grocery_list")
+public class GroceryList {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
+    @Column(name = "store_id")
+    private int storeId;
 
     @Column(name = "name")
     private String name;
@@ -20,15 +23,20 @@ public class Item {
     @Column(name = "description")
     private String description;
 
-    @Column(name = "upc")
-    private long Upc;
-
     public int getId() {
         return id;
     }
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public int getStoreId() {
+        return storeId;
+    }
+
+    public void setStoreId(int storeId) {
+        this.storeId = storeId;
     }
 
     public String getName() {
@@ -45,13 +53,5 @@ public class Item {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public long getUpc() {
-        return Upc;
-    }
-
-    public void setUpc(long upc) {
-        Upc = upc;
     }
 }
