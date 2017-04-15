@@ -8,7 +8,7 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name = "item")
-public class Item {
+public class Item extends Identity {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -53,5 +53,8 @@ public class Item {
 
     public void setUpc(long upc) {
         Upc = upc;
+    }
+
+    Item(){
     }
 }

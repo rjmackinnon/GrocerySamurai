@@ -8,7 +8,7 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name = "store")
-public class Store {
+public class Store extends Identity {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -42,5 +42,8 @@ public class Store {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    Store() {
     }
 }

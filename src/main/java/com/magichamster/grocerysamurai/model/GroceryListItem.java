@@ -8,7 +8,7 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name = "grocery_list_item")
-public class GroceryListItem {
+public class GroceryListItem extends Identity {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -75,5 +75,8 @@ public class GroceryListItem {
 
     public void setWeight(int weight) {
         this.weight = weight;
+    }
+
+    GroceryListItem() {
     }
 }
