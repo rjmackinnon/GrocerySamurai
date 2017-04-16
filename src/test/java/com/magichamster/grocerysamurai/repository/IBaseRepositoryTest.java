@@ -1,72 +1,190 @@
 package com.magichamster.grocerysamurai.repository;
 
-import org.junit.After;
+import com.magichamster.grocerysamurai.model.Identity;
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Created by rick on 4/14/17.
+ * Abstract class for testing repository methods
+ * Created by Rick on 4/14/17.
  */
-public abstract class IBaseRepositoryTest {
+public abstract class IBaseRepositoryTest<T extends Identity> {
     private static long startTime;
+    protected IBaseRepository<T> repository;
+    protected T entity1;
+    protected T entity2;
+    protected T entity3;
 
-    @Before
-    public void setUp() throws Exception {
+    @BeforeClass
+    public static void startBenchmark() throws Exception {
         startTime = System.currentTimeMillis();
     }
 
-    @After
-    public void tearDown() throws Exception {
+    @AfterClass
+    public static void stopBenchmark() throws Exception {
         final long endTime = System.currentTimeMillis();
         final long diff = endTime - startTime;
 
         System.out.println("Millis spent: " + diff);
     }
 
-    @Test
-    public void persist() throws Exception {
+    public abstract IBaseRepository<T> getRepository();
+    public abstract T createEntity(int id);
+
+    @Before
+    public void setup() {
+        // Arrange
+        repository = getRepository();
+        entity1 = createEntity(1);
+        entity2 = createEntity(2);
+        entity3 = createEntity(3);
     }
 
     @Test
-    public void persist1() throws Exception {
+    public void testPersistOneEntity() throws Exception {
+        // Act
+        repository.persist(entity1);
+
+        // Assert
+        assertThat(repository.get()).contains(entity1);
     }
 
     @Test
-    public void persist2() throws Exception {
+    public void testPersistWithVarargs() throws Exception {
+        // Act
+        repository.persist(entity1, entity2);
+
+        // Assert
+        assertThat(repository.get()).containsOnly(entity1, entity2);
     }
 
     @Test
-    public void remove() throws Exception {
+    public void testPersistWithList() throws Exception {
+        // Arrange
+        List<T> testList = new ArrayList<>();
+        testList.add(entity1);
+        testList.add(entity2);
+        testList.add(entity3);
+
+        // Act
+        repository.persist(testList);
+        assertThat(repository.get()).containsOnly(entity1, entity2, entity3);
     }
 
     @Test
-    public void remove1() throws Exception {
+    public void testRemoveOneEntity() throws Exception {
+        // Arrange
+        repository.persist(entity1, entity2, entity3);
+
+        // Act
+        repository.remove(entity1);
+
+        // Assert
+        assertThat(repository.get()).doesNotContain(entity1);
     }
 
     @Test
-    public void remove2() throws Exception {
+    public void testRemoveWithVarargs() throws Exception {
+        // Arrange
+        repository.persist(entity1, entity2);
+
+        // Act
+        repository.remove(entity1, entity2);
+
+        // Assert
+        assertThat(repository.get()).isEmpty();
     }
 
     @Test
-    public void remove3() throws Exception {
+    public void testRemoveWithList() throws Exception {
+        // Arrange
+        repository.persist(entity1, entity2, entity3);
+        List<T> testList = new ArrayList<>();
+        testList.add(entity3);
+
+        // Act
+        repository.remove(testList);
+
+        // Assert
+        assertThat(repository.get()).doesNotContain(entity3);
     }
 
     @Test
-    public void remove4() throws Exception {
+    public void testRemoveWithPredicate() throws Exception {
+        // Arrange
+        repository.persist(entity1, entity2, entity3);
+
+        // Act
+        repository.remove(e -> e.getId() == entity2.getId());
+
+        // Assert
+        assertThat(repository.get()).doesNotContain(entity2);
     }
 
     @Test
-    public void get() throws Exception {
+    public void testRemoveById() throws Exception {
+        // Arrange
+        repository.persist(entity1, entity2, entity3);
+
+        // Act
+        repository.remove(entity1.getId());
+
+        // Assert
+        assertThat(repository.get()).doesNotContain(entity1);
     }
 
     @Test
-    public void get1() throws Exception {
+    public void testGet() throws Exception {
+        // Arrange
+        repository.persist(entity1, entity2, entity3);
+
+        // Assert
+        assertThat(repository.get()).contains(entity1, entity2, entity3);
     }
 
     @Test
-    public void get2() throws Exception {
+    public void testGetWithOptional() throws Exception {
+        // Arrange
+        repository.persist(entity1, entity2, entity3);
+
+        // Act
+        final Optional<T> entityOptional = repository.get(entity2.getId());
+
+        // Assert
+        assertThat(entityOptional.isPresent()).isTrue();
+        assertThat(entityOptional.get()).isEqualTo(entity2);
     }
 
+    @Test
+    public void testGetNotFound() throws Exception {
+        // Arrange
+        repository.persist(entity1, entity2, entity3);
+
+        // Act
+        final Optional<T> entityOptional = repository.get(-1);
+
+        // Assert
+        assertThat(entityOptional.isPresent()).isFalse();
+    }
+
+    @Test
+    public void testGetWithSet() throws Exception {
+        // Arrange
+        repository.persist(entity1, entity2, entity3);
+
+        // Act
+        final Set<T> entitySet = repository.get(e -> e.getId() > 0);
+
+        // Assert
+        assertThat(entitySet).contains(entity1, entity2, entity3);
+    }
 }

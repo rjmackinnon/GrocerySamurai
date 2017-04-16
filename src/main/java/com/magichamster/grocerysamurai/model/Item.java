@@ -55,6 +55,6 @@ public class Item extends Identity {
         Upc = upc;
     }
 
-    Item(){
+    public Item(){
     }
 }
