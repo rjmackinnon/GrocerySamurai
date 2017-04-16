@@ -16,6 +16,7 @@ public class ItemRepositoryTest extends IBaseRepositoryTest<Item> {
     public Item createEntity(int id) {
         Item entity = new Item();
         entity.setId(id);
+        entity.setName("entity" + id);
         return entity;
     }
 }

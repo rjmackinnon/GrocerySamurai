@@ -1,8 +1,6 @@
 package com.magichamster.grocerysamurai.model;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
+import javax.persistence.*;
 import java.util.Objects;
 
 /**
@@ -12,7 +10,8 @@ import java.util.Objects;
 @MappedSuperclass
 public abstract class Identity {
     @Id
-    @GeneratedValue
+    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     public int getId() {

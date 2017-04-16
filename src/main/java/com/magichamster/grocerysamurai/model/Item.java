@@ -1,5 +1,7 @@
 package com.magichamster.grocerysamurai.model;
 
+import com.sun.istack.internal.NotNull;
+
 import javax.persistence.*;
 
 /**
@@ -9,12 +11,8 @@ import javax.persistence.*;
 @Entity
 @Table(name = "item")
 public class Item extends Identity {
-    @Id
-    @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
-
-    @Column(name = "name")
+    @Column(name = "name", nullable = false)
+    @NotNull
     private String name;
 
     @Column(name = "description")
@@ -22,14 +20,6 @@ public class Item extends Identity {
 
     @Column(name = "upc")
     private long Upc;
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
 
     public String getName() {
         return name;
