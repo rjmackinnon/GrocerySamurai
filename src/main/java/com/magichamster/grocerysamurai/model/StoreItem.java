@@ -9,52 +9,45 @@ import javax.persistence.*;
 @Entity
 @Table(name = "store_item")
 public class StoreItem extends Identity {
-    @Id
-    @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "store_id", nullable = false )
+    private Store store;
 
-    @Column(name = "store_id")
-    private int storeId;
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "aisle_id", nullable = false )
+    private Aisle aisle;
 
-    @Column(name = "aisle_id")
-    private int aisleId;
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "item_id", nullable = false )
+    private Item item;
 
-    @Column(name = "item_id")
-    private int itemId;
-
-    public int getId() {
-        return id;
+    public StoreItem() {
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public Store getStore() {
+        return store;
     }
 
-    public int getStoreId() {
-        return storeId;
+    public void setStore(Store store) {
+        this.store = store;
+        store.getStoreItems().add(this);
     }
 
-    public void setStoreId(int storeId) {
-        this.storeId = storeId;
+    public Aisle getAisle() {
+        return aisle;
     }
 
-    public int getAisleId() {
-        return aisleId;
+    public void setAisle(Aisle aisle) {
+        this.aisle = aisle;
+        aisle.getStoreItems().add(this);
     }
 
-    public void setAisleId(int aisleId) {
-        this.aisleId = aisleId;
+    public Item getItem() {
+        return item;
     }
 
-    public int getItemId() {
-        return itemId;
-    }
-
-    public void setItemId(int itemId) {
-        this.itemId = itemId;
-    }
-
-    StoreItem() {
+    public void setItem(Item item) {
+        this.item = item;
+        item.getStoreItems().add(this);
     }
 }

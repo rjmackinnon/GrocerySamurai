@@ -1,6 +1,8 @@
 package com.magichamster.grocerysamurai.model;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Table of aisles
@@ -9,24 +11,14 @@ import javax.persistence.*;
 @Entity
 @Table(name = "aisle")
 public class Aisle extends Identity {
-    @Id
-    @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
-
     @Column(name = "name")
     private String name;
 
     @Column(name = "description")
     private String description;
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
+    @OneToMany(fetch = FetchType.LAZY, cascade = { CascadeType.ALL,CascadeType.PERSIST,CascadeType.MERGE }, mappedBy = "aisle")
+    private Set<StoreItem> storeItems;
 
     public String getName() {
         return name;
@@ -44,6 +36,15 @@ public class Aisle extends Identity {
         this.description = description;
     }
 
-    Aisle() {
+    public Aisle() {
+        storeItems = new HashSet<>(0);
+    }
+
+    public Set<StoreItem> getStoreItems() {
+        return storeItems;
+    }
+
+    public void setStoreItems(Set<StoreItem> storeItems) {
+        this.storeItems = storeItems;
     }
 }

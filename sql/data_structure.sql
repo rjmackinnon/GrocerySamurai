@@ -93,4 +93,13 @@ BEGIN
         ;
     END IF;
 END
+
+CREATE OR REPLACE FUNCTION clear_test()
+RETURNS void AS $$
+BEGIN
+    TRUNCATE TABLE aisle CASCADE;
+    TRUNCATE TABLE store CASCADE;
+    TRUNCATE TABLE item CASCADE;
+END;
+$$ LANGUAGE plpgsql;
 $do$

@@ -1,6 +1,8 @@
 package com.magichamster.grocerysamurai.model;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Table of stores
@@ -9,24 +11,17 @@ import javax.persistence.*;
 @Entity
 @Table(name = "store")
 public class Store extends Identity {
-    @Id
-    @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
-
     @Column(name = "name")
     private String name;
 
     @Column(name = "description")
     private String description;
 
-    public int getId() {
-        return id;
-    }
+    @OneToMany(fetch = FetchType.LAZY, cascade = { CascadeType.ALL,CascadeType.PERSIST,CascadeType.MERGE }, mappedBy = "store")
+    private Set<StoreItem> storeItems;
 
-    public void setId(int id) {
-        this.id = id;
-    }
+    @OneToMany(fetch = FetchType.LAZY, cascade = { CascadeType.ALL,CascadeType.PERSIST,CascadeType.MERGE }, mappedBy = "store")
+    private Set<GroceryList> groceryLists;
 
     public String getName() {
         return name;
@@ -44,6 +39,24 @@ public class Store extends Identity {
         this.description = description;
     }
 
-    Store() {
+    public Store() {
+        storeItems = new HashSet<>(0);
+        groceryLists = new HashSet<>(0);
+    }
+
+    public Set<StoreItem> getStoreItems() {
+        return storeItems;
+    }
+
+    public void setStoreItems(Set<StoreItem> storeItems) {
+        this.storeItems = storeItems;
+    }
+
+    public Set<GroceryList> getGroceryLists() {
+        return groceryLists;
+    }
+
+    public void setGroceryLists(Set<GroceryList> groceryLists) {
+        this.groceryLists = groceryLists;
     }
 }

@@ -12,13 +12,13 @@ import java.util.function.Predicate;
  * Implementation of IBaseRepository for JPA
  * Created by Rick on 4/14/17.
  */
-public class BaseRepository<T extends Identity> implements IBaseRepository<T> {
+public class BaseRepository<T extends Identity> implements IBaseRepository<T>, AutoCloseable {
     private EntityManagerFactory emf;
     private Class<T> type;
 
-    public BaseRepository(Class<T> type, String persistenceUnitName) {
+    public BaseRepository(Class<T> type, EntityManagerFactory factory) {
         this.type = type;
-        emf = Persistence.createEntityManagerFactory(persistenceUnitName);
+        emf = factory;
     }
 
     @Override
@@ -47,14 +47,14 @@ public class BaseRepository<T extends Identity> implements IBaseRepository<T> {
     @Override
     public void persist(T entity) {
         runInTransaction(entityManager -> {
-            entityManager.merge(entity);
+            entityManager.persist(entity);
         });
     }
 
     @Override
     public void persist(Collection<T> entities) {
         runInTransaction(entityManager -> {
-            entities.forEach(entityManager::merge);
+            entities.forEach(entityManager::persist);
         });
     }
 
@@ -113,6 +113,7 @@ public class BaseRepository<T extends Identity> implements IBaseRepository<T> {
     }
 
     private <R> R runInTransaction(Function<EntityManager, R> function) {
+        // TODO: Use UnitOfWork pattern
         return run(entityManager -> {
            entityManager.getTransaction().begin();
 
@@ -129,5 +130,18 @@ public class BaseRepository<T extends Identity> implements IBaseRepository<T> {
            function.accept(entityManager);
            return null;
         });
+    }
+
+    public void runNamedStoredProcedure(String name) {
+        run(entityManager -> {
+            StoredProcedureQuery spQuery =
+                    entityManager.createNamedStoredProcedureQuery(name);
+            spQuery.execute();
+        });
+    }
+
+    @Override
+    public void close() throws Exception {
+        emf.close();
     }
 }

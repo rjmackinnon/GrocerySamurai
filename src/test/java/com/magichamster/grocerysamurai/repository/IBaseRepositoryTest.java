@@ -6,6 +6,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import javax.persistence.StoredProcedureQuery;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -44,6 +45,9 @@ public abstract class IBaseRepositoryTest<T extends Identity> {
     public void setup() {
         // Arrange
         repository = getRepository();
+
+        repository.runNamedStoredProcedure("ClearTest");
+
         entity1 = createEntity(1);
         entity2 = createEntity(2);
         entity3 = createEntity(3);

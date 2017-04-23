@@ -9,16 +9,13 @@ import javax.persistence.*;
 @Entity
 @Table(name = "grocery_list_item")
 public class GroceryListItem extends Identity {
-    @Id
-    @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "grocery_list_id", nullable = false )
+    private GroceryList groceryList;
 
-    @Column(name = "grocery_list_id")
-    private int groceryListId;
-
-    @Column(name = "item_id")
-    private int itemId;
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "item_id", nullable = false )
+    private Item item;
 
     @Column(name = "quantity")
     private int quantity;
@@ -29,28 +26,33 @@ public class GroceryListItem extends Identity {
     @Column(name = "weight")
     private int weight;
 
-    public int getId() {
-        return id;
+    public int getWeight() {
+        return weight;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setWeight(int weight) {
+        this.weight = weight;
     }
 
-    public int getGroceryListId() {
-        return groceryListId;
+    public GroceryListItem() {
     }
 
-    public void setGroceryListId(int groceryListId) {
-        this.groceryListId = groceryListId;
+    public GroceryList getGroceryList() {
+        return groceryList;
     }
 
-    public int getItemId() {
-        return itemId;
+    public void setGroceryList(GroceryList groceryList) {
+        this.groceryList = groceryList;
+        groceryList.getGroceryListItems().add(this);
     }
 
-    public void setItemId(int itemId) {
-        this.itemId = itemId;
+    public Item getItem() {
+        return item;
+    }
+
+    public void setItem(Item item) {
+        this.item = item;
+        item.getGroceryListItems().add(this);
     }
 
     public int getQuantity() {
@@ -67,16 +69,5 @@ public class GroceryListItem extends Identity {
 
     public void setPackageType(String packageType) {
         this.packageType = packageType;
-    }
-
-    public int getWeight() {
-        return weight;
-    }
-
-    public void setWeight(int weight) {
-        this.weight = weight;
-    }
-
-    GroceryListItem() {
     }
 }

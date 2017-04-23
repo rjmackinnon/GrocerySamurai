@@ -10,16 +10,12 @@ import java.util.Objects;
 @MappedSuperclass
 public abstract class Identity {
     @Id
-    @Column(name = "id")
+    @Column(name = "id", updatable = false, nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     public int getId() {
         return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     @Override

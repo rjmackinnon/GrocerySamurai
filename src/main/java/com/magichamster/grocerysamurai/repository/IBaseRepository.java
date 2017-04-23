@@ -2,6 +2,7 @@ package com.magichamster.grocerysamurai.repository;
 
 import com.magichamster.grocerysamurai.model.Identity;
 
+import javax.persistence.StoredProcedureQuery;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Optional;
@@ -13,7 +14,7 @@ import java.util.stream.Collectors;
  * Base interface for repositories
  * Created by Rick on 4/13/17.
  */
-public interface IBaseRepository<T extends Identity> {
+public interface IBaseRepository<T extends Identity>{
     void persist(T entity);
 
     default void persist(Collection<T> entities) {
@@ -23,7 +24,6 @@ public interface IBaseRepository<T extends Identity> {
     default void persist(T... entities) {
         persist(Arrays.asList(entities));
     }
-
 
     void remove(T entity);
 
@@ -43,7 +43,6 @@ public interface IBaseRepository<T extends Identity> {
         get(predicate).forEach(this::remove);
     }
 
-
     Set<T> get();
 
     default Optional<T> get(int id) {
@@ -59,5 +58,7 @@ public interface IBaseRepository<T extends Identity> {
                 .filter(predicate)
                 .collect(Collectors.toSet());
     }
+
+    void runNamedStoredProcedure(String name);
 }
 

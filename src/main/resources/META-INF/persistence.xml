@@ -14,8 +14,8 @@ http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence"
             <property name="hibernate.connection.username" value="postgres"/>
             <property name="hibernate.connection.password" value="MyDbpassw0rd!"/>
 
-            <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/>
-            <property name="hibernate.hbm2ddl.auto" value="create-drop"/>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQL82Dialect"/>
+            <property name="hibernate.show_sql" value="true"/>
         </properties>
     </persistence-unit>
 </persistence>

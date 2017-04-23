@@ -3,11 +3,17 @@ package com.magichamster.grocerysamurai.model;
 import com.sun.istack.internal.NotNull;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Table of grocery items
  * Created by rick on 4/9/17.
  */
+@NamedStoredProcedureQuery(
+        name="ClearTest",
+        procedureName="clear_test"
+)
 @Entity
 @Table(name = "item")
 public class Item extends Identity {
@@ -20,6 +26,12 @@ public class Item extends Identity {
 
     @Column(name = "upc")
     private long Upc;
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = { CascadeType.ALL,CascadeType.PERSIST,CascadeType.MERGE }, mappedBy = "item")
+    private Set<StoreItem> storeItems;
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = { CascadeType.ALL,CascadeType.PERSIST,CascadeType.MERGE }, mappedBy = "item")
+    private Set<GroceryListItem> groceryListItems;
 
     public String getName() {
         return name;
@@ -46,5 +58,23 @@ public class Item extends Identity {
     }
 
     public Item(){
+        storeItems = new HashSet<>(0);
+        groceryListItems = new HashSet<>(0);
+    }
+
+    public Set<StoreItem> getStoreItems() {
+        return storeItems;
+    }
+
+    public void setStoreItems(Set<StoreItem> storeItems) {
+        this.storeItems = storeItems;
+    }
+
+    public Set<GroceryListItem> getGroceryListItems() {
+        return groceryListItems;
+    }
+
+    public void setGroceryListItems(Set<GroceryListItem> groceryListItems) {
+        this.groceryListItems = groceryListItems;
     }
 }
