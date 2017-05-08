@@ -78,9 +78,10 @@
 			<artifactId>tomcat7-maven-plugin</artifactId>
 			<version>2.2</version>
 			<configuration>
-				<url>http://localhost:8080/manager</url>
-				<server>TomcatServer</server>
+                <url>http://localhost:8080/manager/text</url>
 				<path>/GrocerySamurai</path>
+                <username>admin</username>
+                <password>t0mc4tPw123123</password>
 			</configuration>
 		  </plugin>
     </plugins>
