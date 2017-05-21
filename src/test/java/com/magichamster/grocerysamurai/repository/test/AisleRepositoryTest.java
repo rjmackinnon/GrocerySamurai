@@ -11,6 +11,7 @@ import javax.persistence.Persistence;
  */
 public class AisleRepositoryTest extends IBaseRepositoryTest<Aisle> {
 	@Override
+	// TODO: Use mock EMF instead of DB
 	public IBaseRepository<Aisle> getRepository() {
 		return new BaseRepository<>(Aisle.class, Persistence.createEntityManagerFactory("grocery"));
 	}
