@@ -92,5 +92,35 @@ BEGIN
         )
         ;
     END IF;
+
+	IF NOT EXISTS	(
+                    SELECT	1
+                    FROM	information_schema.tables
+                    WHERE	table_name = 'app_user'
+                    ) THEN
+		CREATE TABLE app_user
+			(
+		     id					SERIAL					PRIMARY KEY	
+			,username			VARCHAR(45) NOT NULL
+		    ,password			VARCHAR(45)
+		    ,firstname			VARCHAR(45) NOT NULL
+		    ,lastname			VARCHAR(45)
+		    ,email				VARCHAR(45)
+		    ,address			VARCHAR(45)
+		    ,phone				INT
+			)
+		;
+    END IF;
+
+    CREATE OR REPLACE FUNCTION clear_test()
+    RETURNS integer AS $$
+    BEGIN
+        TRUNCATE TABLE aisle CASCADE;
+        TRUNCATE TABLE store CASCADE;
+        TRUNCATE TABLE item CASCADE;
+
+        RETURN 1;
+    END;
+	$$ LANGUAGE plpgsql;
 END
 $do$

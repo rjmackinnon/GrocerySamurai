@@ -1,50 +1,75 @@
 package com.magichamster.grocerysamurai.model;
 
-import com.sun.istack.internal.NotNull;
-
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
- * Table of grocery items
- * Created by rick on 4/9/17.
+ * Table of grocery items Created by Rick on 4/9/17.
  */
+@NamedStoredProcedureQuery(name = "ClearTest", procedureName = "clear_test")
 @Entity
 @Table(name = "item")
 public class Item extends Identity {
-    @Column(name = "name", nullable = false)
-    @NotNull
-    private String name;
+	@Column(name = "name", nullable = false)
+	private String name;
 
-    @Column(name = "description")
-    private String description;
+	@Column(name = "description")
+	private String description;
 
-    @Column(name = "upc")
-    private long Upc;
+	@Column(name = "upc")
+	private long Upc;
 
-    public String getName() {
-        return name;
-    }
+	@OneToMany(fetch = FetchType.LAZY, cascade = { CascadeType.ALL, CascadeType.PERSIST,
+			CascadeType.MERGE }, mappedBy = "item")
+	private Set<StoreItem> storeItems;
 
-    public void setName(String name) {
-        this.name = name;
-    }
+	@OneToMany(fetch = FetchType.LAZY, cascade = { CascadeType.ALL, CascadeType.PERSIST,
+			CascadeType.MERGE }, mappedBy = "item")
+	private Set<GroceryListItem> groceryListItems;
 
-    public String getDescription() {
-        return description;
-    }
+	public String getName() {
+		return name;
+	}
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+	public void setName(String name) {
+		this.name = name;
+	}
 
-    public long getUpc() {
-        return Upc;
-    }
+	public String getDescription() {
+		return description;
+	}
 
-    public void setUpc(long upc) {
-        Upc = upc;
-    }
+	public void setDescription(String description) {
+		this.description = description;
+	}
 
-    public Item(){
-    }
+	public long getUpc() {
+		return Upc;
+	}
+
+	public void setUpc(long upc) {
+		Upc = upc;
+	}
+
+	public Item() {
+		storeItems = new HashSet<>(0);
+		groceryListItems = new HashSet<>(0);
+	}
+
+	public Set<StoreItem> getStoreItems() {
+		return storeItems;
+	}
+
+	public void setStoreItems(Set<StoreItem> storeItems) {
+		this.storeItems = storeItems;
+	}
+
+	public Set<GroceryListItem> getGroceryListItems() {
+		return groceryListItems;
+	}
+
+	public void setGroceryListItems(Set<GroceryListItem> groceryListItems) {
+		this.groceryListItems = groceryListItems;
+	}
 }
