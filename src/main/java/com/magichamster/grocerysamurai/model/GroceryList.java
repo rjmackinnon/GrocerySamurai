@@ -1,57 +1,63 @@
 package com.magichamster.grocerysamurai.model;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
- * Table of grocery lists
- * Created by Rick on 4/14/17.
+ * Table of grocery lists Created by Rick on 4/14/17.
  */
 @Entity
 @Table(name = "grocery_list")
-public class GroceryList {
-    @Id
-    @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+public class GroceryList extends Identity {
+	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	@JoinColumn(name = "store_id", nullable = false)
+	private Store store;
 
-    @Column(name = "store_id")
-    private int storeId;
+	@Column(name = "name")
+	private String name;
 
-    @Column(name = "name")
-    private String name;
+	@Column(name = "description")
+	private String description;
 
-    @Column(name = "description")
-    private String description;
+	@OneToMany(fetch = FetchType.LAZY, cascade = { CascadeType.ALL, CascadeType.PERSIST,
+			CascadeType.MERGE }, mappedBy = "groceryList")
+	private Set<GroceryListItem> groceryListItems;
 
-    public int getId() {
-        return id;
-    }
+	public String getName() {
+		return name;
+	}
 
-    public void setId(int id) {
-        this.id = id;
-    }
+	public void setName(String name) {
+		this.name = name;
+	}
 
-    public int getStoreId() {
-        return storeId;
-    }
+	public String getDescription() {
+		return description;
+	}
 
-    public void setStoreId(int storeId) {
-        this.storeId = storeId;
-    }
+	public void setDescription(String description) {
+		this.description = description;
+	}
 
-    public String getName() {
-        return name;
-    }
+	public GroceryList() {
+		groceryListItems = new HashSet<>(0);
+	}
 
-    public void setName(String name) {
-        this.name = name;
-    }
+	public Set<GroceryListItem> getGroceryListItems() {
+		return groceryListItems;
+	}
 
-    public String getDescription() {
-        return description;
-    }
+	public void setGroceryListItems(Set<GroceryListItem> groceryListItems) {
+		this.groceryListItems = groceryListItems;
+	}
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+	public Store getStore() {
+		return store;
+	}
+
+	public void setStore(Store store) {
+		this.store = store;
+		store.getGroceryLists().add(this);
+	}
 }
