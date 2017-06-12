@@ -1,11 +1,18 @@
 <html>
 	<head>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<%@taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 		<%@tag description="Overall Page template" pageEncoding="UTF-8"%>
 		<%@attribute name="header" fragment="true" %>
 		<%@attribute name="footer" fragment="true" %>
-		<link rel="stylesheet" href="css/site.css">         
-		<script src="js/bootstrap.min.js"></script>
+		<spring:url value="resources/css/site.css" var="siteCss" />
+		<spring:url value="resources/css/bootstrap-theme.min.css" var="bootstrapCss" />
+		<spring:url value="resources/js/jbootstrap.min.js" var="bootstrapJs" />
+
+		<link href="${siteCss}" rel="stylesheet" />
+    	<link href="${bootstrapCss}" rel="stylesheet" />
+    	<script src="${bootstrapJs}"></script>
+
 		<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 		<%@taglib uri = "http://www.springframework.org/tags/form" prefix = "form"%>
 	</head>

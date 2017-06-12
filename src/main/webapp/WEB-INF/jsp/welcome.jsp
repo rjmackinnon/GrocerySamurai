@@ -10,7 +10,7 @@
       <p id="copyright">&copy; 2017, Magic Hamster Ent.</p>
     </jsp:attribute>
     <jsp:body>
-      <h1>Welcome $(firstname)</h1>
+      <h1>Welcome ${firstname}</h1>
       <hr />
       <p>You are now logged in.</p>
     </jsp:body>
