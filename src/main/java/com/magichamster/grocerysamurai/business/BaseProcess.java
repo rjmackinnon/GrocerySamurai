@@ -27,6 +27,21 @@ public class BaseProcess<T extends Identity> implements IBaseProcess<T> {
 	public void persist(T... entities) {
 		repository.persist(entities);
 	}
+	
+	@Override
+	public void merge(T entity) {
+		repository.merge(entity);
+	}
+	
+	@Override
+	public void merge(Collection<T> entities) {
+		repository.merge(entities);
+	}
+	
+	@Override
+	public void merge(T... entities) {
+		repository.merge(entities);
+	}
 
 	@Override
 	public void remove(T entity) {

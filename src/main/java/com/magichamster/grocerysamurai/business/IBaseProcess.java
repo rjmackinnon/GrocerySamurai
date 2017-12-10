@@ -10,6 +10,12 @@ public interface IBaseProcess<T extends Identity> {
 	void persist(Collection<T> entities);
 
 	void persist(T... entities);
+	
+	void merge(T entity);
+	
+	void merge(Collection<T> entities);
+	
+	void merge(T... entities);
 
 	void remove(T entity);
 

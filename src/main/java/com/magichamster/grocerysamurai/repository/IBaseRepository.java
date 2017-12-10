@@ -22,6 +22,16 @@ public interface IBaseRepository<T extends Identity> {
 	default void persist(T... entities) {
 		persist(Arrays.asList(entities));
 	}
+	
+	void merge(T entity);
+	
+	default void merge(Collection<T> entities) {
+		entities.forEach(this::merge);
+	}
+	
+	default void merge(T... entities) {
+		merge(Arrays.asList(entities));
+	}
 
 	void remove(T entity);
 

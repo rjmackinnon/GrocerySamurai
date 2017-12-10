@@ -1,5 +1,6 @@
 package com.magichamster.grocerysamurai.controller;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Controller;
@@ -8,9 +9,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.magichamster.grocerysamurai.business.ItemProcess;
 import com.magichamster.grocerysamurai.business.UserProcess;
-import com.magichamster.grocerysamurai.model.Login;
-import com.magichamster.grocerysamurai.model.AppUser;
+import com.magichamster.grocerysamurai.model.*;
 
 @Controller
 public class LoginController {
@@ -31,6 +32,11 @@ public class LoginController {
 		if (user.isPresent()) {
 			mav = new ModelAndView("welcome");
 			mav.addObject("firstname", user.get().getFirstname());
+			ItemProcess itemProcess  = new ItemProcess(null);
+			List<Item> items = itemProcess.getSorted();
+			mav.addObject("items", items);
+			mav.addObject("itemCount", items.size());
+			mav.addObject("dummy", "dummy");
 		} else {
 			mav = new ModelAndView("login");
 			mav.addObject("message", "Invalid username or password.");
