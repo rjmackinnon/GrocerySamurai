@@ -58,6 +58,20 @@ public class BaseRepository<T extends Identity> implements IBaseRepository<T>, A
 	}
 
 	@Override
+	public void merge(T entity) {
+		runInTransaction(entityManager -> {
+			entityManager.merge(entity);
+		});
+	}
+	
+	@Override
+	public void merge(Collection<T> entities) {
+		runInTransaction(entityManager -> {
+			entities.forEach(entityManager::merge);
+		});
+	}
+	
+	@Override
 	public void remove(T entity) {
 		runInTransaction(entityManager -> {
 			final T managedEntity = entityManager.find(type, entity.getId());
