@@ -7,52 +7,62 @@ using Microsoft.EntityFrameworkCore;
 
 namespace MagicHamster.GrocerySamurai.DataAccess.Repositories
 {
-    public class Repository<T> : IRepository<T>
+    public class Repository<T> : IRepository<T>, IDisposable
         where T : Entity
     {
-        private DbContext context;
+        public DbContext Context { get; }
 
-        public Repository()
+        internal Repository(DbContext context)
         {
+            Context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        public IQueryable<T> Get(List<string> childProperties = null)
+        public T Get(int id, List<string> childProperties = null, bool noTracking = false)
         {
-            var result = context.Set<T>().AsQueryable();
+            var result = Context.Set<T>().AsQueryable();
+
+            if (noTracking)
+            {
+                result = result.AsNoTracking();
+            }
+
             childProperties?.ForEach(c => result.Include(c));
-            return result;
+
+            return result.FirstOrDefault(r => r.Id == id);
         }
 
-        public T Get(int id, List<string> childProperties = null)
+        public IQueryable<T> Get(Func<T, bool> where = null, List<string> childProperties = null, bool noTracking = false)
         {
-            var result = context.Set<T>();
-            childProperties?.ForEach(c => result.Include(c));
-            return result.Find(id);
-        }
+            var result = Context.Set<T>().AsQueryable();
 
-        public IQueryable<T> Get(Func<T, bool> where, List<string> childProperties = null)
-        {
-            var result = context.Set<T>().Where(where).AsQueryable();
-            childProperties?.ForEach(c => result.Include(c));
+            if (where != null)
+            {
+                // ReSharper disable once PossibleUnintendedQueryableAsEnumerable
+                result = result.Where(where).AsQueryable();
+            }
+
+            if (noTracking)
+            {
+                result = result.AsNoTracking();
+            }
+
+            childProperties?.ForEach(c => result.Include(c).Load());
             return result;
         }
 
         public void Add(T entity)
         {
-            context.Set<T>().Add(entity);
+            Context.Set<T>().Add(entity);
         }
 
         public void Add(IEnumerable<T> entities)
         {
-            foreach (var e in entities)
-            {
-                Add(e);
-            }
+            Context.Set<T>().AddRange(entities);
         }
 
         public void Update(T entity)
         {
-            // TODO: Look this up
+            Context.Entry(entity).State = EntityState.Modified;
         }
 
         public void Update(int id)
@@ -62,10 +72,7 @@ namespace MagicHamster.GrocerySamurai.DataAccess.Repositories
 
         public void Update(IEnumerable<T> entities)
         {
-            foreach (var e in entities)
-            {
-                Update(e);
-            }
+            entities?.ToList().ForEach(Update);
         }
 
         public void Update(Func<T, bool> where)
@@ -75,7 +82,7 @@ namespace MagicHamster.GrocerySamurai.DataAccess.Repositories
 
         public void Delete(T entity)
         {
-            // TODO: Look this up
+            Context.Set<T>().Remove(entity);
         }
 
         public void Delete(int id)
@@ -85,15 +92,18 @@ namespace MagicHamster.GrocerySamurai.DataAccess.Repositories
 
         public void Delete(IEnumerable<T> entities)
         {
-            foreach (var e in entities)
-            {
-                Delete(e);
-            }
+            entities?.ToList().ForEach(Delete);
         }
 
         public void Delete(Func<T, bool> where)
         {
             Delete(Get(where));
+        }
+
+        /// <inheritdoc />
+        public void Dispose()
+        {
+            Context?.Dispose();
         }
     }
 }

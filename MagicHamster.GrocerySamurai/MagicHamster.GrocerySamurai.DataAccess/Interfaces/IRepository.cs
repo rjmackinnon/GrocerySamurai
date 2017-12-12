@@ -8,11 +8,9 @@ namespace MagicHamster.GrocerySamurai.DataAccess.Interfaces
     public interface IRepository<T>
         where T : Entity
     {
-        IQueryable<T> Get(List<string> childProperties = null);
+        T Get(int id, List<string> childProperties = null, bool noTracking = false);
 
-        T Get(int id, List<string> childProperties = null);
-
-        IQueryable<T> Get(Func<T, bool> where, List<string> childProperties = null);
+        IQueryable<T> Get(Func<T, bool> where = null, List<string> childProperties = null, bool noTracking = false);
 
         void Add(T entity);
 
