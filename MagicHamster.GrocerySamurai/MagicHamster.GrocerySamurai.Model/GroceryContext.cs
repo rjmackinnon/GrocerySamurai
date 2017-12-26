@@ -3,8 +3,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace MagicHamster.GrocerySamurai.Model
 {
-    public class GroceryDbContext : DbContext
+    public class GroceryContext : DbContext
     {
+        public GroceryContext(DbContextOptions options)
+            : base(options)
+        {
+            
+        }
+
         public virtual DbSet<Aisle> Aisles { get; set; }
 
         public virtual DbSet<AppUser> AppUsers { get; set; }
