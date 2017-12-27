@@ -17,13 +17,15 @@ namespace MagicHamster.GrocerySamurai.DataAccess.UnitTest.Common
 
         protected IRepository<T> repository;
 
+        protected Action<T> updateAction;
+
         private DbContextOptions<GroceryContext> options;
 
         [SetUp]
         public virtual void Init()
         {
             options = new DbContextOptionsBuilder<GroceryContext>()
-                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+                .UseInMemoryDatabase(Guid.NewGuid().ToString())
                 .Options;
 
             var context = new GroceryContext(options);
@@ -55,7 +57,7 @@ namespace MagicHamster.GrocerySamurai.DataAccess.UnitTest.Common
 
         protected void get_ByCriteria_All_TestHelper()
         {
-            var result = repository.Get(r => true, null);
+            var result = repository.Get(r => true);
 
             Assert.AreEqual(4, result.ToList().Count);
             Assert.AreEqual(1, result.ToList()[0].Id);
@@ -95,11 +97,11 @@ namespace MagicHamster.GrocerySamurai.DataAccess.UnitTest.Common
             Assert.AreEqual(10, result);
         }
 
-        protected void update_ByEntity_TestHelper(Action<T> action)
+        protected void update_ByEntity_TestHelper()
         {
             var entity = repository.Get().First();
 
-            action(entity);
+            updateAction(entity);
 
             repository.Update(entity);
 
@@ -111,11 +113,11 @@ namespace MagicHamster.GrocerySamurai.DataAccess.UnitTest.Common
             Assert.AreEqual(1, result);
         }
 
-        protected void update_ById_TestHelper(Action<T> action)
+        protected void update_ById_TestHelper()
         {
             var entity = repository.Get().First();
 
-            action(entity);
+            updateAction(entity);
 
             repository.Update(entity.Id);
 
@@ -127,13 +129,13 @@ namespace MagicHamster.GrocerySamurai.DataAccess.UnitTest.Common
             Assert.AreEqual(1, result);
         }
 
-        protected void update_ByEntities_TestHelper(Action<T> action)
+        protected void update_ByEntities_TestHelper()
         {
             bool criteria(T record) => record.Id == (int)Math.Floor(record.Id / 2.0);
 
             var entities = repository.Get(criteria);
 
-            entities.ToList().ForEach(action);
+            entities.ToList().ForEach(updateAction);
 
             repository.Update(entities);
 
@@ -145,12 +147,12 @@ namespace MagicHamster.GrocerySamurai.DataAccess.UnitTest.Common
             Assert.AreEqual(result, check.ToList().Count);
         }
 
-        protected void update_ByCriteria_TestHelper(Action<T> action)
+        protected void update_ByCriteria_TestHelper()
         {
             bool criteria(T record) => record.Id != (int)Math.Floor(record.Id / 2.0);
             var entities = repository.Get(criteria);
 
-            entities.ToList().ForEach(action);
+            entities.ToList().ForEach(updateAction);
 
             repository.Update(criteria);
 

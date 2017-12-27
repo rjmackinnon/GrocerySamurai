@@ -6,6 +6,11 @@ namespace MagicHamster.GrocerySamurai.DataAccess.UnitTest.EntityTests
 {
     public class AisleRepositoryTest : EntityRepositoryTest<Aisle>
     {
+        public AisleRepositoryTest()
+        {
+            updateAction = u => u.Description = "Test";
+        }
+
         [Test]
         public void GetById_Aisle_Test()
         {
@@ -39,25 +44,25 @@ namespace MagicHamster.GrocerySamurai.DataAccess.UnitTest.EntityTests
         [Test]
         public void Update_ByEntity_Aisle_Test()
         {
-            update_ByEntity_TestHelper(u => u.Description = "Test");
+            update_ByEntity_TestHelper();
         }
 
         [Test]
         public void Update_ById_Aisle_Test()
         {
-            update_ById_TestHelper(u => u.Description = "Test");
+            update_ById_TestHelper();
         }
 
         [Test]
         public void Update_ByEntities_Aisle_Test()
         {
-            update_ByEntities_TestHelper(u => u.Description = "Test");
+            update_ByEntities_TestHelper();
         }
 
         [Test]
         public void Update_ByCriteria_Aisle_Test()
         {
-            update_ByCriteria_TestHelper(u => u.Description = "Test");
+            update_ByCriteria_TestHelper();
         }
 
         [Test]

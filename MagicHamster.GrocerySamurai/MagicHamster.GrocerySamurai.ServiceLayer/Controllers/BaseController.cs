@@ -16,14 +16,8 @@ namespace MagicHamster.GrocerySamurai.ServiceLayer.Controllers
         where T : Entity
     {
         protected List<string> childProperties;
-        private IBaseProcess<T> businessProcess;
 
-        //public IBaseProcess<T> BusinessProcess
-        //{
-        //    get { return businessProcess ?? (businessProcess = new UnityContainerManager().Locate<IBaseProcess<T>>()); }
-
-        //    set { businessProcess = value; }
-        //}
+        public IBaseProcess<T> BusinessProcess { get; set; }
 
         public BaseController()
         {
@@ -31,14 +25,14 @@ namespace MagicHamster.GrocerySamurai.ServiceLayer.Controllers
 
         public BaseController(IBaseProcess<T> process)
         {
-            businessProcess = process;
+            BusinessProcess = process;
         }
 
         protected IActionResult getAllHelper(Func<T, object> orderBy, int? pageSize)
         {
             try
             {
-                var data = businessProcess.GetAll(orderBy, childProperties, pageSize ?? 0);
+                var data = BusinessProcess.GetAll(orderBy, childProperties, pageSize ?? 0);
                 return Ok(data);
             }
             catch (Exception ex)
@@ -56,7 +50,7 @@ namespace MagicHamster.GrocerySamurai.ServiceLayer.Controllers
 
             try
             {
-                var data = businessProcess.GetById(id.Value, childProperties);
+                var data = BusinessProcess.GetById(id.Value, childProperties);
                 return Ok(data);
             }
             catch (Exception ex)
@@ -74,8 +68,8 @@ namespace MagicHamster.GrocerySamurai.ServiceLayer.Controllers
 
             try
             {
-                businessProcess.AddRecord(record);
-                var result = businessProcess.Save();
+                BusinessProcess.AddRecord(record);
+                var result = BusinessProcess.Save();
 
                 return result == 1 ? Ok($"{typeof(T).Name} was successfully inserted.") :
                     StatusCode((int)HttpStatusCode.NotModified, $"No {typeof(T).Name} data was inserted.");
@@ -95,8 +89,8 @@ namespace MagicHamster.GrocerySamurai.ServiceLayer.Controllers
 
             try
             {
-                businessProcess.UpdateRecord(record);
-                var result = businessProcess.Save();
+                BusinessProcess.UpdateRecord(record);
+                var result = BusinessProcess.Save();
 
                 return result == 1 ? Ok($"{typeof(T).Name} was successfully updated.") :
                     StatusCode((int)HttpStatusCode.NotModified, $"No {typeof(T).Name} data was updated.");
@@ -116,8 +110,8 @@ namespace MagicHamster.GrocerySamurai.ServiceLayer.Controllers
 
             try
             {
-                businessProcess.DeleteRecord(id);
-                var result = businessProcess.Save();
+                BusinessProcess.DeleteRecord(id);
+                var result = BusinessProcess.Save();
 
                 return result == 1 ? Ok($"{typeof(T).Name} was successfully deleted.") :
                     StatusCode((int)HttpStatusCode.NotModified, $"No {typeof(T).Name} data was deleted.");
