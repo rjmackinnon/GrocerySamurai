@@ -5,42 +5,42 @@ using Microsoft.AspNetCore.Mvc;
 namespace MagicHamster.GrocerySamurai.ServiceLayer.Controllers
 {
     [Route("api/[controller]")]
-    public class AisleController : BaseController<Aisle>
+    public class StoreItemController : BaseController<StoreItem>
     {
-        public AisleController(IBaseProcess<Aisle> process) : base(process)
+        public StoreItemController(IBaseProcess<StoreItem> process) : base(process)
         {
-            //childProperties = new List<string> { "MasterAisle" };
+            //childProperties = new List<string> { "MasterStoreItem" };
         }
 
-        // GET: api/Aisle/GetAll
+        // GET: api/StoreItem/GetAll
         [HttpGet("GetAll")]
         public override IActionResult GetAll(int? pageSize = 0)
         {
             return getAllHelper(e=> e.Id, pageSize);
         }
 
-        // GET: api/Aisle/Get/1
+        // GET: api/StoreItem/Get/1
         [HttpGet("{id:int}")]
         public override IActionResult Get(int? id)
         {
             return getHelper(id);
         }
 
-        // POST: api/Aisle/Add
+        // POST: api/StoreItem/Add
         [HttpPost("Add")]
-        public override IActionResult Add([FromBody]Aisle record)
+        public override IActionResult Add([FromBody]StoreItem record)
         {
             return addHelper(record);
         }
 
-        // PUT: api/Aisle/Update
+        // PUT: api/StoreItem/Update
         [HttpPut("Update")]
-        public override IActionResult Update([FromBody]Aisle record)
+        public override IActionResult Update([FromBody]StoreItem record)
         {
             return updateHelper(record);
         }
 
-        // DELETE: api/Aisle/Delete
+        // DELETE: api/StoreItem/Delete
         [HttpDelete("{id:int}")]
         public override IActionResult Delete(int id)
         {
