@@ -1,5 +1,3 @@
-using System;
-
 namespace MagicHamster.GrocerySamurai.PresentationLayer.Models
 {
     public class ErrorViewModel
