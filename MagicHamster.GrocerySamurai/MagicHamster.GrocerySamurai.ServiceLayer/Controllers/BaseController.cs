@@ -61,9 +61,9 @@ namespace MagicHamster.GrocerySamurai.ServiceLayer.Controllers
 
         protected IActionResult addHelper(T record)
         {
-            if (record == null)
+            if (!ModelState.IsValid)
             {
-                return BadRequest($"{typeof(T).Name} information was not received.");
+                return BadRequest(ModelState);
             }
 
             try
@@ -82,9 +82,9 @@ namespace MagicHamster.GrocerySamurai.ServiceLayer.Controllers
 
         protected IActionResult updateHelper(T record)
         {
-            if (record == null)
+            if (!ModelState.IsValid)
             {
-                return BadRequest($"{typeof(T).Name} information was not received.");
+                return BadRequest(ModelState);
             }
 
             try

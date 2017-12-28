@@ -16,6 +16,9 @@ BEGIN
             ,upc				BIGINT
         )
         ;
+        ALTER TABLE item ADD CONSTRAINT uq_item_name UNIQUE (name);
+
+        ALTER TABLE item ADD CONSTRAINT uq_item_upc UNIQUE (upc);
     END IF;
 
     IF NOT EXISTS	(
@@ -30,6 +33,7 @@ BEGIN
             ,description		VARCHAR(1000)
         )
         ;
+		ALTER TABLE store ADD CONSTRAINT uq_store_name UNIQUE (name);
     END IF;
 
 	IF NOT EXISTS	(
@@ -44,6 +48,7 @@ BEGIN
             ,description		VARCHAR(1000)
         )
         ;
+        ALTER TABLE aisle ADD CONSTRAINT uq_aisle_name UNIQUE (name);
     END IF;
 
 	IF NOT EXISTS	(
@@ -59,6 +64,7 @@ BEGIN
             ,item_id			INT NOT NULL			REFERENCES item(id)
         )
         ;
+        ALTER TABLE store_item ADD CONSTRAINT uq_store_item UNIQUE (store_id, aisle_id, item_id);
     END IF;
 
 	IF NOT EXISTS	(
@@ -74,6 +80,7 @@ BEGIN
             ,description		VARCHAR(1000)
         )
         ;
+        ALTER TABLE grocery_list ADD CONSTRAINT uq_grocery_list UNIQUE (name);
     END IF;
 
 	IF NOT EXISTS	(
@@ -91,6 +98,7 @@ BEGIN
             ,weight				INT
         )
         ;
+        ALTER TABLE grocery_list_item ADD CONSTRAINT uq_grocery_list_item UNIQUE (grocery_list_id, item_id);
     END IF;
 
 	IF NOT EXISTS	(
@@ -110,6 +118,9 @@ BEGIN
 		    ,phone				INT
 			)
 		;
+        ALTER TABLE app_user ADD CONSTRAINT uq_app_user_username UNIQUE (username);
+
+        ALTER TABLE app_user ADD CONSTRAINT uq_app_user_email UNIQUE (email);
     END IF;
 
     CREATE OR REPLACE FUNCTION clear_test()
