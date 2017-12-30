@@ -22,7 +22,12 @@ namespace MagicHamster.GrocerySamurai.BusinessLayer.Processes
 
         public virtual List<T> GetAll(Func<T, object> orderBy = null, List<string> childProperties = null, int pageSize = 0, bool noTracking = false)
         {
-            var result = repository.Get(null, childProperties, noTracking);
+            return getByFilter(null, orderBy, childProperties, pageSize, noTracking);
+        }
+
+        protected List<T> getByFilter(Func<T, bool> criteria, Func<T, object> orderBy, List<string> childProperties, int pageSize, bool noTracking)
+        {
+            var result = repository.Get(criteria, childProperties, noTracking);
             if (orderBy != null)
             {
                 result = result.AsEnumerable().OrderBy(orderBy).AsQueryable();

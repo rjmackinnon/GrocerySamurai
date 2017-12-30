@@ -34,18 +34,25 @@ namespace MagicHamster.GrocerySamurai.ServiceLayer
             // Register application services
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<DbContext, GroceryContext>();
-            registerServices<Aisle, BaseProcess<Aisle>>(services);
-            registerServices<AppUser, BaseProcess<AppUser>>(services);
+            registerUserFilterServices<Aisle, BaseUserFilterProcess<Aisle>>(services);
             registerServices<GroceryListItem, BaseProcess<GroceryListItem>>(services);
             registerServices<GroceryList, BaseProcess<GroceryList>>(services);
-            registerServices<Item, BaseProcess<Item>>(services);
+            registerUserFilterServices<Item, BaseUserFilterProcess<Item>>(services);
             registerServices<StoreItem, BaseProcess<StoreItem>>(services);
-            registerServices<Store, BaseProcess<Store>>(services);
+            registerUserFilterServices<Store, BaseUserFilterProcess<Store>>(services);
         }
 
         private void registerServices<T, TProcess>(IServiceCollection services)
             where T : Entity
             where TProcess : class, IBaseProcess<T>
+        {
+            services.AddScoped<IRepository<T>, Repository<T>>();
+            services.AddScoped<IBaseProcess<T>, TProcess>();
+        }
+
+        private void registerUserFilterServices<T, TProcess>(IServiceCollection services)
+            where T : UserFilter
+            where TProcess : class, IBaseUserFilterProcess<T>
         {
             services.AddScoped<IRepository<T>, Repository<T>>();
             services.AddScoped<IBaseProcess<T>, TProcess>();

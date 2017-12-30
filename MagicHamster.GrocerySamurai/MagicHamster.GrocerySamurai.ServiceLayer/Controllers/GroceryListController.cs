@@ -1,4 +1,5 @@
-﻿using MagicHamster.GrocerySamurai.BusinessLayer.Interfaces;
+﻿using System.Collections.Generic;
+using MagicHamster.GrocerySamurai.BusinessLayer.Interfaces;
 using MagicHamster.GrocerySamurai.Model.Entities;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,12 +10,12 @@ namespace MagicHamster.GrocerySamurai.ServiceLayer.Controllers
     {
         public GroceryListController(IBaseProcess<GroceryList> process) : base(process)
         {
-            //childProperties = new List<string> { "MasterGroceryList" };
+            childProperties = new List<string> { "Store" };
         }
 
         // GET: api/GroceryList/GetAll
         [HttpGet("GetAll")]
-        public override IActionResult GetAll(int? pageSize = 0)
+        public override IActionResult GetAll(string userId = null, int? pageSize = 0)
         {
             return getAllHelper(e=> e.Id, pageSize);
         }

@@ -5,18 +5,17 @@ using Microsoft.AspNetCore.Mvc;
 namespace MagicHamster.GrocerySamurai.ServiceLayer.Controllers
 {
     [Route("api/[controller]")]
-    public class StoreController : BaseController<Store>
+    public class StoreController : BaseUserFilterController<Store>
     {
-        public StoreController(IBaseProcess<Store> process) : base(process)
+        public StoreController(IBaseUserFilterProcess<Store> process) : base(process)
         {
-            //childProperties = new List<string> { "MasterStore" };
         }
 
         // GET: api/Store/GetAll
-        [HttpGet("GetAll")]
-        public override IActionResult GetAll(int? pageSize = 0)
+        [HttpGet("GetAll/{userId}")]
+        public override IActionResult GetAll(string userId = null, int? pageSize = 0)
         {
-            return getAllHelper(e=> e.Id, pageSize);
+            return getAllHelper(userId, e=> e.Id, pageSize);
         }
 
         // GET: api/Store/Get/1

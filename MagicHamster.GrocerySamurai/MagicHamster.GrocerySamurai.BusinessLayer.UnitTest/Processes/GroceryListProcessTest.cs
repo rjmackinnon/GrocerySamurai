@@ -8,49 +8,37 @@ namespace MagicHamster.GrocerySamurai.BusinessLayer.UnitTest.Processes
     public class GroceryListProcessTest : BaseProcessTest<GroceryList>
     {
         [Test]
-        public void GetRecordById_GroceryList_Test()
+        public void GetById_GroceryListProcess_Test()
         {
-            getRecordById_TestHelper();
+            getById_TestHelper();
         }
 
         [Test]
-        public void GetAllRecords_Defaults_GroceryList_Test()
+        public void GetAll_Defaults_GroceryListProcess_Test()
         {
-            getAllRecords_Defaults_TestHelper();
+            getAll_Defaults_TestHelper();
         }
 
         [Test]
-        public void GetAllRecords_PageSize_GroceryList_Test()
+        public void GetAll_PageSize_GroceryListProcess_Test()
         {
-            getAllRecords_PageSize_TestHelper();
+            getAll_PageSize_TestHelper();
         }
 
         [Test]
-        public void GetActiveRecords_Defaults_GroceryList_Test()
-        {
-            getAllRecords_Defaults_TestHelper();
-        }
-
-        [Test]
-        public void GetActiveRecords_PageSize_GroceryList_Test()
-        {
-            getAllRecords_PageSize_TestHelper();
-        }
-
-        [Test]
-        public void AddRecord_GroceryList_Test()
+        public void AddRecord_GroceryListProcess_Test()
         {
             addRecord_TestHelper();
         }
 
         [Test]
-        public void UpdateRecord_GroceryList_Test()
+        public void UpdateRecord_GroceryListProcess_Test()
         {
             updateRecord_TestHelper();
         }
 
         [Test]
-        public void DeleteRecord_GroceryList_Test()
+        public void DeleteRecord_GroceryListProcess_Test()
         {
             deleteRecord_TestHelper();
         }

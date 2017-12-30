@@ -13,8 +13,6 @@ namespace MagicHamster.GrocerySamurai.Model
 
         public virtual DbSet<Aisle> Aisles { get; set; }
 
-        public virtual DbSet<AppUser> AppUsers { get; set; }
-
         public virtual DbSet<GroceryList> GroceryLists { get; set; }
 
         public virtual DbSet<GroceryListItem> GroceryListItems { get; set; }

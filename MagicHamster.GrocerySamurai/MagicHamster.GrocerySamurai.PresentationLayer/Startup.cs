@@ -1,4 +1,5 @@
 ﻿using System;
+using MagicHamster.GrocerySamurai.Model;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -24,6 +25,9 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ApplicationDbContext>(options =>
+                options.UseNpgsql(Configuration.GetConnectionString("GroceryContext")));
+
+            services.AddDbContext<GroceryContext>(options =>
                 options.UseNpgsql(Configuration.GetConnectionString("GroceryContext")));
 
             services.AddAuthentication().AddFacebook(facebookOptions =>

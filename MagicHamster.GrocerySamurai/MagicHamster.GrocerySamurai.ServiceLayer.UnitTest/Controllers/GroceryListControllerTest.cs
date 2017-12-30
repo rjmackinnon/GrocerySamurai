@@ -6,105 +6,99 @@ using NUnit.Framework;
 namespace MagicHamster.GrocerySamurai.ServiceLayer.UnitTest.Controllers
 {
     [TestFixture]
-    public class AisleControllerTest : BaseUserFilterControllerTest<Aisle>
+    public class GroceryListControllerTest : BaseControllerTest<GroceryList>
     {
-        public AisleControllerTest()
+        public GroceryListControllerTest()
         {
-            controller = new AisleController(null);
+            controller = new GroceryListController(null);
         }
 
         [Test]
-        public void Get_AisleController_Test()
+        public void Get_GroceryListController_Test()
         {
             getTestHelper();
         }
 
         [Test]
-        public void Get_Null_AisleController_Test()
+        public void Get_Null_GroceryListController_Test()
         {
             getNullTestHelper();
         }
 
         [Test]
-        public void Get_Exception_AisleController_Test()
+        public void Get_Exception_GroceryListController_Test()
         {
             getExceptionTestHelper();
         }
 
         [Test]
-        public void GetAll_Defaults_AisleController_Test()
+        public void GetAll_Defaults_GroceryListController_Test()
         {
             getAllDefaultsTestHelper();
         }
 
         [Test]
-        public void GetAll_PageSize_AisleController_Test()
+        public void GetAll_PageSize_GroceryListController_Test()
         {
             getAllPageSizeTestHelper();
         }
 
         [Test]
-        public void GetAll_Exception_AisleController_Test()
+        public void GetAll_Exception_GroceryListController_Test()
         {
             getAllExceptionTestHelper();
         }
 
         [Test]
-        public void GetAll_NullUser_AisleController_Test()
-        {
-            getAllNoUserTestHelper();
-        }
-
-        [Test]
-        public void Add_AisleController_Test()
+        public void Add_GroceryListController_Test()
         {
             addTestHelper();
         }
 
         [Test]
-        public void Add_NotInserted_AisleController_Test()
+        public void Add_NotInserted_GroceryListController_Test()
         {
             addNotInsertedTestHelper();
         }
 
         [Test]
-        public void Add_Exception_AisleController_Test()
+        public void Add_Exception_GroceryListController_Test()
         {
             addExceptionTestHelper();
         }
 
         [Test]
-        public void Update_AisleController_Test()
+        public void Update_GroceryListController_Test()
         {
             updateTestHelper();
         }
 
         [Test]
-        public void Update_NotUpdated_AisleController_Test()
+        public void Update_NotUpdated_GroceryListController_Test()
         {
             updateNotUpdatedTestHelper();
         }
 
         [Test]
-        public void Update_Exception_AisleController_Test()
+        public void Update_Exception_GroceryListController_Test()
         {
             updateExceptionTestHelper();
         }
 
         [Test]
-        public void Delete_AisleController_Test()
+        public void Delete_GroceryListController_Test()
         {
             deleteTestHelper();
         }
 
         [Test]
-        public void Delete_NotDeleted_AisleController_Test()
+        public void Delete_NotDeleted_GroceryListController_Test()
         {
             deleteNotDeletedTestHelper();
         }
 
         [Test]
-        public void Delete_Exception_AisleController_Test()
+        public void Delete_Exception_GroceryListController_Test()
         {
             deleteExceptionTestHelper();
         }
