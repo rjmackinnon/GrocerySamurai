@@ -1,6 +1,7 @@
 ﻿using System;
 using MagicHamster.GrocerySamurai.Model;
 using MagicHamster.GrocerySamurai.PresentationLayer.Data;
+using MagicHamster.GrocerySamurai.PresentationLayer.Helpers;
 using MagicHamster.GrocerySamurai.PresentationLayer.Models;
 using MagicHamster.GrocerySamurai.PresentationLayer.Services;
 using Microsoft.AspNetCore.Builder;
@@ -73,7 +74,22 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer
             // Add application services.
             services.AddTransient<IEmailSender, EmailSender>();
 
+            services.AddOptions();
+            services.Configure<IConfiguration>(Configuration);
+
+            WebApiHelper.WebApiBaseUrl = Configuration["WebApiBaseUrl"];
+
             services.AddMvc();
+
+            // Adds a default in-memory implementation of IDistributedCache.
+            services.AddDistributedMemoryCache();
+
+            services.AddSession(options =>
+            {
+                // Set a short timeout for easy testing.
+                options.IdleTimeout = TimeSpan.FromSeconds(10);
+                options.Cookie.HttpOnly = true;
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -93,6 +109,8 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer
             app.UseStaticFiles();
 
             app.UseAuthentication();
+
+            app.UseSession();
 
             app.UseMvc(routes =>
             {

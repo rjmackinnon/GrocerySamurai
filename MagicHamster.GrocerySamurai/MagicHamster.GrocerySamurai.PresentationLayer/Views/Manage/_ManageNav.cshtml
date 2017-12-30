@@ -1,4 +1,7 @@
-﻿@inject SignInManager<ApplicationUser> SignInManager
+﻿@using MagicHamster.GrocerySamurai.PresentationLayer.Models
+@using MagicHamster.GrocerySamurai.PresentationLayer.Views.Manage
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<ApplicationUser> SignInManager
 @{
     var hasExternalLogins = (await SignInManager.GetExternalAuthenticationSchemesAsync()).Any();
 }

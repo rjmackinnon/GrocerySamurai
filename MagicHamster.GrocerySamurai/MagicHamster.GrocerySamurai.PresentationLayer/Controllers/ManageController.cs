@@ -21,7 +21,7 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
         private readonly UserManager<ApplicationUser> userManager;
         private readonly SignInManager<ApplicationUser> signInManager;
         private readonly IEmailSender emailSender;
-        private readonly ILogger logger;
+        private readonly ILogger<ManageController> logger;
         private readonly UrlEncoder urlEncoder;
 
         private const string AuthenicatorUriFormat = "otpauth://totp/{0}:{1}?secret={2}&issuer={0}&digits=6";
@@ -109,7 +109,7 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return View(model);
+                return View("Index", model);
             }
 
             var user = await userManager.GetUserAsync(User);

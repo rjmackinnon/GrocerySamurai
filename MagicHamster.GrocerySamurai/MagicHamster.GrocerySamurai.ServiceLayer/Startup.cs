@@ -55,7 +55,7 @@ namespace MagicHamster.GrocerySamurai.ServiceLayer
             where TProcess : class, IBaseUserFilterProcess<T>
         {
             services.AddScoped<IRepository<T>, Repository<T>>();
-            services.AddScoped<IBaseProcess<T>, TProcess>();
+            services.AddScoped<IBaseUserFilterProcess<T>, TProcess>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

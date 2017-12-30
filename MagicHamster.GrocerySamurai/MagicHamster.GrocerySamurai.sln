@@ -17,7 +17,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MagicHamster.GrocerySamurai
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MagicHamster.GrocerySamurai.ServiceLayer.UnitTest", "MagicHamster.GrocerySamurai.ServiceLayer.UnitTest\MagicHamster.GrocerySamurai.ServiceLayer.UnitTest.csproj", "{AA1A7D81-B0AB-4BDD-8C1D-1CE7C14FF6A3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MagicHamster.GrocerySamurai.PresentationLayer", "MagicHamster.GrocerySamurai.PresentationLayer\MagicHamster.GrocerySamurai.PresentationLayer.csproj", "{D16DFFE9-100C-4A1C-A7DE-1CF5EDDB80EB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MagicHamster.GrocerySamurai.PresentationLayer", "MagicHamster.GrocerySamurai.PresentationLayer\MagicHamster.GrocerySamurai.PresentationLayer.csproj", "{D16DFFE9-100C-4A1C-A7DE-1CF5EDDB80EB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MagicHamster.GrocerySamurai.NavigationHelper", "MagicHamster.GrocerySamurai.NavigationHelper\MagicHamster.GrocerySamurai.NavigationHelper.csproj", "{744307B0-AC45-4560-9700-E10C6E573F7A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -125,6 +127,18 @@ Global
 		{D16DFFE9-100C-4A1C-A7DE-1CF5EDDB80EB}.Release|x64.Build.0 = Release|Any CPU
 		{D16DFFE9-100C-4A1C-A7DE-1CF5EDDB80EB}.Release|x86.ActiveCfg = Release|Any CPU
 		{D16DFFE9-100C-4A1C-A7DE-1CF5EDDB80EB}.Release|x86.Build.0 = Release|Any CPU
+		{744307B0-AC45-4560-9700-E10C6E573F7A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{744307B0-AC45-4560-9700-E10C6E573F7A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{744307B0-AC45-4560-9700-E10C6E573F7A}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{744307B0-AC45-4560-9700-E10C6E573F7A}.Debug|x64.Build.0 = Debug|Any CPU
+		{744307B0-AC45-4560-9700-E10C6E573F7A}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{744307B0-AC45-4560-9700-E10C6E573F7A}.Debug|x86.Build.0 = Debug|Any CPU
+		{744307B0-AC45-4560-9700-E10C6E573F7A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{744307B0-AC45-4560-9700-E10C6E573F7A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{744307B0-AC45-4560-9700-E10C6E573F7A}.Release|x64.ActiveCfg = Release|Any CPU
+		{744307B0-AC45-4560-9700-E10C6E573F7A}.Release|x64.Build.0 = Release|Any CPU
+		{744307B0-AC45-4560-9700-E10C6E573F7A}.Release|x86.ActiveCfg = Release|Any CPU
+		{744307B0-AC45-4560-9700-E10C6E573F7A}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

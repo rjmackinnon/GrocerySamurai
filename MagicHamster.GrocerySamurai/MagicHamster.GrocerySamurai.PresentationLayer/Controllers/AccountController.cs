@@ -6,6 +6,7 @@ using MagicHamster.GrocerySamurai.PresentationLayer.Models.AccountViewModels;
 using MagicHamster.GrocerySamurai.PresentationLayer.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -19,13 +20,13 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
         private readonly UserManager<ApplicationUser> userManager;
         private readonly SignInManager<ApplicationUser> signInManager;
         private readonly IEmailSender emailSender;
-        private readonly ILogger logger;
+        private readonly ILogger<AccountController> logger;
 
         public AccountController(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             IEmailSender emailSender,
-            ILogger logger)
+            ILogger<AccountController> logger)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
@@ -61,6 +62,7 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
                 if (result.Succeeded)
                 {
                     logger.LogInformation("User logged in.");
+                    setUserId();
                     return redirectToLocal(returnUrl);
                 }
                 if (result.RequiresTwoFactor)
@@ -121,6 +123,7 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
             if (result.Succeeded)
             {
                 logger.LogInformation("User with ID {UserId} logged in with 2fa.", user.Id);
+                setUserId();
                 return redirectToLocal(returnUrl);
             }
             if (result.IsLockedOut)
@@ -172,6 +175,7 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
             if (result.Succeeded)
             {
                 logger.LogInformation("User with ID {UserId} logged in with a recovery code.", user.Id);
+                setUserId();
                 return redirectToLocal(returnUrl);
             }
             if (result.IsLockedOut)
@@ -219,6 +223,7 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
 
                     await signInManager.SignInAsync(user, false);
                     logger.LogInformation("User created a new account with password.");
+                    setUserId();
                     return redirectToLocal(returnUrl);
                 }
                 addErrors(result);
@@ -234,6 +239,7 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
         {
             await signInManager.SignOutAsync();
             logger.LogInformation("User logged out.");
+            clearUserId();
             return RedirectToAction(nameof(HomeController.Index), "Home");
         }
 
@@ -268,6 +274,7 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
             if (result.Succeeded)
             {
                 logger.LogInformation("User logged in with {Name} provider.", info.LoginProvider);
+                setUserId();
                 return redirectToLocal(returnUrl);
             }
             if (result.IsLockedOut)
@@ -303,6 +310,7 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
                     {
                         await signInManager.SignInAsync(user, false);
                         logger.LogInformation("User created an account using {Name} provider.", info.LoginProvider);
+                        setUserId();
                         return redirectToLocal(returnUrl);
                     }
                 }
@@ -440,6 +448,18 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
             return RedirectToAction(nameof(HomeController.Index), "Home");
         }
 
+        private void setUserId()
+        {
+            if (String.IsNullOrEmpty(HttpContext.Session.GetString("UserId")) && userManager.GetUserId(User) != null)
+            {
+                HttpContext.Session.SetString("UserId", userManager.GetUserId(User));
+            }
+        }
+
+        private void clearUserId()
+        {
+            HttpContext.Session.SetString("UserId", "");
+        }
         #endregion
     }
 }
