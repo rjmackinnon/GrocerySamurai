@@ -1,6 +1,5 @@
-﻿@using System.Linq
-@model LoginViewModel
-@inject SignInManager<ApplicationUser> SignInManager
+﻿@model LoginViewModel
+@inject SignInManager<ApplicationUser> signInManager
 
 @{
     ViewData["Title"] = "Log in";
@@ -51,7 +50,7 @@
             <h4>Use another service to log in.</h4>
             <hr />
             @{
-                var loginProviders = (await SignInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+                var loginProviders = (await signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
                 if (loginProviders.Count == 0)
                 {
                     <div>

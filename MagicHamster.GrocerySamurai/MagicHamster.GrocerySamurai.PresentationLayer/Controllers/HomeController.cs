@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
-using Microsoft.AspNetCore.Mvc;
 using MagicHamster.GrocerySamurai.PresentationLayer.Models;
+using Microsoft.AspNetCore.Mvc;
 
 namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
 {

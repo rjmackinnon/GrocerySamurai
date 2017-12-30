@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using MagicHamster.GrocerySamurai.PresentationLayer.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using MagicHamster.GrocerySamurai.PresentationLayer.Models;
 
 namespace MagicHamster.GrocerySamurai.PresentationLayer.Data
 {

@@ -1,14 +1,14 @@
 ﻿using System;
 using MagicHamster.GrocerySamurai.Model;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using MagicHamster.GrocerySamurai.PresentationLayer.Data;
 using MagicHamster.GrocerySamurai.PresentationLayer.Models;
 using MagicHamster.GrocerySamurai.PresentationLayer.Services;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace MagicHamster.GrocerySamurai.PresentationLayer
 {

@@ -1,30 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
 using MagicHamster.GrocerySamurai.Model;
 using MagicHamster.GrocerySamurai.Model.Entities;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
 {
     [Authorize]
     public class StoresController : Controller
     {
-        private readonly GroceryContext _context;
+        private readonly GroceryContext context;
 
         public StoresController(GroceryContext context)
         {
-            _context = context;
+            this.context = context;
         }
 
         // GET: Stores
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Stores.ToListAsync());
+            return View(await context.Stores.ToListAsync());
         }
 
         // GET: Stores/Details/5
@@ -35,7 +32,7 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
                 return NotFound();
             }
 
-            var store = await _context.Stores
+            var store = await context.Stores
                 .SingleOrDefaultAsync(m => m.Id == id);
             if (store == null)
             {
@@ -60,8 +57,8 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(store);
-                await _context.SaveChangesAsync();
+                context.Add(store);
+                await context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             return View(store);
@@ -75,7 +72,7 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
                 return NotFound();
             }
 
-            var store = await _context.Stores.SingleOrDefaultAsync(m => m.Id == id);
+            var store = await context.Stores.SingleOrDefaultAsync(m => m.Id == id);
             if (store == null)
             {
                 return NotFound();
@@ -99,19 +96,16 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
             {
                 try
                 {
-                    _context.Update(store);
-                    await _context.SaveChangesAsync();
+                    context.Update(store);
+                    await context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!StoreExists(store.Id))
+                    if (!storeExists(store.Id))
                     {
                         return NotFound();
                     }
-                    else
-                    {
-                        throw;
-                    }
+                    throw;
                 }
                 return RedirectToAction(nameof(Index));
             }
@@ -126,7 +120,7 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
                 return NotFound();
             }
 
-            var store = await _context.Stores
+            var store = await context.Stores
                 .SingleOrDefaultAsync(m => m.Id == id);
             if (store == null)
             {
@@ -141,15 +135,15 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var store = await _context.Stores.SingleOrDefaultAsync(m => m.Id == id);
-            _context.Stores.Remove(store);
-            await _context.SaveChangesAsync();
+            var store = await context.Stores.SingleOrDefaultAsync(m => m.Id == id);
+            context.Stores.Remove(store);
+            await context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool StoreExists(int id)
+        private bool storeExists(int id)
         {
-            return _context.Stores.Any(e => e.Id == id);
+            return context.Stores.Any(e => e.Id == id);
         }
     }
 }
