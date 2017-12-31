@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace MagicHamster.GrocerySamurai.NavigationHelper
 {
@@ -10,7 +12,7 @@ namespace MagicHamster.GrocerySamurai.NavigationHelper
     /// </summary>
     public sealed class NavigationHelper : INavigationHelper
     {
-        private Stack<Uri> navigationStack { get; }
+        private Stack<string> navigationStack { get; set; }
 
         /// <inheritdoc />
         public int Count => navigationStack.Count;
@@ -20,43 +22,35 @@ namespace MagicHamster.GrocerySamurai.NavigationHelper
         /// </summary>
         public NavigationHelper()
         {
-            navigationStack = new Stack<Uri>();
+            navigationStack = new Stack<string>();
         }
 
         /// <inheritdoc />
-        public void Add(string referralAddress, string currentAddress, AddOptions addOptions = AddOptions.DoNotMatchQueryParameters)
+        public void Add(string referral, string current, AddOptions addOptions = AddOptions.DoNotMatchQueryParameters)
         {
-            if (String.IsNullOrWhiteSpace(referralAddress) || String.IsNullOrWhiteSpace(currentAddress))
+            if (referral == null || current == null)
             {
                 return;
             }
 
-            Add(new Uri(referralAddress), new Uri(currentAddress), addOptions);
-        }
-
-        /// <inheritdoc />
-        public void Add(Uri referralUri, Uri currentUri, AddOptions addOptions = AddOptions.DoNotMatchQueryParameters)
-        {
-            if (referralUri == null || currentUri == null)
-            {
-                return;
-            }
-
-            var current = Current();
             var isStackDuplicate = false;
             var isCurrentDuplicate = false;
 
-            if (current != null)
+            if (Current() != null)
             {
+                var stackTop = new Uri(Current());
+                var referralUri = new Uri(referral);
+                var currentUri = new Uri(current);
+
                 switch (addOptions)
                 {
                     case AddOptions.MatchQueryParameters:
-                        isStackDuplicate = current.AbsoluteUri.Equals(referralUri.AbsoluteUri);
+                        isStackDuplicate = stackTop.AbsoluteUri.Equals(referralUri.AbsoluteUri);
                         isCurrentDuplicate = currentUri.AbsoluteUri.Equals(referralUri.AbsoluteUri);
                         break;
 
                     case AddOptions.DoNotMatchQueryParameters:
-                        isStackDuplicate = current.GetLeftPart(UriPartial.Path).Equals(referralUri.GetLeftPart(UriPartial.Path));
+                        isStackDuplicate = stackTop.GetLeftPart(UriPartial.Path).Equals(referralUri.GetLeftPart(UriPartial.Path));
                         isCurrentDuplicate = currentUri.GetLeftPart(UriPartial.Path).Equals(referralUri.GetLeftPart(UriPartial.Path));
                         break;
 
@@ -68,24 +62,37 @@ namespace MagicHamster.GrocerySamurai.NavigationHelper
             if (isCurrentDuplicate && isStackDuplicate)
             {
                 navigationStack.Pop();
-                navigationStack.Push(referralUri);
+                navigationStack.Push(referral);
             }
             else if (!isCurrentDuplicate && !isStackDuplicate)
             {
-                navigationStack.Push(referralUri);
+                navigationStack.Push(referral);
             }
         }
 
         /// <inheritdoc />
-        public Uri Current()
+        public string Current()
         {
             return Count == 0 ? null : navigationStack.Peek();
         }
 
         /// <inheritdoc />
-        public Uri Remove()
+        public string Remove()
         {
             return Count == 0 ? null : navigationStack.Pop();
+        }
+
+        public string ToJson()
+        {
+            return JsonConvert.SerializeObject(navigationStack.ToList());
+        }
+
+        public static INavigationHelper FromJson(string json)
+        {
+            var list = JsonConvert.DeserializeObject<List<string>>(json);
+            list.Reverse();
+            var result = new NavigationHelper {navigationStack = new Stack<string>(list)};
+            return result;
         }
     }
 }

@@ -18,23 +18,17 @@ namespace MagicHamster.GrocerySamurai.NavigationHelper
         void Add(string referralAddress, string currentAddress, AddOptions addOptions = AddOptions.DoNotMatchQueryParameters);
 
         /// <summary>
-        /// Add a URI to the stack. Will not add if the last address is the same or the input is blank.
-        /// </summary>
-        /// <param name="referralUri">URI of the referral</param>
-        /// <param name="currentUri">Current URI</param>
-        /// <param name="addOptions">How to process duplicates</param>
-        void Add(Uri referralUri, Uri currentUri, AddOptions addOptions = AddOptions.DoNotMatchQueryParameters);
-
-        /// <summary>
         /// Get the latest address on the stack.
         /// </summary>
         /// <returns>Uri of the current address.</returns>
-        Uri Current();
+        string Current();
 
         /// <summary>
         /// Remove the latest address on the stack.
         /// </summary>
         /// <returns>The removed URI.</returns>
-        Uri Remove();
+        string Remove();
+
+        string ToJson();
     }
 }

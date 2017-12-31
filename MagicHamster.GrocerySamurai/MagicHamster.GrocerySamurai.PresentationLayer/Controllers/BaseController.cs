@@ -27,17 +27,31 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
 
         public string UserId => userId ?? (userId = getUserId());
 
-        protected INavigationHelper navigationHelper
+        private INavigationHelper navigationHelper;
+
+        public INavigationHelper NavigationHelper
         {
             get
             {
-                if (HttpContext.Session.GetString("NavigationHelper") == null)
+                var json = HttpContext.Session.GetString("NavigationHelper");
+                if (json == null)
                 {
-                    HttpContext.Session.SetString("NavigationHelper", JsonConvert.SerializeObject(new NavigationHelper.NavigationHelper()));
+                    navigationHelper = new NavigationHelper.NavigationHelper();
+                    saveNavigationHelper();
+                }
+                else if (navigationHelper == null)
+                {
+                    navigationHelper = GrocerySamurai.NavigationHelper.NavigationHelper.FromJson(json);
                 }
 
-                return JsonConvert.DeserializeObject<NavigationHelper.NavigationHelper>(HttpContext.Session.GetString("NavigationHelper"));
+                return navigationHelper;
             }
+        }
+
+        private void saveNavigationHelper()
+        {
+            var json = navigationHelper.ToJson();
+            HttpContext.Session.SetString("NavigationHelper", json);
         }
 
         protected async Task<object> indexHelper(List<string> parameters = null, string actionSuffix = null, string controllerType = null)
@@ -49,14 +63,14 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
             {
                 args = String.Join("/", parameters.ToArray());
             }
-            var url = $"{type}/GetAll{actionSuffix}/{getUserId()}/{args}";
+            var url = $"{type}/GetAll{actionSuffix}/{UserId}/{args}";
 
             var response = WebApiHelper.GetWebApiResponseAsHttpResponseMessage(url);
             var responseData = await response.Result.Content.ReadAsStringAsync();
 
             if (!response.Result.IsSuccessStatusCode)
             {
-                return responseData;
+                throw new ApplicationException($"{(int)response.Result.StatusCode} {response.Result.ReasonPhrase}: {response.Result.RequestMessage}");
             }
 
             if (controllerType != null)
@@ -104,7 +118,7 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
 
             createAction?.Invoke(item);
 
-            ViewBag.NavigationHelper = navigationHelper;
+            ViewBag.NavigationHelper = NavigationHelper;
 
             return View(item);
         }
@@ -116,16 +130,9 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
                 return View(item);
             }
 
-            try
-            {
-                var url = $"{defaultType}/Add";
+            var url = $"{defaultType}/Add";
 
-                return await processAction(item, url, true);
-            }
-            catch (Exception)
-            {
-                return View("../Shared/Error");
-            }
+            return await processAction(item, url, true);
         }
 
         private async Task<ActionResult> processAction(T item, string url, bool doPost)
@@ -142,7 +149,7 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
                 return RedirectToAction("Back");
             }
 
-            ViewBag.NavigationHelper = navigationHelper;
+            ViewBag.NavigationHelper = NavigationHelper;
 
             if (responseData.Contains("ORA-00001"))
             {
@@ -155,7 +162,7 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
                 return View(item);
             }
 
-            return View("../Shared/Error");
+            throw new ApplicationException($"{(int)response.Result.StatusCode} {response.Result.ReasonPhrase}: {response.Result.RequestMessage}");
         }
 
         protected async Task<ActionResult> editGetHelper(int? id)
@@ -174,12 +181,12 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
 
             if (!response.Result.IsSuccessStatusCode)
             {
-                return View("../Shared/Error");
+                throw new ApplicationException($"{(int)response.Result.StatusCode} {response.Result.ReasonPhrase}: {response.Result.RequestMessage}");
             }
 
             var data = JsonConvert.DeserializeObject<T>(responseData);
 
-            ViewBag.NavigationHelper = navigationHelper;
+            ViewBag.NavigationHelper = NavigationHelper;
 
             return View(data);
         }
@@ -191,16 +198,9 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
                 return View(item);
             }
 
-            try
-            {
-                var url = $"{defaultType}/Update";
+            var url = $"{defaultType}/Update";
 
-                return await processAction(item, url, false);
-            }
-            catch (Exception)
-            {
-                return View("../Shared/Error");
-            }
+            return await processAction(item, url, false);
         }
 
         protected async Task<ActionResult> deleteHelper(int? id, string controllerName = null)
@@ -210,17 +210,16 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
                 return new BadRequestResult();
             }
 
-            try
-            {
-                var url = $"{defaultType}/Delete/{id}";
+            var url = $"{defaultType}/Delete/{id}";
 
-                var response = WebApiHelper.DeleteWebApiResponseAsHttpResponseMessage(url);
-                var result = await response.Result.Content.ReadAsStringAsync();
-            }
-            catch (Exception)
+            var response = WebApiHelper.DeleteWebApiResponseAsHttpResponseMessage(url);
+            await response.Result.Content.ReadAsStringAsync();
+
+            if (!response.Result.IsSuccessStatusCode)
             {
-                return View("../Shared/Error");
+                throw new ApplicationException($"{(int)response.Result.StatusCode} {response.Result.ReasonPhrase}: {response.Result.RequestMessage}");
             }
+
             return RedirectToAction("Index", controllerName);
         }
 
@@ -261,14 +260,16 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
 
         protected ActionResult backHelper()
         {
-            if (navigationHelper.Count == 0)
+            if (NavigationHelper.Count == 0)
             {
                 return new OkResult();
             }
 
             TempData["FromBack"] = true;
 
-            return Redirect(navigationHelper.Remove().AbsoluteUri);
+            var uri = new Uri(NavigationHelper.Remove());
+            saveNavigationHelper();
+            return Redirect(uri.AbsoluteUri);
         }
 
         protected void addToNavigationHelper()
@@ -276,7 +277,8 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
             var fromBack = TempData["FromBack"] as bool?;
             if (fromBack == null || !fromBack.Value)
             {
-                navigationHelper.Add(Request.Headers["Referer"].ToString(), Request.GetDisplayUrl());
+                NavigationHelper.Add(Request.Headers["Referer"].First(), Request.GetDisplayUrl());
+                saveNavigationHelper();
             }
         }
 

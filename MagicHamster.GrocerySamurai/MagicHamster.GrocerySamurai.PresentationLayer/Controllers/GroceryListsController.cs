@@ -18,7 +18,7 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
 
             if (result is List<GroceryList>)
             {
-                ViewBag.NavigationHelper = navigationHelper;
+                ViewBag.NavigationHelper = NavigationHelper;
                 return View(result);
             }
 

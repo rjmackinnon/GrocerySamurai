@@ -19,7 +19,7 @@ namespace MagicHamster.GrocerySamurai.ServiceLayer.Controllers
         }
 
         // GET: api/Store/Get/1
-        [HttpGet("{id:int}")]
+        [HttpGet("Get/{id:int}")]
         public override IActionResult Get(int? id)
         {
             return getHelper(id);

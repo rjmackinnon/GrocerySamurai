@@ -14,24 +14,19 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
         // GET: Stores
         public async Task<IActionResult> Index()
         {
-            try
+            addToNavigationHelper();
+
+            var result = await indexHelper();
+
+            if (result is List<Store>)
             {
-                addToNavigationHelper();
-
-                var result = await indexHelper();
-
-                if (result is List<Store>)
-                {
-                    ViewBag.NavigationHelper = navigationHelper;
-                    return View(result);
-                }
-
-                return View("../Shared/Error");
+                ViewBag.NavigationHelper = NavigationHelper;
+                return View(result);
             }
-            catch (Exception ex)
-            {
-                return View("../Shared/Error");
-            }
+
+            //return View("../Shared/Error");
+
+            throw new ApplicationException(result.ToString());
         }
 
         // GET: Stores/Create
