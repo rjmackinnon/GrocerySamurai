@@ -1,0 +1,21 @@
+﻿@using MagicHamster.GrocerySamurai.PresentationLayer.Models
+@model DeleteConfirm
+
+<div class="modal fade" id="delete-confirm-@(Model.Type.ToLower())" tabindex="-1" role="dialog" data-backdrop="static">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button id="delete-@(Model.Type.ToLower())-close-button" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Confirm</h4>
+            </div>
+            <div class="modal-body">
+                <p id="delete-@(Model.Type.ToLower())-label">{action} @Model.Type.ToLower() {itemname}?</p>
+                <p>@Model.AdditionalText</p>
+            </div>
+            <div class="modal-footer">
+                <button id="delete-@(Model.Type)-yes-button" type="button" class="btn btn-danger continue-delete" data-dismiss="modal">Yes</button>
+                <button id="delete-@(Model.Type)-no-button" type="button" class="btn btn-primary cancel-delete" data-dismiss="modal">No</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

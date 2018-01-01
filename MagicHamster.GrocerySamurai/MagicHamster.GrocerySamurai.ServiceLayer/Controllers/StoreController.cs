@@ -40,7 +40,7 @@ namespace MagicHamster.GrocerySamurai.ServiceLayer.Controllers
         }
 
         // DELETE: api/Store/Delete
-        [HttpDelete("{id:int}")]
+        [HttpDelete("Delete/{id:int}")]
         public override IActionResult Delete(int id)
         {
             return deleteHelper(id);

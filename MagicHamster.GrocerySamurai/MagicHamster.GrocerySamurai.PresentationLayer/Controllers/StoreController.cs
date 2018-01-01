@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
 {
     [Authorize]
-    public class StoresController : BaseController<Store>
+    public class StoreController : BaseController<Store>
     {
         // GET: Stores
         public async Task<IActionResult> Index()
