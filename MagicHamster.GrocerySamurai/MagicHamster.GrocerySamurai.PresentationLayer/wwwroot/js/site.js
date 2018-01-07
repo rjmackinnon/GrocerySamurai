@@ -74,4 +74,8 @@ $(document).ready(function() {
 
     // Disable AJAX caching in IE
     $.ajaxSetup({ cache: false });
+
+    // Don't show the table until it's been decorated
+    $(".table-container").removeClass("table-container-hidden");
+
 });

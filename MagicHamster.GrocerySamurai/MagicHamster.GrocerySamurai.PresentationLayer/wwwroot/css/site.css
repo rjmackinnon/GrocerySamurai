@@ -36,8 +36,9 @@
 }
 
 button.btn-table {
-    height: 25px;
+    height: 30px;
     min-width: 75px;
+    padding: 2px;
 }
 
 .btn-group {
