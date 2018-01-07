@@ -9,16 +9,21 @@ using Microsoft.AspNetCore.Mvc;
 namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
 {
     [Authorize]
-    public class StoreController : BaseController<Store>
+    public class GroceryListController : BaseController<GroceryList>
     {
-        // GET: Store
+        // GET: GroceryList
         public async Task<IActionResult> Index()
         {
+            if (!Int32.TryParse(HttpContext.Session.GetString("StoreSelected"), out var storeId))
+            {
+                throw new ApplicationException("No store selected");
+            }
+
             addToNavigationHelper();
 
-            var result = await indexHelper();
+            var result = await indexHelper(new List<string>{ storeId.ToString()}, "ByStore");
 
-            if (!(result is List<Store>))
+            if (!(result is List<GroceryList>))
             {
                 throw new ApplicationException(result.ToString());
             }
@@ -27,60 +32,47 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
             return View(result);
         }
 
-        // GET: Store/Create
+        // GET: GroceryList/Create
         public IActionResult Create()
         {
-            return createGetHelper(s=> s.UserId = getUserId());
+            if (!Int32.TryParse(HttpContext.Session.GetString("StoreSelected"), out var storeId))
+            {
+                throw new ApplicationException("No store selected");
+            }
+
+            return createGetHelper(l => l.StoreId = storeId);
         }
 
-        // POST: Store/Create
+        // POST: GroceryList/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public override async Task<IActionResult> Create([Bind("Name,Description,UserId,Id")] Store store)
+        public override async Task<IActionResult> Create([Bind("StoreId,Name,Description,Id")] GroceryList store)
         {
             return await createPostHelper(store);
         }
 
-        // GET: Store/Edit/5
+        // GET: GroceryList/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             return await editGetHelper(id);
         }
 
-        // POST: Store/Edit/5
+        // POST: GroceryList/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public override async Task<IActionResult> Edit([Bind("Name,Description,UserId,Id")] Store store)
+        public override async Task<IActionResult> Edit([Bind("StoreId,Name,Description,Id")] GroceryList store)
         {
             return await editPostHelper(store);
         }
 
-        // GET: Store/Delete/5
+        // GET: GroceryList/Delete/5
         public override async Task<IActionResult> Delete(int? id)
         {
             return await deleteHelper(id);
-        }
-
-        // GET: Store/SetSelected/5
-        [HttpGet]
-        public ActionResult SetSelected(int? id)
-        {
-            if (id != null)
-            {
-                HttpContext.Session.SetString("StoreSelected", id.Value.ToString());
-            }
-            return new OkResult();
-        }
-
-        // GET: Store/Back
-        [HttpGet]
-        public override ActionResult Back()
-        {
-            return backHelper();
         }
     }
 }

@@ -31,13 +31,13 @@
                 if (cell.nodeName === "A" || cell.nodeName === "BUTTON") {
                     return;
                 }
-                var nbr = $(this).data("bind");
+                var id = $(this).data("bind");
                 var datatableStore = $("#datatable-store").dataTable().api();
-                //alert(nbr);
+                //alert(id);
                 datatableStore.rows(".info").nodes().to$().removeClass("info");
                 $(this).addClass("info");
                 $(this).select();
-                var url = appVariables.actionUrl("SetSelected", "Store") + "/" + nbr;
+                var url = appVariables.actionUrl("SetSelected", "Store") + "/" + id;
 
                 $.ajax({
                     "url": url,
@@ -51,7 +51,7 @@
                     }
                 });
 
-                openGroceryListView(nbr);
+                openGroceryListView(id);
 
                 e.preventDefault();
 
@@ -59,9 +59,9 @@
 
     });
 
-function openGroceryListView(id) {
+function openGroceryListView() {
     $("body").addClass("waiting");
-    var url = appVariables.actionUrl("Index", "GroceryList") + "/" + id;
+    var url = appVariables.actionUrl("Index", "GroceryList");
 
     $.ajax({
         "url": url,
