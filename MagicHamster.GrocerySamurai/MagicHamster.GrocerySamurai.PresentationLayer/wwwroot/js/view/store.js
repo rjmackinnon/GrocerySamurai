@@ -9,16 +9,16 @@
             var selectedBox = $("#store-selected");
             var selected;
             if (selectedBox) {
-                selected = selectedBox.value;
+                selected = selectedBox[0].value;
                 if (selected) {
-                    $("#datatable-store td").each(function () {
-                        var text = $(this)[0].innerText;
-                        if (text && text.trim() === selected) {
-                            $(this).closest("tr").addClass("info");
+                    $("#datatable-store").find("tr").each(function () {
+                        var id = $(this).data("bind");
+                        if (id && id.toString() === selected) {
+                            $(this).addClass("info");
                         }
                     });
 
-                    openGroceryListView(selected);
+                    openGroceryListView();
                 }
             }
         }
@@ -43,6 +43,7 @@
                     "url": url,
                     "type": "GET",
                     success: function (data) {
+                        openGroceryListView();
                     },
                     error: function (response, status, error) {
                     },
@@ -50,8 +51,6 @@
                         $("body").removeClass("waiting");
                     }
                 });
-
-                openGroceryListView(id);
 
                 e.preventDefault();
 
@@ -70,7 +69,17 @@ function openGroceryListView() {
             //alert("success");
             //displayStatus(data);
             $("#div-child").html(data);
-            $(".bootstrap-decorate").DataTable();
+            $(".bootstrap-decorate").DataTable({
+                retrieve: true,
+                stateSave: true,
+                initComplete: function (settings) {
+                    var table = settings.oInstance;
+                    // Don't decorate twice
+                    table.removeClass("bootstrap-decorate");
+                    // Don't show the table until it's been decorated
+                    $(".table-container-hidden").removeClass("table-container-hidden");
+                }
+            });
         },
         error: function (response, status, error) {
             //alert("error");

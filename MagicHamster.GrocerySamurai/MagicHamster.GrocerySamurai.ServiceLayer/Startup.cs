@@ -36,7 +36,7 @@ namespace MagicHamster.GrocerySamurai.ServiceLayer
             services.AddScoped<DbContext, GroceryContext>();
             registerUserFilterServices<Aisle, BaseUserFilterProcess<Aisle>>(services);
             registerServices<GroceryListItem, BaseProcess<GroceryListItem>>(services);
-            registerServices<GroceryList, BaseProcess<GroceryList>>(services);
+            registerServices<GroceryList, GroceryListProcess>(services);
             registerUserFilterServices<Item, BaseUserFilterProcess<Item>>(services);
             registerServices<StoreItem, BaseProcess<StoreItem>>(services);
             registerUserFilterServices<Store, BaseUserFilterProcess<Store>>(services);

@@ -19,8 +19,6 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
                 throw new ApplicationException("No store selected");
             }
 
-            addToNavigationHelper();
-
             var result = await indexHelper(new List<string>{ storeId.ToString()}, "ByStore");
 
             if (!(result is List<GroceryList>))
@@ -29,7 +27,7 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
             }
 
             ViewBag.NavigationHelper = NavigationHelper;
-            return View(result);
+            return PartialView(result);
         }
 
         // GET: GroceryList/Create

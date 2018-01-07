@@ -58,12 +58,12 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
         {
             var type = controllerType ?? defaultType;
 
-            var args = "";
+            var args = UserId;
             if (parameters != null)
             {
                 args = String.Join("/", parameters.ToArray());
             }
-            var url = $"{type}/GetAll{actionSuffix}/{UserId}/{args}";
+            var url = $"{type}/GetAll{actionSuffix}/{args}";
 
             var response = WebApiHelper.GetWebApiResponseAsHttpResponseMessage(url);
             var responseData = await response.Result.Content.ReadAsStringAsync();

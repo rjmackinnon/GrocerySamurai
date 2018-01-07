@@ -1,10 +1,13 @@
 ﻿@using MagicHamster.GrocerySamurai.PresentationLayer.Models
+@using Microsoft.AspNetCore.Http
 @model IEnumerable<MagicHamster.GrocerySamurai.Model.Entities.Store>
+@inject IHttpContextAccessor HttpContextAccessor
 
 @{
     ViewData["Title"] = "Index";
 }
 
+<input type="hidden" id="store-selected" value="@HttpContextAccessor.HttpContext.Session.GetString("StoreSelected")" />
 <div class="container-fluid table-container table-container-hidden">
     <div class="col-sm-6 panel panel-primary">
         <div class="row panel-heading panel-title">

@@ -18,9 +18,16 @@ $(document).ready(function() {
 
     $(".bootstrap-decorate").DataTable({
         retrieve: true,
-        stateSave: true
+        stateSave: true,
+        initComplete: function (settings) {
+            var table = settings.oInstance;
+            // Don't decorate twice
+            table.removeClass("bootstrap-decorate");
+            // Don't show the table until it's been decorated
+            $(".table-container-hidden").removeClass("table-container-hidden");
+        }
     });
-
+ 
     function setCommonVariables(control) {
         itemId = control.data("id");
         itemName = control.data("name");
@@ -74,8 +81,4 @@ $(document).ready(function() {
 
     // Disable AJAX caching in IE
     $.ajaxSetup({ cache: false });
-
-    // Don't show the table until it's been decorated
-    $(".table-container").removeClass("table-container-hidden");
-
 });
