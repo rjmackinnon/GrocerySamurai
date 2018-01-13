@@ -25,7 +25,7 @@ namespace MagicHamster.GrocerySamurai.BusinessLayer.UnitTest.Common
 
             repositoryMock = new Mock<IRepository<T>>();
 
-            repositoryMock.Setup(r => r.Get(It.IsAny<Func<T, bool>>(), It.IsAny<List<string>>(), It.IsAny<bool>()))
+            repositoryMock.Setup(r => r.GetAsync(It.IsAny<Func<T, bool>>(), It.IsAny<List<string>>(), It.IsAny<bool>()))
                 .Returns(testData.AsQueryable());
             repositoryMock.Setup(r => r.Get(It.IsAny<int>(), It.IsAny<List<string>>(), It.IsAny<bool>())).Returns(testData[0]);
 

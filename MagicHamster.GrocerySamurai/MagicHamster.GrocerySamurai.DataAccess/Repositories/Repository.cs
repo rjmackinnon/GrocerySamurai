@@ -30,12 +30,25 @@ namespace MagicHamster.GrocerySamurai.DataAccess.Repositories
                 result = result.AsNoTracking();
             }
 
-            childProperties?.ForEach(async c => await result.Include(c).LoadAsync(_disposeCts.Token));
+            await loadChildProperties(childProperties, result);
 
             return await result.FirstOrDefaultAsync(r => r.Id == id, _disposeCts.Token);
         }
 
-        public Task<IQueryable<T>> Get(Func<T, bool> where = null, List<string> childProperties = null, bool noTracking = false)
+        private async Task loadChildProperties(IReadOnlyCollection<string> childProperties, IQueryable<T> result)
+        {
+            if (childProperties == null)
+            {
+                return;
+            }
+
+            foreach (var child in childProperties)
+            {
+                await result.Include(child).LoadAsync(_disposeCts.Token);
+            }
+        }
+
+        public async Task<IQueryable<T>> GetAsync(Func<T, bool> where = null, List<string> childProperties = null, bool noTracking = false)
         {
             var result = Context.Set<T>().AsQueryable();
 
@@ -50,8 +63,9 @@ namespace MagicHamster.GrocerySamurai.DataAccess.Repositories
                 result = result.AsNoTracking();
             }
 
-            childProperties?.ForEach(async c => await result.Include(c).LoadAsync(_disposeCts.Token));
-            return Task.FromResult(result);
+            await loadChildProperties(childProperties, result);
+
+            return result;
         }
 
         public async Task Add(T entity)
@@ -75,15 +89,22 @@ namespace MagicHamster.GrocerySamurai.DataAccess.Repositories
             await Update(await Get(id));
         }
 
-        public Task Update(IEnumerable<T> entities)
+        public async Task Update(IEnumerable<T> entities)
         {
-            entities?.ToList().ForEach(async e => await Update(e));
-            return Task.CompletedTask;
+            if (entities == null)
+            {
+                return;
+            }
+
+            foreach (var entity in entities)
+            {
+                await Update(entity);
+            }
         }
 
         public async Task Update(Func<T, bool> where)
         {
-            await Update(await Get(where));
+            await Update(await GetAsync(where));
         }
 
         public Task Delete(T entity)
@@ -97,15 +118,22 @@ namespace MagicHamster.GrocerySamurai.DataAccess.Repositories
             await Delete(await Get(id));
         }
 
-        public Task Delete(IEnumerable<T> entities)
+        public async Task Delete(IEnumerable<T> entities)
         {
-            entities?.ToList().ForEach(async e => await Delete(e));
-            return Task.CompletedTask;
+            if (entities == null)
+            {
+                return;
+            }
+
+            foreach (var entity in entities)
+            {
+                await Delete(entity);
+            }
         }
 
         public async Task Delete(Func<T, bool> where)
         {
-            await Delete(await Get(where));
+            await Delete(await GetAsync(where));
         }
 
         /// <inheritdoc />

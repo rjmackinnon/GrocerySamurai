@@ -11,7 +11,7 @@ namespace MagicHamster.GrocerySamurai.DataAccess.Interfaces
     {
         Task<T> Get(int id, List<string> childProperties = null, bool noTracking = false);
 
-        Task<IQueryable<T>> Get(Func<T, bool> where = null, List<string> childProperties = null, bool noTracking = false);
+        Task<IQueryable<T>> GetAsync(Func<T, bool> where = null, List<string> childProperties = null, bool noTracking = false);
 
         Task Add(T entity);
 
