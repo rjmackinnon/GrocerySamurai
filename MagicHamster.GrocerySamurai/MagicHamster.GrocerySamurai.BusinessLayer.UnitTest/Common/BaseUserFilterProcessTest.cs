@@ -1,4 +1,5 @@
-﻿using MagicHamster.GrocerySamurai.BusinessLayer.Processes;
+﻿using System.Threading.Tasks;
+using MagicHamster.GrocerySamurai.BusinessLayer.Processes;
 using MagicHamster.GrocerySamurai.Model.Common;
 using NUnit.Framework;
 
@@ -16,9 +17,9 @@ namespace MagicHamster.GrocerySamurai.BusinessLayer.UnitTest.Common
             userFilterProcess = new BaseUserFilterProcess<T>(unitOfWorkMock.Object);
         }
 
-        protected void getAllByUser_Defaults_TestHelper()
+        protected async Task getAllByUser_Defaults_TestHelper()
         {
-            var result = userFilterProcess.GetAllByUser("test");
+            var result = await userFilterProcess.GetAllByUser("test");
 
             Assert.AreEqual(4, result.Count);
             Assert.AreEqual(1, result[0].Id);
@@ -27,11 +28,11 @@ namespace MagicHamster.GrocerySamurai.BusinessLayer.UnitTest.Common
             Assert.AreEqual(4, result[3].Id);
         }
 
-        protected void getAllByUser_PageSize_TestHelper()
+        protected async Task getAllByUser_PageSize_TestHelper()
         {
             const int pageSize = 2;
 
-            var result = userFilterProcess.GetAllByUser("test", null, null, pageSize);
+            var result = await userFilterProcess.GetAllByUser("test", null, null, pageSize);
 
             Assert.Greater(result.Count, 0);
             Assert.LessOrEqual(pageSize, result.Count);
