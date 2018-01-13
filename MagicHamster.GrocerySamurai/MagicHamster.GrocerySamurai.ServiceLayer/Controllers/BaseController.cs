@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Threading.Tasks;
 using MagicHamster.GrocerySamurai.BusinessLayer.Interfaces;
 using MagicHamster.GrocerySamurai.Model.Common;
 using Microsoft.AspNetCore.Mvc;
@@ -28,11 +29,11 @@ namespace MagicHamster.GrocerySamurai.ServiceLayer.Controllers
             BusinessProcess = process;
         }
 
-        protected IActionResult getAllHelper(Func<T, object> orderBy, int? pageSize)
+        protected async Task<IActionResult> getAllHelper(Func<T, object> orderBy, int? pageSize)
         {
             try
             {
-                var data = BusinessProcess.GetAll(orderBy, childProperties, pageSize ?? 0);
+                var data = await BusinessProcess.GetAll(orderBy, childProperties, pageSize ?? 0);
                 return Ok(data);
             }
             catch (Exception ex)
@@ -41,7 +42,7 @@ namespace MagicHamster.GrocerySamurai.ServiceLayer.Controllers
             }
         }
 
-        protected IActionResult getHelper(int? id)
+        protected async Task<IActionResult> getHelper(int? id)
         {
             if (id == null)
             {
@@ -50,7 +51,7 @@ namespace MagicHamster.GrocerySamurai.ServiceLayer.Controllers
 
             try
             {
-                var data = BusinessProcess.GetById(id.Value, childProperties);
+                var data = await BusinessProcess.GetById(id.Value, childProperties);
                 return Ok(data);
             }
             catch (Exception ex)
@@ -59,7 +60,7 @@ namespace MagicHamster.GrocerySamurai.ServiceLayer.Controllers
             }
         }
 
-        protected IActionResult addHelper(T record)
+        protected async Task<IActionResult> addHelper(T record)
         {
             if (!ModelState.IsValid)
             {
@@ -68,8 +69,8 @@ namespace MagicHamster.GrocerySamurai.ServiceLayer.Controllers
 
             try
             {
-                BusinessProcess.AddRecord(record);
-                var result = BusinessProcess.Save();
+                await BusinessProcess.AddRecord(record);
+                var result = await BusinessProcess.Save();
 
                 return result == 1 ? Ok($"{typeof(T).Name} was successfully inserted.") :
                     StatusCode((int)HttpStatusCode.NotModified, $"No {typeof(T).Name} data was inserted.");
@@ -80,7 +81,7 @@ namespace MagicHamster.GrocerySamurai.ServiceLayer.Controllers
             }
         }
 
-        protected IActionResult updateHelper(T record)
+        protected async Task<IActionResult> updateHelper(T record)
         {
             if (!ModelState.IsValid)
             {
@@ -89,8 +90,8 @@ namespace MagicHamster.GrocerySamurai.ServiceLayer.Controllers
 
             try
             {
-                BusinessProcess.UpdateRecord(record);
-                var result = BusinessProcess.Save();
+                await BusinessProcess.UpdateRecord(record);
+                var result = await BusinessProcess.Save();
 
                 return result == 1 ? Ok($"{typeof(T).Name} was successfully updated.") :
                     StatusCode((int)HttpStatusCode.NotModified, $"No {typeof(T).Name} data was updated.");
@@ -101,7 +102,7 @@ namespace MagicHamster.GrocerySamurai.ServiceLayer.Controllers
             }
         }
 
-        protected IActionResult deleteHelper(int id)
+        protected async Task<IActionResult> deleteHelper(int id)
         {
             if (id == 0)
             {
@@ -110,8 +111,8 @@ namespace MagicHamster.GrocerySamurai.ServiceLayer.Controllers
 
             try
             {
-                BusinessProcess.DeleteRecord(id);
-                var result = BusinessProcess.Save();
+                await BusinessProcess.DeleteRecord(id);
+                var result = await BusinessProcess.Save();
 
                 return result == 1 ? Ok($"{typeof(T).Name} was successfully deleted.") :
                     StatusCode((int)HttpStatusCode.NotModified, $"No {typeof(T).Name} data was deleted.");
@@ -122,14 +123,14 @@ namespace MagicHamster.GrocerySamurai.ServiceLayer.Controllers
             }
         }
 
-        public abstract IActionResult GetAll(string userId = null, int? pageSize = 0);
+        public abstract Task<IActionResult> GetAll(string userId = null, int? pageSize = 0);
 
-        public abstract IActionResult Get(int? id);
+        public abstract Task<IActionResult> Get(int? id);
 
-        public abstract IActionResult Add(T record);
+        public abstract Task<IActionResult> Add(T record);
 
-        public abstract IActionResult Update(T record);
+        public abstract Task<IActionResult> Update(T record);
 
-        public abstract IActionResult Delete(int id);
+        public abstract Task<IActionResult> Delete(int id);
     }
 }
