@@ -29,7 +29,7 @@ namespace MagicHamster.GrocerySamurai.BusinessLayer.Processes
 
         protected async Task<List<T>> getByFilter(Func<T, bool> criteria, Func<T, object> orderBy, List<string> childProperties, int pageSize, bool noTracking)
         {
-            var result = await repository.GetAsync(criteria, childProperties, noTracking);
+            var result = await repository.Get(criteria, childProperties, noTracking);
             if (orderBy != null)
             {
                 result = result.AsEnumerable().OrderBy(orderBy).AsQueryable();
@@ -39,7 +39,7 @@ namespace MagicHamster.GrocerySamurai.BusinessLayer.Processes
 
         internal virtual async Task<IQueryable> getAsQueryble(Func<T, bool> criteria, List<string> childProperties = null)
         {
-            return await repository.GetAsync(criteria, childProperties);
+            return await repository.Get(criteria, childProperties);
         }
 
         public async Task<T> GetById(int recordId, List<string> childProperties = null, bool noTracking = false)

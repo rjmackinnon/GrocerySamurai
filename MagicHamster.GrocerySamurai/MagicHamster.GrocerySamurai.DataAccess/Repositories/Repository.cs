@@ -48,7 +48,7 @@ namespace MagicHamster.GrocerySamurai.DataAccess.Repositories
             }
         }
 
-        public async Task<IQueryable<T>> GetAsync(Func<T, bool> where = null, List<string> childProperties = null, bool noTracking = false)
+        public async Task<IQueryable<T>> Get(Func<T, bool> where = null, List<string> childProperties = null, bool noTracking = false)
         {
             var result = Context.Set<T>().AsQueryable();
 
@@ -104,7 +104,7 @@ namespace MagicHamster.GrocerySamurai.DataAccess.Repositories
 
         public async Task Update(Func<T, bool> where)
         {
-            await Update(await GetAsync(where));
+            await Update(await Get(where));
         }
 
         public Task Delete(T entity)
@@ -133,7 +133,7 @@ namespace MagicHamster.GrocerySamurai.DataAccess.Repositories
 
         public async Task Delete(Func<T, bool> where)
         {
-            await Delete(await GetAsync(where));
+            await Delete(await Get(where));
         }
 
         /// <inheritdoc />
