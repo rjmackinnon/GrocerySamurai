@@ -7,7 +7,7 @@ using MagicHamster.GrocerySamurai.Model.Common;
 namespace MagicHamster.GrocerySamurai.Model.Entities
 {
     [Table("store")]
-    public class Store : Entity
+    public class Store : UserFilter
     {
         public Store()
         {

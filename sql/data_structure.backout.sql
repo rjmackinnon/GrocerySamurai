@@ -6,16 +6,6 @@ BEGIN
 	IF EXISTS	(
                     SELECT	1
                     FROM	information_schema.tables
-                    WHERE	table_name = 'app_user'
-                    ) THEN
-		DROP TABLE app_user
-		;
-    END IF;
-
-
-	IF EXISTS	(
-                    SELECT	1
-                    FROM	information_schema.tables
                     WHERE	table_name = 'grocery_list_item'
                     ) THEN
         DROP TABLE grocery_list_item
@@ -71,8 +61,15 @@ BEGIN
         ;
     END IF;
 
-    DROP FUNCTION clear_test()
-	;
+    IF EXISTS	(
+                    SELECT	1
+                    FROM	pg_proc
+                    WHERE	proname = 'clear_test'
+                    ) THEN
+        DROP FUNCTION clear_test()
+        ;
+    END IF;
+
 END
 $do$
 

@@ -6,7 +6,7 @@ using NUnit.Framework;
 namespace MagicHamster.GrocerySamurai.ServiceLayer.UnitTest.Controllers
 {
     [TestFixture]
-    public class AisleControllerTest : BaseControllerTest<Aisle>
+    public class AisleControllerTest : BaseUserFilterControllerTest<Aisle>
     {
         public AisleControllerTest()
         {
@@ -47,6 +47,12 @@ namespace MagicHamster.GrocerySamurai.ServiceLayer.UnitTest.Controllers
         public void GetAll_Exception_AisleController_Test()
         {
             getAllExceptionTestHelper();
+        }
+
+        [Test]
+        public void GetAll_NullUser_AisleController_Test()
+        {
+            getAllNoUserTestHelper();
         }
 
         [Test]

@@ -8,49 +8,37 @@ namespace MagicHamster.GrocerySamurai.BusinessLayer.UnitTest.Processes
     public class StoreItemProcessTest : BaseProcessTest<StoreItem>
     {
         [Test]
-        public void GetRecordById_StoreItem_Test()
+        public void GetById_StoreItemProcess_Test()
         {
-            getRecordById_TestHelper();
+            getById_TestHelper();
         }
 
         [Test]
-        public void GetAllRecords_Defaults_StoreItem_Test()
+        public void GetAll_Defaults_StoreItemProcess_Test()
         {
-            getAllRecords_Defaults_TestHelper();
+            getAll_Defaults_TestHelper();
         }
 
         [Test]
-        public void GetAllRecords_PageSize_StoreItem_Test()
+        public void GetAll_PageSize_StoreItemProcess_Test()
         {
-            getAllRecords_PageSize_TestHelper();
+            getAll_PageSize_TestHelper();
         }
 
         [Test]
-        public void GetActiveRecords_Defaults_StoreItem_Test()
-        {
-            getAllRecords_Defaults_TestHelper();
-        }
-
-        [Test]
-        public void GetActiveRecords_PageSize_StoreItem_Test()
-        {
-            getAllRecords_PageSize_TestHelper();
-        }
-
-        [Test]
-        public void AddRecord_StoreItem_Test()
+        public void AddRecord_StoreItemProcess_Test()
         {
             addRecord_TestHelper();
         }
 
         [Test]
-        public void UpdateRecord_StoreItem_Test()
+        public void UpdateRecord_StoreItemProcess_Test()
         {
             updateRecord_TestHelper();
         }
 
         [Test]
-        public void DeleteRecord_StoreItem_Test()
+        public void DeleteRecord_StoreItemProcess_Test()
         {
             deleteRecord_TestHelper();
         }

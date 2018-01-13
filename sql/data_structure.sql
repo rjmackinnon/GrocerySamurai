@@ -11,14 +11,15 @@ BEGIN
         CREATE TABLE item
         (
              id					SERIAL					PRIMARY KEY
+            ,user_id			TEXT NOT NULL			REFERENCES "AspNetUsers"("Id")
             ,name				VARCHAR(255) NOT NULL
             ,description		VARCHAR(1000)
             ,upc				BIGINT
         )
         ;
-        ALTER TABLE item ADD CONSTRAINT uq_item_name UNIQUE (name);
+        ALTER TABLE item ADD CONSTRAINT uq_item_name UNIQUE (user_id, name);
 
-        ALTER TABLE item ADD CONSTRAINT uq_item_upc UNIQUE (upc);
+        ALTER TABLE item ADD CONSTRAINT uq_item_upc UNIQUE (user_id, upc);
     END IF;
 
     IF NOT EXISTS	(
@@ -29,11 +30,12 @@ BEGIN
         CREATE TABLE store
         (
              id					SERIAL					PRIMARY KEY
+            ,user_id			TEXT NOT NULL			REFERENCES "AspNetUsers"("Id")
             ,name				VARCHAR(255) NOT NULL
             ,description		VARCHAR(1000)
         )
         ;
-		ALTER TABLE store ADD CONSTRAINT uq_store_name UNIQUE (name);
+		ALTER TABLE store ADD CONSTRAINT uq_store_name UNIQUE (user_id, name);
     END IF;
 
 	IF NOT EXISTS	(
@@ -44,11 +46,12 @@ BEGIN
         CREATE TABLE aisle
         (
              id					SERIAL					PRIMARY KEY
+            ,user_id			TEXT NOT NULL			REFERENCES "AspNetUsers"("Id")
             ,name				VARCHAR(255) NOT NULL
             ,description		VARCHAR(1000)
         )
         ;
-        ALTER TABLE aisle ADD CONSTRAINT uq_aisle_name UNIQUE (name);
+        ALTER TABLE aisle ADD CONSTRAINT uq_aisle_name UNIQUE (user_id, name);
     END IF;
 
 	IF NOT EXISTS	(
@@ -80,7 +83,7 @@ BEGIN
             ,description		VARCHAR(1000)
         )
         ;
-        ALTER TABLE grocery_list ADD CONSTRAINT uq_grocery_list UNIQUE (name);
+        ALTER TABLE grocery_list ADD CONSTRAINT uq_grocery_list UNIQUE (store_id, name);
     END IF;
 
 	IF NOT EXISTS	(
@@ -99,28 +102,6 @@ BEGIN
         )
         ;
         ALTER TABLE grocery_list_item ADD CONSTRAINT uq_grocery_list_item UNIQUE (grocery_list_id, item_id);
-    END IF;
-
-	IF NOT EXISTS	(
-                    SELECT	1
-                    FROM	information_schema.tables
-                    WHERE	table_name = 'app_user'
-                    ) THEN
-		CREATE TABLE app_user
-			(
-		     id					SERIAL					PRIMARY KEY	
-			,username			VARCHAR(45) NOT NULL
-		    ,password			VARCHAR(45)
-		    ,firstname			VARCHAR(45) NOT NULL
-		    ,lastname			VARCHAR(45)
-		    ,email				VARCHAR(45)
-		    ,address			VARCHAR(45)
-		    ,phone				INT
-			)
-		;
-        ALTER TABLE app_user ADD CONSTRAINT uq_app_user_username UNIQUE (username);
-
-        ALTER TABLE app_user ADD CONSTRAINT uq_app_user_email UNIQUE (email);
     END IF;
 
     CREATE OR REPLACE FUNCTION clear_test()

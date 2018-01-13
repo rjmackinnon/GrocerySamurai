@@ -1,0 +1,53 @@
+﻿@using MagicHamster.GrocerySamurai.PresentationLayer.Models
+@model IEnumerable<MagicHamster.GrocerySamurai.Model.Entities.GroceryList>
+
+<div class="container-fluid table-container table-container-hidden">
+    <div class="col-sm-12 panel panel-primary">
+        <div class="row panel-heading panel-title">
+            Grocery Lists
+        </div>
+        <div class="row">
+            <a asp-action="Create" id="create-grocery-list">Create New</a>
+        </div>
+        <div class="row panel-body">
+            <table id="datatable-grocery-list" class="table table-striped table-bordered table-hover bootstrap-decorate">
+                <thead>
+                    <tr>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Name)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Description)
+                        </th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        var itemName = item.Name.ToLower().Replace(" ", "-");
+                        <tr data-bind="@item.Id">
+                            <td id="name-@itemName">
+                                @Html.DisplayFor(modelItem => item.Name)
+                            </td>
+                            <td id="description-@itemName">
+                                @Html.DisplayFor(modelItem => item.Description)
+                            </td>
+                            <td>
+                                <div class="btn-group-justified" role="group" aria-label="...">
+                                    <div class="btn-group" role="group">
+                                        <button id="edit-button-@(itemName)" class="form-control btn btn-default btn-primary btn-table" onclick="location.href = '@Url.Action("Edit", "GroceryList", new {id = item.Id})'">Edit</button>
+                                    </div>
+                                    <div class="btn-group" role="group">
+                                        <button id="delete-button-@(itemName)" class="form-control btn btn-default btn-danger btn-table delete" data-toggle="modal" data-target="#delete-confirm-grocerylist" data-id="@item.Id" data-name="@item.Name" data-type="GroceryList" data-action="Delete" title="Delete">Delete</button>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+@{ await Html.RenderPartialAsync("../Shared/DeleteDialog", new DeleteConfirm { Name = "GroceryList", Type = "GroceryList" }); }

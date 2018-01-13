@@ -1,13 +1,15 @@
 ﻿using System;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
+using MagicHamster.GrocerySamurai.Model;
 using MagicHamster.GrocerySamurai.PresentationLayer.Data;
+using MagicHamster.GrocerySamurai.PresentationLayer.Helpers;
 using MagicHamster.GrocerySamurai.PresentationLayer.Models;
 using MagicHamster.GrocerySamurai.PresentationLayer.Services;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace MagicHamster.GrocerySamurai.PresentationLayer
 {
@@ -24,6 +26,9 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ApplicationDbContext>(options =>
+                options.UseNpgsql(Configuration.GetConnectionString("GroceryContext")));
+
+            services.AddDbContext<GroceryContext>(options =>
                 options.UseNpgsql(Configuration.GetConnectionString("GroceryContext")));
 
             services.AddAuthentication().AddFacebook(facebookOptions =>
@@ -69,7 +74,21 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer
             // Add application services.
             services.AddTransient<IEmailSender, EmailSender>();
 
+            services.AddOptions();
+            services.Configure<IConfiguration>(Configuration);
+
+            WebApiHelper.WebApiBaseUrl = Configuration["WebApiBaseUrl"];
+
             services.AddMvc();
+
+            // Adds a default in-memory implementation of IDistributedCache.
+            services.AddDistributedMemoryCache();
+
+            services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromSeconds(60 * 60 * 3);
+                options.Cookie.HttpOnly = true;
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -89,6 +108,8 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer
             app.UseStaticFiles();
 
             app.UseAuthentication();
+
+            app.UseSession();
 
             app.UseMvc(routes =>
             {

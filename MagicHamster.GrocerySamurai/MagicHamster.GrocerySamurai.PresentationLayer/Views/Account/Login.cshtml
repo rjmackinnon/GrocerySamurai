@@ -1,6 +1,8 @@
-﻿@using System.Linq
+﻿@using MagicHamster.GrocerySamurai.PresentationLayer.Models
+@using MagicHamster.GrocerySamurai.PresentationLayer.Models.AccountViewModels
+@using Microsoft.AspNetCore.Identity
 @model LoginViewModel
-@inject SignInManager<ApplicationUser> SignInManager
+@inject SignInManager<ApplicationUser> signInManager
 
 @{
     ViewData["Title"] = "Log in";
@@ -51,7 +53,7 @@
             <h4>Use another service to log in.</h4>
             <hr />
             @{
-                var loginProviders = (await SignInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+                var loginProviders = (await signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
                 if (loginProviders.Count == 0)
                 {
                     <div>

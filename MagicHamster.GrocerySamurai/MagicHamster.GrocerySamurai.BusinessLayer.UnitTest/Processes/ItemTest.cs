@@ -5,52 +5,52 @@ using NUnit.Framework;
 namespace MagicHamster.GrocerySamurai.BusinessLayer.UnitTest.Processes
 {
     [TestFixture]
-    public class ItemProcessTest : BaseProcessTest<Item>
+    public class ItemProcessTest : BaseUserFilterProcessTest<Item>
     {
         [Test]
-        public void GetRecordById_Item_Test()
+        public void GetById_ItemProcess_Test()
         {
-            getRecordById_TestHelper();
+            getById_TestHelper();
         }
 
         [Test]
-        public void GetAllRecords_Defaults_Item_Test()
+        public void GetAll_Defaults_ItemProcess_Test()
         {
-            getAllRecords_Defaults_TestHelper();
+            getAll_Defaults_TestHelper();
         }
 
         [Test]
-        public void GetAllRecords_PageSize_Item_Test()
+        public void GetAll_PageSize_ItemProcess_Test()
         {
-            getAllRecords_PageSize_TestHelper();
+            getAll_PageSize_TestHelper();
         }
 
         [Test]
-        public void GetActiveRecords_Defaults_Item_Test()
+        public void GetAllByUser_Defaults_ItemProcess_Test()
         {
-            getAllRecords_Defaults_TestHelper();
+            getAllByUser_Defaults_TestHelper();
         }
 
         [Test]
-        public void GetActiveRecords_PageSize_Item_Test()
+        public void GetAllByUser_PageSize_ItemProcess_Test()
         {
-            getAllRecords_PageSize_TestHelper();
+            getAllByUser_PageSize_TestHelper();
         }
 
         [Test]
-        public void AddRecord_Item_Test()
+        public void AddRecord_ItemProcess_Test()
         {
             addRecord_TestHelper();
         }
 
         [Test]
-        public void UpdateRecord_Item_Test()
+        public void UpdateRecord_ItemProcess_Test()
         {
             updateRecord_TestHelper();
         }
 
         [Test]
-        public void DeleteRecord_Item_Test()
+        public void DeleteRecord_ItemProcess_Test()
         {
             deleteRecord_TestHelper();
         }

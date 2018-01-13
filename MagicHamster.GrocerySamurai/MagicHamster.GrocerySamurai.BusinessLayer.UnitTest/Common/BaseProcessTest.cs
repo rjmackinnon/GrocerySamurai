@@ -19,7 +19,7 @@ namespace MagicHamster.GrocerySamurai.BusinessLayer.UnitTest.Common
         protected List<T> testData;
 
         [SetUp]
-        public void Init()
+        public virtual void Init()
         {
             testData = Enumerable.Range(1, 4).Select(e => new T { Id = e }).ToList(); 
 
@@ -35,14 +35,14 @@ namespace MagicHamster.GrocerySamurai.BusinessLayer.UnitTest.Common
             process = new BaseProcess<T>(unitOfWorkMock.Object);
         }
 
-        protected void getRecordById_TestHelper()
+        protected void getById_TestHelper()
         {
             var result = process.GetById(1);
 
             Assert.AreEqual(1, result.Id);
         }
 
-        protected void getAllRecords_Defaults_TestHelper()
+        protected void getAll_Defaults_TestHelper()
         {
             var result = process.GetAll();
 
@@ -53,7 +53,7 @@ namespace MagicHamster.GrocerySamurai.BusinessLayer.UnitTest.Common
             Assert.AreEqual(4, result[3].Id);
         }
 
-        protected void getAllRecords_PageSize_TestHelper()
+        protected void getAll_PageSize_TestHelper()
         {
             const int pageSize = 2;
 

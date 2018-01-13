@@ -22,7 +22,7 @@ namespace MagicHamster.GrocerySamurai.ServiceLayer.UnitTest.Common
         private T modifiedRecord;
 
         [SetUp]
-        public void Setup()
+        public virtual void Setup()
         {
             setupData();
             baseProcessMock = new Mock<IBaseProcess<T>>();
@@ -79,7 +79,7 @@ namespace MagicHamster.GrocerySamurai.ServiceLayer.UnitTest.Common
             Assert.AreEqual("Test Exception", resultData.Value);
         }
 
-        protected void getAllDefaultsTestHelper()
+        protected virtual void getAllDefaultsTestHelper()
         {
             var results = controller.GetAll();
 
@@ -90,10 +90,10 @@ namespace MagicHamster.GrocerySamurai.ServiceLayer.UnitTest.Common
             Assert.IsNotNull(resultData);
         }
 
-        protected void getAllPageSizeTestHelper()
+        protected virtual void getAllPageSizeTestHelper()
         {
             const int pageSize = 2;
-            var results = controller.GetAll(pageSize);
+            var results = controller.GetAll(null, pageSize);
 
             var resultData = results as OkObjectResult;
 
@@ -102,7 +102,7 @@ namespace MagicHamster.GrocerySamurai.ServiceLayer.UnitTest.Common
             Assert.IsNotNull(resultData);
         }
 
-        protected void getAllExceptionTestHelper()
+        protected virtual void getAllExceptionTestHelper()
         {
             baseProcessMock.Setup(x => x.GetAll(It.IsAny<Func<T, object>>(), It.IsAny<List<string>>(), It.IsAny<int>(), It.IsAny<bool>()))
                 .Throws(new Exception("Test Exception"));

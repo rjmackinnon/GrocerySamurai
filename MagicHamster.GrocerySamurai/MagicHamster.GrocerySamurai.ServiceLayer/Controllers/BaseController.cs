@@ -122,7 +122,7 @@ namespace MagicHamster.GrocerySamurai.ServiceLayer.Controllers
             }
         }
 
-        public abstract IActionResult GetAll(int? pageSize = 0);
+        public abstract IActionResult GetAll(string userId = null, int? pageSize = 0);
 
         public abstract IActionResult Get(int? id);
 
