@@ -1,4 +1,5 @@
-﻿using MagicHamster.GrocerySamurai.DataAccess.UnitTest.Common;
+﻿using System.Threading.Tasks;
+using MagicHamster.GrocerySamurai.DataAccess.UnitTest.Common;
 using MagicHamster.GrocerySamurai.Model.Entities;
 using NUnit.Framework;
 
@@ -12,81 +13,81 @@ namespace MagicHamster.GrocerySamurai.DataAccess.UnitTest.EntityTests
         }
 
         [Test]
-        public void GetById_GroceryListItemRepository_Test()
+        public async Task GetById_GroceryListItemRepository_Test()
         {
-            get_ById_TestHelper();
+            await get_ById_TestHelper();
         }
 
         [Test]
-        public void GetByCriteria_All_GroceryListItemRepository_Test()
+        public async Task GetByCriteria_All_GroceryListItemRepository_Test()
         {
-            get_ByCriteria_All_TestHelper();
+            await get_ByCriteria_All_TestHelper();
         }
 
         [Test]
-        public void GetByCriteria_Single_GroceryListItemRepository_Test()
+        public async Task GetByCriteria_Single_GroceryListItemRepository_Test()
         {
-            get_ByCriteria_Single_TestHelper();
+            await get_ByCriteria_Single_TestHelper();
         }
 
         [Test]
-        public void Add_ByEntity_GroceryListItemRepository_Test()
+        public async Task Add_ByEntity_GroceryListItemRepository_Test()
         {
-            add_ByEntity_TestHelper();
+            await add_ByEntity_TestHelper();
         }
 
         [Test]
-        public void Add_ByEntities_GroceryListItemRepository_Test()
+        public async Task Add_ByEntities_GroceryListItemRepository_Test()
         {
-            add_ByEntities_TestHelper();
+            await add_ByEntities_TestHelper();
         }
 
         [Test]
-        public void Update_ByEntity_GroceryListItemRepository_Test()
+        public async Task Update_ByEntity_GroceryListItemRepository_Test()
         {
-            update_ByEntity_TestHelper();
+            await update_ByEntity_TestHelper();
         }
 
         [Test]
-        public void Update_ById_GroceryListItemRepository_Test()
+        public async Task Update_ById_GroceryListItemRepository_Test()
         {
-            update_ById_TestHelper();
+            await update_ById_TestHelper();
         }
 
         [Test]
-        public void Update_ByEntities_GroceryListItemRepository_Test()
+        public async Task Update_ByEntities_GroceryListItemRepository_Test()
         {
-            update_ByEntities_TestHelper();
+            await update_ByEntities_TestHelper();
         }
 
         [Test]
-        public void Update_ByCriteria_GroceryListItemRepository_Test()
+        public async Task Update_ByCriteria_GroceryListItemRepository_Test()
         {
-            update_ByCriteria_TestHelper();
+            await update_ByCriteria_TestHelper();
         }
 
         [Test]
-        public void Delete_ByEntity_GroceryListItemRepository_Test()
+        public async Task Delete_ByEntity_GroceryListItemRepository_Test()
         {
-            delete_ByEntity_TestHelper();
+            await delete_ByEntity_TestHelperAsync();
         }
 
         [Test]
-        public void Delete_ById_GroceryListItemRepository_Test()
+        public async Task Delete_ById_GroceryListItemRepository_Test()
         {
-            delete_ById_TestHelper();
+            await delete_ById_TestHelper();
         }
 
         [Test]
-        public void Delete_ByEntities_GroceryListItemRepository_Test()
+        public async Task Delete_ByEntities_GroceryListItemRepository_Test()
         {
-            delete_ByEntities_TestHelper();
+            await delete_ByEntities_TestHelper();
         }
 
         [Test]
-        public void Delete_ByCriteria_GroceryListItemRepository_Test()
+        public async Task Delete_ByCriteria_GroceryListItemRepository_Test()
         {
-            delete_ByCriteria_TestHelper();
+            await delete_ByCriteria_TestHelper();
         }
     }
 }
