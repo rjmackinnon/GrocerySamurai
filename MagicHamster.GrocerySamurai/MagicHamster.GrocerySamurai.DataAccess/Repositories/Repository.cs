@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 using MagicHamster.GrocerySamurai.DataAccess.Interfaces;
@@ -48,14 +49,13 @@ namespace MagicHamster.GrocerySamurai.DataAccess.Repositories
             }
         }
 
-        public async Task<IQueryable<T>> Get(Func<T, bool> where = null, List<string> childProperties = null, bool noTracking = false)
+        public async Task<IQueryable<T>> Get(Expression<Func<T, bool>> where = null, List<string> childProperties = null, bool noTracking = false)
         {
             var result = Context.Set<T>().AsQueryable();
 
             if (where != null)
             {
-                // ReSharper disable once PossibleUnintendedQueryableAsEnumerable
-                result = result.Where(where).AsQueryable();
+                result = result.Where(where);
             }
 
             if (noTracking)
@@ -102,7 +102,7 @@ namespace MagicHamster.GrocerySamurai.DataAccess.Repositories
             }
         }
 
-        public async Task Update(Func<T, bool> where)
+        public async Task Update(Expression<Func<T, bool>> where)
         {
             await Update(await Get(where));
         }
@@ -131,7 +131,7 @@ namespace MagicHamster.GrocerySamurai.DataAccess.Repositories
             }
         }
 
-        public async Task Delete(Func<T, bool> where)
+        public async Task Delete(Expression<Func<T, bool>> where)
         {
             await Delete(await Get(where));
         }

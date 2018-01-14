@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using MagicHamster.GrocerySamurai.DataAccess.Interfaces;
 using MagicHamster.GrocerySamurai.DataAccess.UnitsOfWork;
@@ -130,9 +131,7 @@ namespace MagicHamster.GrocerySamurai.DataAccess.UnitTest.Common
 
         protected async Task update_ByEntities_TestHelper()
         {
-            bool criteria(T record) => record.Id == (int)Math.Floor(record.Id / 2.0);
-
-            var entities = await _repository.Get(criteria);
+            var entities = await _repository.Get(r => r.Id == (int)Math.Floor(r.Id / 2.0));
 
             entities.ToList().ForEach(updateAction);
 
@@ -140,7 +139,7 @@ namespace MagicHamster.GrocerySamurai.DataAccess.UnitTest.Common
 
             var result = await _unitOfWork.Save();
 
-            var check = await _repository.Get(criteria);
+            var check = await _repository.Get(r => r.Id == (int)Math.Floor(r.Id / 2.0));
 
             Assert.IsTrue(entities.All(e => e == check.FirstOrDefault(c => c.Id == e.Id)));
             Assert.AreEqual(result, check.ToList().Count);
@@ -148,16 +147,15 @@ namespace MagicHamster.GrocerySamurai.DataAccess.UnitTest.Common
 
         protected async Task update_ByCriteria_TestHelper()
         {
-            bool criteria(T record) => record.Id != (int)Math.Floor(record.Id / 2.0);
-            var entities = await _repository.Get(criteria);
+            var entities = await _repository.Get(r => r.Id != (int)Math.Floor(r.Id / 2.0));
 
             entities.ToList().ForEach(updateAction);
 
-            await _repository.Update(criteria);
+            await _repository.Update(r => r.Id != (int)Math.Floor(r.Id / 2.0));
 
             var result = await _unitOfWork.Save();
 
-            var check = await _repository.Get(criteria);
+            var check = await _repository.Get(r => r.Id != (int)Math.Floor(r.Id / 2.0));
 
             Assert.IsTrue(entities.All(e => e == check.FirstOrDefault(c => c.Id == e.Id)));
             Assert.AreEqual(result, check.ToList().Count);
@@ -193,15 +191,13 @@ namespace MagicHamster.GrocerySamurai.DataAccess.UnitTest.Common
 
         protected async Task delete_ByEntities_TestHelper()
         {
-            bool criteria(T record) => record.Id == (int)Math.Floor(record.Id / 2.0);
-
-            var entities = await _repository.Get(criteria);
+            var entities = await _repository.Get(r => r.Id == (int)Math.Floor(r.Id / 2.0));
 
             await _repository.Delete(entities);
 
             var result = await _unitOfWork.Save();
 
-            var check = await _repository.Get(criteria);
+            var check = await _repository.Get(r => r.Id == (int)Math.Floor(r.Id / 2.0));
 
             Assert.AreEqual(result, entities.ToList().Count);
             Assert.IsEmpty(check);
@@ -209,16 +205,14 @@ namespace MagicHamster.GrocerySamurai.DataAccess.UnitTest.Common
 
         protected async Task delete_ByCriteria_TestHelper()
         {
-            bool criteria(T record) => record.Id != (int)Math.Floor(record.Id / 2.0);
-
-            var entities = (await _repository.Get(criteria)).ToList();
+            var entities = (await _repository.Get(r => r.Id != (int)Math.Floor(r.Id / 2.0))).ToList();
             var numRecords = entities.Count;
 
-            await _repository.Delete(criteria);
+            await _repository.Delete(r => r.Id != (int)Math.Floor(r.Id / 2.0));
 
             var result = await _unitOfWork.Save();
 
-            var check = await _repository.Get(criteria);
+            var check = await _repository.Get(r => r.Id != (int)Math.Floor(r.Id / 2.0));
 
             Assert.AreEqual(result, numRecords);
             Assert.IsEmpty(check);

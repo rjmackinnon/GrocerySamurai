@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using MagicHamster.GrocerySamurai.Model.Common;
 
@@ -11,7 +12,7 @@ namespace MagicHamster.GrocerySamurai.DataAccess.Interfaces
     {
         Task<T> Get(int id, List<string> childProperties = null, bool noTracking = false);
 
-        Task<IQueryable<T>> Get(Func<T, bool> where = null, List<string> childProperties = null, bool noTracking = false);
+        Task<IQueryable<T>> Get(Expression<Func<T, bool>> where = null, List<string> childProperties = null, bool noTracking = false);
 
         Task Add(T entity);
 
@@ -23,7 +24,7 @@ namespace MagicHamster.GrocerySamurai.DataAccess.Interfaces
 
         Task Update(int id);
 
-        Task Update(Func<T, bool> where);
+        Task Update(Expression<Func<T, bool>> where);
 
         Task Delete(T entity);
 
@@ -31,6 +32,6 @@ namespace MagicHamster.GrocerySamurai.DataAccess.Interfaces
 
         Task Delete(int id);
 
-        Task Delete(Func<T, bool> where);
+        Task Delete(Expression<Func<T, bool>> where);
     }
 }

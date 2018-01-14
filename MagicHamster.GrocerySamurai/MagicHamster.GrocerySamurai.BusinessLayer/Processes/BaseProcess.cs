@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using MagicHamster.GrocerySamurai.BusinessLayer.Interfaces;
 using MagicHamster.GrocerySamurai.DataAccess.Interfaces;
 using MagicHamster.GrocerySamurai.Model.Common;
+using Microsoft.EntityFrameworkCore;
 
 namespace MagicHamster.GrocerySamurai.BusinessLayer.Processes
 {
@@ -22,22 +24,25 @@ namespace MagicHamster.GrocerySamurai.BusinessLayer.Processes
             repository = UnitOfWork.GetRepository<T>().Result;
         }
 
-        public virtual async Task<List<T>> GetAll(Func<T, object> orderBy = null, List<string> childProperties = null, int pageSize = 0, bool noTracking = false)
+        public virtual async Task<List<T>> GetAll(Expression<Func<T, object>> orderBy = null, 
+            List<string> childProperties = null, int pageSize = 0, bool noTracking = false)
         {
             return await getByFilter(null, orderBy, childProperties, pageSize, noTracking);
         }
 
-        protected async Task<List<T>> getByFilter(Func<T, bool> criteria, Func<T, object> orderBy, List<string> childProperties, int pageSize, bool noTracking)
+        protected async Task<List<T>> getByFilter(Expression<Func<T, bool>> criteria, 
+            Expression<Func<T, object>> orderBy, List<string> childProperties, int pageSize, bool noTracking)
         {
             var result = await repository.Get(criteria, childProperties, noTracking);
             if (orderBy != null)
             {
-                result = result.AsEnumerable().OrderBy(orderBy).AsQueryable();
+                result = result.OrderBy(orderBy);
             }
-            return pageSize <= 0 ? result.ToList() : result.Take(pageSize).ToList();
+            return pageSize <= 0 ? await result.ToListAsync() : await result.Take(pageSize).ToListAsync();
         }
 
-        internal virtual async Task<IQueryable> getAsQueryble(Func<T, bool> criteria, List<string> childProperties = null)
+        internal virtual async Task<IQueryable> getAsQueryble(Expression<Func<T, bool>> criteria, 
+            List<string> childProperties = null)
         {
             return await repository.Get(criteria, childProperties);
         }

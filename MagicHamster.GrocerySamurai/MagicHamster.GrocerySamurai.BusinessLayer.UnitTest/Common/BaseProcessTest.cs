@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using MagicHamster.GrocerySamurai.BusinessLayer.Processes;
 using MagicHamster.GrocerySamurai.DataAccess.Interfaces;
@@ -26,7 +27,7 @@ namespace MagicHamster.GrocerySamurai.BusinessLayer.UnitTest.Common
 
             repositoryMock = new Mock<IRepository<T>>();
 
-            repositoryMock.Setup(r => r.Get(It.IsAny<Func<T, bool>>(), It.IsAny<List<string>>(), It.IsAny<bool>()))
+            repositoryMock.Setup(r => r.Get(It.IsAny<Expression<Func<T, bool>>>(), It.IsAny<List<string>>(), It.IsAny<bool>()))
                 .Returns(Task.FromResult(testData.AsQueryable()));
             repositoryMock.Setup(r => r.Get(It.IsAny<int>(), It.IsAny<List<string>>(), It.IsAny<bool>())).Returns(Task.FromResult(testData[0]));
 

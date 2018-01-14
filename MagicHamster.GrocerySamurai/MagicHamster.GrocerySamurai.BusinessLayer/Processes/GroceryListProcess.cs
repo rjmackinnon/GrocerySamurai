@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using MagicHamster.GrocerySamurai.BusinessLayer.Interfaces;
 using MagicHamster.GrocerySamurai.DataAccess.Interfaces;
@@ -13,7 +14,7 @@ namespace MagicHamster.GrocerySamurai.BusinessLayer.Processes
         {
         }
 
-        public async Task<List<GroceryList>> GetAllByStore(int storeId, Func<GroceryList, object> orderBy = null, 
+        public async Task<List<GroceryList>> GetAllByStore(int storeId, Expression<Func<GroceryList, object>> orderBy = null, 
             List<string> childProperties = null, int pageSize = 0, bool noTracking = false)
         {
             return await getByFilter(l=> l.StoreId == storeId, orderBy, childProperties, pageSize, noTracking);

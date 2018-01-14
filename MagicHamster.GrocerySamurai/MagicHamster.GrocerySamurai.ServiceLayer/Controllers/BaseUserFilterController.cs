@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq.Expressions;
 using System.Net;
 using System.Threading.Tasks;
 using MagicHamster.GrocerySamurai.BusinessLayer.Interfaces;
@@ -14,7 +15,7 @@ namespace MagicHamster.GrocerySamurai.ServiceLayer.Controllers
         {
         }
 
-        protected async Task<IActionResult> getAllHelper(string userId, Func<T, object> orderBy, int? pageSize)
+        protected async Task<IActionResult> getAllHelper(string userId, Expression<Func<T, object>> orderBy, int? pageSize)
         {
             if (userId == null)
             {

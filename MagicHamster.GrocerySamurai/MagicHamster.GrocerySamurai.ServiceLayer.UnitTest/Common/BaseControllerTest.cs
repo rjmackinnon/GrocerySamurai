@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Net;
 using System.Threading.Tasks;
 using MagicHamster.GrocerySamurai.BusinessLayer.Interfaces;
@@ -27,7 +28,7 @@ namespace MagicHamster.GrocerySamurai.ServiceLayer.UnitTest.Common
         {
             setupData();
             baseProcessMock = new Mock<IBaseProcess<T>>();
-            baseProcessMock.Setup(x => x.GetAll(It.IsAny<Func<T, object>>(), It.IsAny<List<string>>(), It.IsAny<int>(), It.IsAny<bool>()))
+            baseProcessMock.Setup(x => x.GetAll(It.IsAny<Expression<Func<T, object>>>(), It.IsAny<List<string>>(), It.IsAny<int>(), It.IsAny<bool>()))
                 .Returns(Task.FromResult(data));
             controller.BusinessProcess = baseProcessMock.Object;
         }
@@ -82,7 +83,7 @@ namespace MagicHamster.GrocerySamurai.ServiceLayer.UnitTest.Common
 
             var resultData = results as OkObjectResult;
 
-            baseProcessMock.Verify(x => x.GetAll(It.IsAny<Func<T, object>>(), It.IsAny<List<string>>(), It.IsAny<int>(), It.IsAny<bool>()), Times.Once);
+            baseProcessMock.Verify(x => x.GetAll(It.IsAny<Expression<Func<T, object>>>(), It.IsAny<List<string>>(), It.IsAny<int>(), It.IsAny<bool>()), Times.Once);
 
             Assert.IsNotNull(resultData);
         }
@@ -94,20 +95,20 @@ namespace MagicHamster.GrocerySamurai.ServiceLayer.UnitTest.Common
 
             var resultData = await results as OkObjectResult;
 
-            baseProcessMock.Verify(x => x.GetAll(It.IsAny<Func<T, object>>(), It.IsAny<List<string>>(), It.IsAny<int>(), It.IsAny<bool>()), Times.Once);
+            baseProcessMock.Verify(x => x.GetAll(It.IsAny<Expression<Func<T, object>>>(), It.IsAny<List<string>>(), It.IsAny<int>(), It.IsAny<bool>()), Times.Once);
 
             Assert.IsNotNull(resultData);
         }
 
         protected virtual async Task getAllExceptionTestHelper()
         {
-            baseProcessMock.Setup(x => x.GetAll(It.IsAny<Func<T, object>>(), It.IsAny<List<string>>(), It.IsAny<int>(), It.IsAny<bool>()))
+            baseProcessMock.Setup(x => x.GetAll(It.IsAny<Expression<Func<T, object>>>(), It.IsAny<List<string>>(), It.IsAny<int>(), It.IsAny<bool>()))
                 .Throws(new Exception("Test Exception"));
 
             var results = await controller.GetAll();
             var resultData = results as ObjectResult;
 
-            baseProcessMock.Verify(x => x.GetAll(It.IsAny<Func<T, object>>(), It.IsAny<List<string>>(), It.IsAny<int>(), It.IsAny<bool>()), Times.Once);
+            baseProcessMock.Verify(x => x.GetAll(It.IsAny<Expression<Func<T, object>>>(), It.IsAny<List<string>>(), It.IsAny<int>(), It.IsAny<bool>()), Times.Once);
 
             Assert.IsNotNull(resultData);
             Assert.AreEqual((int)HttpStatusCode.InternalServerError, resultData.StatusCode);

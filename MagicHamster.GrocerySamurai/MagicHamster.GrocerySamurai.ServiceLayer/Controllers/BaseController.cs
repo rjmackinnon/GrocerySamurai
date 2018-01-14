@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Net;
 using System.Threading.Tasks;
 using MagicHamster.GrocerySamurai.BusinessLayer.Interfaces;
@@ -29,7 +30,7 @@ namespace MagicHamster.GrocerySamurai.ServiceLayer.Controllers
             BusinessProcess = process;
         }
 
-        protected async Task<IActionResult> getAllHelper(Func<T, object> orderBy, int? pageSize)
+        protected async Task<IActionResult> getAllHelper(Expression<Func<T, object>> orderBy, int? pageSize)
         {
             try
             {
