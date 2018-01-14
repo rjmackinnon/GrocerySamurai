@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Threading.Tasks;
 using MagicHamster.GrocerySamurai.BusinessLayer.Interfaces;
 using MagicHamster.GrocerySamurai.Model.Common;
 using Microsoft.AspNetCore.Mvc;
@@ -19,13 +20,13 @@ namespace MagicHamster.GrocerySamurai.ServiceLayer.UnitTest.Common
             base.Setup();
             baseUserFilterProcessMock = new Mock<IBaseUserFilterProcess<T>>();
             baseUserFilterProcessMock.Setup(x => x.GetAllByUser(It.IsAny<string>(), It.IsAny<Func<T, object>>(), It.IsAny<List<string>>(), It.IsAny<int>(), It.IsAny<bool>()))
-                .Returns(data);
+                .Returns(Task.FromResult(data));
         }
 
-        protected override void getAllDefaultsTestHelper()
+        protected override async Task getAllDefaultsTestHelper()
         {
             controller.BusinessProcess = baseUserFilterProcessMock.Object;
-            var results = controller.GetAll("test");
+            var results = await controller.GetAll("test");
 
             var resultData = results as OkObjectResult;
 
@@ -34,11 +35,11 @@ namespace MagicHamster.GrocerySamurai.ServiceLayer.UnitTest.Common
             Assert.IsNotNull(resultData);
         }
 
-        protected override void getAllPageSizeTestHelper()
+        protected override async Task getAllPageSizeTestHelper()
         {
             controller.BusinessProcess = baseUserFilterProcessMock.Object;
             const int pageSize = 2;
-            var results = controller.GetAll("test", pageSize);
+            var results = await controller.GetAll("test", pageSize);
 
             var resultData = results as OkObjectResult;
 
@@ -47,13 +48,13 @@ namespace MagicHamster.GrocerySamurai.ServiceLayer.UnitTest.Common
             Assert.IsNotNull(resultData);
         }
 
-        protected override void getAllExceptionTestHelper()
+        protected override async Task getAllExceptionTestHelper()
         {
             controller.BusinessProcess = baseUserFilterProcessMock.Object;
             baseUserFilterProcessMock.Setup(x => x.GetAllByUser(It.IsAny<string>(), It.IsAny<Func<T, object>>(), It.IsAny<List<string>>(), It.IsAny<int>(), It.IsAny<bool>()))
                 .Throws(new Exception("Test Exception"));
 
-            var results = controller.GetAll("test");
+            var results = await controller.GetAll("test");
             var resultData = results as ObjectResult;
 
             baseUserFilterProcessMock.Verify(x => x.GetAllByUser(It.IsAny<string>(), It.IsAny<Func<T, object>>(), It.IsAny<List<string>>(), It.IsAny<int>(), It.IsAny<bool>()), Times.Once);
@@ -63,10 +64,10 @@ namespace MagicHamster.GrocerySamurai.ServiceLayer.UnitTest.Common
             Assert.AreEqual("Test Exception", resultData.Value);
         }
 
-        protected void getAllNoUserTestHelper()
+        protected async Task getAllNoUserTestHelper()
         {
             controller.BusinessProcess = baseUserFilterProcessMock.Object;
-            var results = controller.GetAll();
+            var results = await controller.GetAll();
 
             var resultData = results as BadRequestObjectResult;
 

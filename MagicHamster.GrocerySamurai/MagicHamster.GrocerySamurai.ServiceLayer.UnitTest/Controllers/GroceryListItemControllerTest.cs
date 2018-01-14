@@ -14,93 +14,93 @@ namespace MagicHamster.GrocerySamurai.ServiceLayer.UnitTest.Controllers
         }
 
         [Test]
-        public void Get_GroceryListItemController_Test()
+        public async System.Threading.Tasks.Task Get_GroceryListItemController_TestAsync()
         {
-            getTestHelper();
+            await getTestHelper();
         }
 
         [Test]
-        public void Get_Null_GroceryListItemController_Test()
+        public async System.Threading.Tasks.Task Get_Null_GroceryListItemController_TestAsync()
         {
-            getNullTestHelper();
+            await getNullTestHelper();
         }
 
         [Test]
-        public void Get_Exception_GroceryListItemController_Test()
+        public async System.Threading.Tasks.Task Get_Exception_GroceryListItemController_TestAsync()
         {
-            getExceptionTestHelper();
+            await getExceptionTestHelper();
         }
 
         [Test]
-        public void GetAll_Defaults_GroceryListItemController_Test()
+        public async System.Threading.Tasks.Task GetAll_Defaults_GroceryListItemController_TestAsync()
         {
-            getAllDefaultsTestHelper();
+            await getAllDefaultsTestHelper();
         }
 
         [Test]
-        public void GetAll_PageSize_GroceryListItemController_Test()
+        public async System.Threading.Tasks.Task GetAll_PageSize_GroceryListItemController_TestAsync()
         {
-            getAllPageSizeTestHelper();
+            await getAllPageSizeTestHelper();
         }
 
         [Test]
-        public void GetAll_Exception_GroceryListItemController_Test()
+        public async System.Threading.Tasks.Task GetAll_Exception_GroceryListItemController_TestAsync()
         {
-            getAllExceptionTestHelper();
+            await getAllExceptionTestHelper();
         }
 
         [Test]
-        public void Add_GroceryListItemController_Test()
+        public async System.Threading.Tasks.Task Add_GroceryListItemController_TestAsync()
         {
-            addTestHelper();
+            await addTestHelper();
         }
 
         [Test]
-        public void Add_NotInserted_GroceryListItemController_Test()
+        public async System.Threading.Tasks.Task Add_NotInserted_GroceryListItemController_TestAsync()
         {
-            addNotInsertedTestHelper();
+            await addNotInsertedTestHelper();
         }
 
         [Test]
-        public void Add_Exception_GroceryListItemController_Test()
+        public async System.Threading.Tasks.Task Add_Exception_GroceryListItemController_TestAsync()
         {
-            addExceptionTestHelper();
+            await addExceptionTestHelper();
         }
 
         [Test]
-        public void Update_GroceryListItemController_Test()
+        public async System.Threading.Tasks.Task Update_GroceryListItemController_TestAsync()
         {
-            updateTestHelper();
+            await updateTestHelper();
         }
 
         [Test]
-        public void Update_NotUpdated_GroceryListItemController_Test()
+        public async System.Threading.Tasks.Task Update_NotUpdated_GroceryListItemController_TestAsync()
         {
-            updateNotUpdatedTestHelper();
+            await updateNotUpdatedTestHelper();
         }
 
         [Test]
-        public void Update_Exception_GroceryListItemController_Test()
+        public async System.Threading.Tasks.Task Update_Exception_GroceryListItemController_TestAsync()
         {
-            updateExceptionTestHelper();
+            await updateExceptionTestHelper();
         }
 
         [Test]
-        public void Delete_GroceryListItemController_Test()
+        public async System.Threading.Tasks.Task Delete_GroceryListItemController_TestAsync()
         {
-            deleteTestHelper();
+            await deleteTestHelper();
         }
 
         [Test]
-        public void Delete_NotDeleted_GroceryListItemController_Test()
+        public async System.Threading.Tasks.Task Delete_NotDeleted_GroceryListItemController_TestAsync()
         {
-            deleteNotDeletedTestHelper();
+            await deleteNotDeletedTestHelper();
         }
 
         [Test]
-        public void Delete_Exception_GroceryListItemController_Test()
+        public async System.Threading.Tasks.Task Delete_Exception_GroceryListItemController_TestAsync()
         {
-            deleteExceptionTestHelper();
+            await deleteExceptionTestHelper();
         }
     }
 }

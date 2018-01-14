@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 using MagicHamster.GrocerySamurai.BusinessLayer.Interfaces;
 using MagicHamster.GrocerySamurai.Model.Common;
 using MagicHamster.GrocerySamurai.ServiceLayer.Controllers;
@@ -18,8 +19,8 @@ namespace MagicHamster.GrocerySamurai.ServiceLayer.UnitTest.Common
         protected BaseController<T> controller;
         protected Mock<IBaseProcess<T>> baseProcessMock;
         protected List<T> data;
-        private T newRecord;
-        private T modifiedRecord;
+        private T _newRecord;
+        private T _modifiedRecord;
 
         [SetUp]
         public virtual void Setup()
@@ -27,20 +28,16 @@ namespace MagicHamster.GrocerySamurai.ServiceLayer.UnitTest.Common
             setupData();
             baseProcessMock = new Mock<IBaseProcess<T>>();
             baseProcessMock.Setup(x => x.GetAll(It.IsAny<Func<T, object>>(), It.IsAny<List<string>>(), It.IsAny<int>(), It.IsAny<bool>()))
-                .Returns(data);
-            //var request = new Mock<HttpRequestMessage>();
-            //var configuration = new Mock<HttpConfiguration>();
-            //request.Object.SetConfiguration(configuration.Object);
+                .Returns(Task.FromResult(data));
             controller.BusinessProcess = baseProcessMock.Object;
-            //controller.Request = request.Object;
         }
 
-        protected void getTestHelper()
+        protected async Task getTestHelper()
         {
             var id = 1001;
-            baseProcessMock.Setup(x => x.GetById(id, It.IsAny<List<string>>(), It.IsAny<bool>())).Returns(data.FirstOrDefault(x => x.Id == id));
+            baseProcessMock.Setup(x => x.GetById(id, It.IsAny<List<string>>(), It.IsAny<bool>())).Returns(Task.FromResult(data.FirstOrDefault(x => x.Id == id)));
 
-            var results = controller.Get(id);
+            var results = await controller.Get(id);
 
             var resultData = results as OkObjectResult;
 
@@ -49,12 +46,12 @@ namespace MagicHamster.GrocerySamurai.ServiceLayer.UnitTest.Common
             Assert.IsNotNull(resultData);
         }
 
-        protected void getNullTestHelper()
+        protected async Task getNullTestHelper()
         {
             var id = 2001;
-            baseProcessMock.Setup(x => x.GetById(id, It.IsAny<List<string>>(), It.IsAny<bool>())).Returns(data.FirstOrDefault(x => x.Id == id));
+            baseProcessMock.Setup(x => x.GetById(id, It.IsAny<List<string>>(), It.IsAny<bool>())).Returns(Task.FromResult(data.FirstOrDefault(x => x.Id == id)));
 
-            var results = controller.Get(id);
+            var results = await controller.Get(id);
 
             var resultData = results as OkObjectResult;
 
@@ -64,12 +61,12 @@ namespace MagicHamster.GrocerySamurai.ServiceLayer.UnitTest.Common
             Assert.IsNull(resultData.Value);
         }
 
-        protected void getExceptionTestHelper()
+        protected async Task getExceptionTestHelper()
         {
             var id = 2001;
             baseProcessMock.Setup(x => x.GetById(id, It.IsAny<List<string>>(), It.IsAny<bool>())).Throws(new Exception("Test Exception"));
 
-            var results = controller.Get(id);
+            var results = await controller.Get(id);
             var resultData = results as ObjectResult;
 
             baseProcessMock.Verify(x => x.GetById(id, It.IsAny<List<string>>(), It.IsAny<bool>()));
@@ -79,9 +76,9 @@ namespace MagicHamster.GrocerySamurai.ServiceLayer.UnitTest.Common
             Assert.AreEqual("Test Exception", resultData.Value);
         }
 
-        protected virtual void getAllDefaultsTestHelper()
+        protected virtual async Task getAllDefaultsTestHelper()
         {
-            var results = controller.GetAll();
+            var results = await controller.GetAll();
 
             var resultData = results as OkObjectResult;
 
@@ -90,24 +87,24 @@ namespace MagicHamster.GrocerySamurai.ServiceLayer.UnitTest.Common
             Assert.IsNotNull(resultData);
         }
 
-        protected virtual void getAllPageSizeTestHelper()
+        protected virtual async Task getAllPageSizeTestHelper()
         {
             const int pageSize = 2;
             var results = controller.GetAll(null, pageSize);
 
-            var resultData = results as OkObjectResult;
+            var resultData = await results as OkObjectResult;
 
             baseProcessMock.Verify(x => x.GetAll(It.IsAny<Func<T, object>>(), It.IsAny<List<string>>(), It.IsAny<int>(), It.IsAny<bool>()), Times.Once);
 
             Assert.IsNotNull(resultData);
         }
 
-        protected virtual void getAllExceptionTestHelper()
+        protected virtual async Task getAllExceptionTestHelper()
         {
             baseProcessMock.Setup(x => x.GetAll(It.IsAny<Func<T, object>>(), It.IsAny<List<string>>(), It.IsAny<int>(), It.IsAny<bool>()))
                 .Throws(new Exception("Test Exception"));
 
-            var results = controller.GetAll();
+            var results = await controller.GetAll();
             var resultData = results as ObjectResult;
 
             baseProcessMock.Verify(x => x.GetAll(It.IsAny<Func<T, object>>(), It.IsAny<List<string>>(), It.IsAny<int>(), It.IsAny<bool>()), Times.Once);
@@ -117,22 +114,22 @@ namespace MagicHamster.GrocerySamurai.ServiceLayer.UnitTest.Common
             Assert.AreEqual("Test Exception", resultData.Value);
         }
 
-        protected void addTestHelper()
+        protected async Task addTestHelper()
         {
-            baseProcessMock.Setup(x => x.Save()).Returns(1);
+            baseProcessMock.Setup(x => x.Save()).Returns(Task.FromResult(1));
 
-            var results = controller.Add(newRecord);
+            var results = await controller.Add(_newRecord);
             var resultData = results as OkObjectResult;
 
             Assert.IsNotNull(resultData);
             Assert.AreEqual($"{typeof(T).Name} was successfully inserted.", resultData.Value);
         }
 
-        protected void addNotInsertedTestHelper()
+        protected async Task addNotInsertedTestHelper()
         {
-            baseProcessMock.Setup(x => x.Save()).Returns(0);
+            baseProcessMock.Setup(x => x.Save()).Returns(Task.FromResult(0));
 
-            var results = controller.Add(newRecord);
+            var results = await controller.Add(_newRecord);
             var resultData = results as ObjectResult;
 
             Assert.IsNotNull(resultData);
@@ -140,11 +137,11 @@ namespace MagicHamster.GrocerySamurai.ServiceLayer.UnitTest.Common
             Assert.AreEqual($"No {typeof(T).Name} data was inserted.", resultData.Value);
         }
 
-        protected void addExceptionTestHelper()
+        protected async Task addExceptionTestHelper()
         {
-            baseProcessMock.Setup(x => x.AddRecord(newRecord)).Throws(new Exception(@"Test Exception"));
+            baseProcessMock.Setup(x => x.AddRecord(_newRecord)).Throws(new Exception(@"Test Exception"));
 
-            var results = controller.Add(newRecord);
+            var results = await controller.Add(_newRecord);
             var resultData = results as ObjectResult;
 
             Assert.IsNotNull(resultData);
@@ -152,22 +149,22 @@ namespace MagicHamster.GrocerySamurai.ServiceLayer.UnitTest.Common
             Assert.AreEqual("Test Exception", resultData.Value);
         }
 
-        protected void updateTestHelper()
+        protected async Task updateTestHelper()
         {
-            baseProcessMock.Setup(x => x.Save()).Returns(1);
+            baseProcessMock.Setup(x => x.Save()).Returns(Task.FromResult(1));
 
-            var results = controller.Update(modifiedRecord);
+            var results = await controller.Update(_modifiedRecord);
             var resultData = results as OkObjectResult;
 
             Assert.IsNotNull(resultData);
             Assert.AreEqual($"{typeof(T).Name} was successfully updated.", resultData.Value);
         }
 
-        protected void updateNotUpdatedTestHelper()
+        protected async Task updateNotUpdatedTestHelper()
         {
-            baseProcessMock.Setup(x => x.Save()).Returns(0);
+            baseProcessMock.Setup(x => x.Save()).Returns(Task.FromResult(0));
 
-            var results = controller.Update(modifiedRecord);
+            var results = await controller.Update(_modifiedRecord);
             var resultData = results as ObjectResult;
 
             Assert.IsNotNull(resultData);
@@ -175,11 +172,11 @@ namespace MagicHamster.GrocerySamurai.ServiceLayer.UnitTest.Common
             Assert.AreEqual($"No {typeof(T).Name} data was updated.", resultData.Value);
         }
 
-        protected void updateExceptionTestHelper()
+        protected async Task updateExceptionTestHelper()
         {
-            baseProcessMock.Setup(x => x.UpdateRecord(modifiedRecord)).Throws(new Exception(@"Test Exception"));
+            baseProcessMock.Setup(x => x.UpdateRecord(_modifiedRecord)).Throws(new Exception(@"Test Exception"));
 
-            var results = controller.Update(modifiedRecord);
+            var results = await controller.Update(_modifiedRecord);
             var resultData = results as ObjectResult;
 
             Assert.IsNotNull(resultData);
@@ -187,24 +184,24 @@ namespace MagicHamster.GrocerySamurai.ServiceLayer.UnitTest.Common
             Assert.AreEqual("Test Exception", resultData.Value);
         }
 
-        protected void deleteTestHelper()
+        protected async Task deleteTestHelper()
         {
             var id = 1001;
-            baseProcessMock.Setup(x => x.Save()).Returns(1);
+            baseProcessMock.Setup(x => x.Save()).Returns(Task.FromResult(1));
 
-            var results = controller.Delete(id);
+            var results = await controller.Delete(id);
             var resultData = results as OkObjectResult;
 
             Assert.IsNotNull(resultData);
             Assert.AreEqual($"{typeof(T).Name} was successfully deleted.", resultData.Value);
         }
 
-        protected void deleteNotDeletedTestHelper()
+        protected async Task deleteNotDeletedTestHelper()
         {
             var id = 1001;
-            baseProcessMock.Setup(x => x.Save()).Returns(0);
+            baseProcessMock.Setup(x => x.Save()).Returns(Task.FromResult(0));
 
-            var results = controller.Delete(id);
+            var results = await controller.Delete(id);
             var resultData = results as ObjectResult;
 
             Assert.IsNotNull(resultData);
@@ -212,12 +209,12 @@ namespace MagicHamster.GrocerySamurai.ServiceLayer.UnitTest.Common
             Assert.AreEqual($"No {typeof(T).Name} data was deleted.", resultData.Value);
         }
 
-        protected void deleteExceptionTestHelper()
+        protected async Task deleteExceptionTestHelper()
         {
             var id = 1001;
             baseProcessMock.Setup(x => x.DeleteRecord(id)).Throws(new Exception(@"Test Exception"));
 
-            var results = controller.Delete(id);
+            var results = await controller.Delete(id);
             var resultData = results as ObjectResult;
 
             Assert.IsNotNull(resultData);
@@ -252,12 +249,12 @@ namespace MagicHamster.GrocerySamurai.ServiceLayer.UnitTest.Common
             };
 
 
-            newRecord = new T
+            _newRecord = new T
             {
                 Id = 5001,
             };
 
-            modifiedRecord = new T
+            _modifiedRecord = new T
             {
                 Id = 1001,
             };
