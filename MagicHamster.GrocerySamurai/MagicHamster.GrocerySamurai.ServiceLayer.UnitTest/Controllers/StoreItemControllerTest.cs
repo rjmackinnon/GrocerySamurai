@@ -14,93 +14,93 @@ namespace MagicHamster.GrocerySamurai.ServiceLayer.UnitTest.Controllers
         }
 
         [Test]
-        public void Get_StoreItemController_Test()
+        public async System.Threading.Tasks.Task Get_StoreItemController_TestAsync()
         {
-            getTestHelper();
+            await getTestHelper();
         }
 
         [Test]
-        public void Get_Null_StoreItemController_Test()
+        public async System.Threading.Tasks.Task Get_Null_StoreItemController_TestAsync()
         {
-            getNullTestHelper();
+            await getNullTestHelper();
         }
 
         [Test]
-        public void Get_Exception_StoreItemController_Test()
+        public async System.Threading.Tasks.Task Get_Exception_StoreItemController_TestAsync()
         {
-            getExceptionTestHelper();
+            await getExceptionTestHelper();
         }
 
         [Test]
-        public void GetAll_Defaults_StoreItemController_Test()
+        public async System.Threading.Tasks.Task GetAll_Defaults_StoreItemController_TestAsync()
         {
-            getAllDefaultsTestHelper();
+            await getAllDefaultsTestHelper();
         }
 
         [Test]
-        public void GetAll_PageSize_StoreItemController_Test()
+        public async System.Threading.Tasks.Task GetAll_PageSize_StoreItemController_TestAsync()
         {
-            getAllPageSizeTestHelper();
+            await getAllPageSizeTestHelper();
         }
 
         [Test]
-        public void GetAll_Exception_StoreItemController_Test()
+        public async System.Threading.Tasks.Task GetAll_Exception_StoreItemController_TestAsync()
         {
-            getAllExceptionTestHelper();
+            await getAllExceptionTestHelper();
         }
 
         [Test]
-        public void Add_StoreItemController_Test()
+        public async System.Threading.Tasks.Task Add_StoreItemController_TestAsync()
         {
-            addTestHelper();
+            await addTestHelper();
         }
 
         [Test]
-        public void Add_NotInserted_StoreItemController_Test()
+        public async System.Threading.Tasks.Task Add_NotInserted_StoreItemController_TestAsync()
         {
-            addNotInsertedTestHelper();
+            await addNotInsertedTestHelper();
         }
 
         [Test]
-        public void Add_Exception_StoreItemController_Test()
+        public async System.Threading.Tasks.Task Add_Exception_StoreItemController_TestAsync()
         {
-            addExceptionTestHelper();
+            await addExceptionTestHelper();
         }
 
         [Test]
-        public void Update_StoreItemController_Test()
+        public async System.Threading.Tasks.Task Update_StoreItemController_TestAsync()
         {
-            updateTestHelper();
+            await updateTestHelper();
         }
 
         [Test]
-        public void Update_NotUpdated_StoreItemController_Test()
+        public async System.Threading.Tasks.Task Update_NotUpdated_StoreItemController_TestAsync()
         {
-            updateNotUpdatedTestHelper();
+            await updateNotUpdatedTestHelper();
         }
 
         [Test]
-        public void Update_Exception_StoreItemController_Test()
+        public async System.Threading.Tasks.Task Update_Exception_StoreItemController_TestAsync()
         {
-            updateExceptionTestHelper();
+            await updateExceptionTestHelper();
         }
 
         [Test]
-        public void Delete_StoreItemController_Test()
+        public async System.Threading.Tasks.Task Delete_StoreItemController_TestAsync()
         {
-            deleteTestHelper();
+            await deleteTestHelper();
         }
 
         [Test]
-        public void Delete_NotDeleted_StoreItemController_Test()
+        public async System.Threading.Tasks.Task Delete_NotDeleted_StoreItemController_TestAsync()
         {
-            deleteNotDeletedTestHelper();
+            await deleteNotDeletedTestHelper();
         }
 
         [Test]
-        public void Delete_Exception_StoreItemController_Test()
+        public async System.Threading.Tasks.Task Delete_Exception_StoreItemController_TestAsync()
         {
-            deleteExceptionTestHelper();
+            await deleteExceptionTestHelper();
         }
     }
 }

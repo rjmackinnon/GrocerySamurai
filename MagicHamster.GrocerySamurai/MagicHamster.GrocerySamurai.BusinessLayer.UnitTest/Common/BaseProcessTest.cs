@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
+using System.Threading.Tasks;
 using MagicHamster.GrocerySamurai.BusinessLayer.Processes;
 using MagicHamster.GrocerySamurai.DataAccess.Interfaces;
 using MagicHamster.GrocerySamurai.Model.Common;
@@ -25,26 +27,26 @@ namespace MagicHamster.GrocerySamurai.BusinessLayer.UnitTest.Common
 
             repositoryMock = new Mock<IRepository<T>>();
 
-            repositoryMock.Setup(r => r.Get(It.IsAny<Func<T, bool>>(), It.IsAny<List<string>>(), It.IsAny<bool>()))
-                .Returns(testData.AsQueryable());
-            repositoryMock.Setup(r => r.Get(It.IsAny<int>(), It.IsAny<List<string>>(), It.IsAny<bool>())).Returns(testData[0]);
+            repositoryMock.Setup(r => r.Get(It.IsAny<Expression<Func<T, bool>>>(), It.IsAny<List<string>>(), It.IsAny<bool>()))
+                .Returns(Task.FromResult(testData.AsQueryable()));
+            repositoryMock.Setup(r => r.Get(It.IsAny<int>(), It.IsAny<List<string>>(), It.IsAny<bool>())).Returns(Task.FromResult(testData[0]));
 
             unitOfWorkMock = new Mock<IUnitOfWork>();
-            unitOfWorkMock.Setup(u => u.GetRepository<T>()).Returns(repositoryMock.Object);
-            unitOfWorkMock.Setup(u => u.Save()).Returns(1);
+            unitOfWorkMock.Setup(u => u.GetRepository<T>()).Returns(Task.FromResult(repositoryMock.Object));
+            unitOfWorkMock.Setup(u => u.Save()).Returns(Task.FromResult(1));
             process = new BaseProcess<T>(unitOfWorkMock.Object);
         }
 
-        protected void getById_TestHelper()
+        protected async Task getById_TestHelper()
         {
-            var result = process.GetById(1);
+            var result = await process.GetById(1);
 
             Assert.AreEqual(1, result.Id);
         }
 
-        protected void getAll_Defaults_TestHelper()
+        protected async Task getAll_Defaults_TestHelper()
         {
-            var result = process.GetAll();
+            var result = await process.GetAll();
 
             Assert.AreEqual(4, result.Count);
             Assert.AreEqual(1, result[0].Id);
@@ -53,39 +55,39 @@ namespace MagicHamster.GrocerySamurai.BusinessLayer.UnitTest.Common
             Assert.AreEqual(4, result[3].Id);
         }
 
-        protected void getAll_PageSize_TestHelper()
+        protected async Task getAll_PageSize_TestHelper()
         {
             const int pageSize = 2;
 
-            var result = process.GetAll(null, null, pageSize);
+            var result = await process.GetAll(null, null, pageSize);
 
             Assert.Greater(result.Count, 0);
             Assert.LessOrEqual(pageSize, result.Count);
         }
 
-        protected void addRecord_TestHelper()
+        protected async Task addRecord_TestHelper()
         {
             var newRecord = new T();
-            process.AddRecord(newRecord);
-            var result = process.Save();
+            await process.AddRecord(newRecord);
+            var result = await process.Save();
 
             Assert.AreEqual(1, result);
         }
 
-        protected void updateRecord_TestHelper()
+        protected async Task updateRecord_TestHelper()
         {
-            var entity = process.GetAll(pageSize: 1).First();
-            process.UpdateRecord(entity);
-            var result = process.Save();
+            var entity = (await process.GetAll(pageSize: 1)).First();
+            await process.UpdateRecord(entity);
+            var result = await process.Save();
 
             Assert.AreEqual(1, result);
         }
 
-        protected void deleteRecord_TestHelper()
+        protected async Task deleteRecord_TestHelper()
         {
-            var entity = process.GetAll(pageSize: 1).First();
-            process.DeleteRecord(entity.Id);
-            var result = process.Save();
+            var entity = (await process.GetAll(pageSize: 1)).First();
+            await process.DeleteRecord(entity.Id);
+            var result = await process.Save();
 
             Assert.AreEqual(1, result);
         }

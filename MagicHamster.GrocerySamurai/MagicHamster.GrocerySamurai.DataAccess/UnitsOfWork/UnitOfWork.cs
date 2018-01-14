@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using MagicHamster.GrocerySamurai.DataAccess.Interfaces;
 using MagicHamster.GrocerySamurai.DataAccess.Repositories;
 using MagicHamster.GrocerySamurai.Model.Common;
@@ -16,6 +18,8 @@ namespace MagicHamster.GrocerySamurai.DataAccess.UnitsOfWork
 
         private readonly Dictionary<Type, object> _repositories;
         private readonly Stack<IDbContextTransaction> _transactions = new Stack<IDbContextTransaction>();
+        private readonly CancellationTokenSource _disposeCts = new CancellationTokenSource();
+
 
         public UnitOfWork(DbContext context, bool autoCommit = true)
         {
@@ -24,51 +28,59 @@ namespace MagicHamster.GrocerySamurai.DataAccess.UnitsOfWork
             _repositories = new Dictionary<Type, object>();
         }
 
-        public IRepository<T> GetRepository<T>()
+        public Task<IRepository<T>> GetRepository<T>()
             where T : Entity
         {
             if (!_repositories.ContainsKey(typeof(T)))
             {
                 _repositories[typeof(T)] = new Repository<T>(Context);
             }
-            return (IRepository<T>) _repositories[typeof(T)];
+            return Task.FromResult((IRepository<T>) _repositories[typeof(T)]);
         }
 
-        public void Commit()
+        public Task Commit()
         {
             if (_transactions.Count > 0)
             {
                 _transactions.Pop().Commit();
             }
+
+            return Task.CompletedTask;
         }
 
-        public void Rollback()
+        public Task Rollback()
         {
             if (_transactions.Count > 0)
             {
                 _transactions.Pop().Rollback();
             }
+
+            return Task.CompletedTask;
         }
 
-        public void CommitAll()
+        public Task CommitAll()
         {
             while (_transactions.Count > 0)
             {
                 Commit();
             }
+
+            return Task.CompletedTask;
         }
 
-        public void RollbackAll()
+        public Task RollbackAll()
         {
             while (_transactions.Count > 0)
             {
                 Rollback();
             }
+
+            return Task.CompletedTask;
         }
 
-        public int Save()
+        public async Task<int> Save()
         {
-            return Context.SaveChanges();
+            return await Context.SaveChangesAsync(_disposeCts.Token);
         }
 
         public void Dispose()
@@ -90,6 +102,7 @@ namespace MagicHamster.GrocerySamurai.DataAccess.UnitsOfWork
                 }
             }
 
+            _disposeCts.Cancel();
             Context.Dispose();
         }
     }

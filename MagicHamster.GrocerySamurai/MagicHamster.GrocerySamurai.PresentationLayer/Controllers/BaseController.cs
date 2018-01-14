@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+#pragma warning disable 1998
 
 namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
 {
@@ -21,13 +22,13 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
     public abstract class BaseController<T> : Controller, IBaseController<T>
         where T : Entity, new()
     {
-        private readonly string defaultType = typeof(T).Name;
+        private readonly string _defaultType = typeof(T).Name;
 
-        private string userId;
+        private string _userId;
 
-        public string UserId => userId ?? (userId = getUserId());
+        public string UserId => _userId ?? (_userId = getUserId());
 
-        private INavigationHelper navigationHelper;
+        private INavigationHelper _navigationHelper;
 
         public INavigationHelper NavigationHelper
         {
@@ -36,27 +37,27 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
                 var json = HttpContext.Session.GetString("NavigationHelper");
                 if (json == null)
                 {
-                    navigationHelper = new NavigationHelper.NavigationHelper();
+                    _navigationHelper = new NavigationHelper.NavigationHelper();
                     saveNavigationHelper();
                 }
-                else if (navigationHelper == null)
+                else if (_navigationHelper == null)
                 {
-                    navigationHelper = GrocerySamurai.NavigationHelper.NavigationHelper.FromJson(json);
+                    _navigationHelper = GrocerySamurai.NavigationHelper.NavigationHelper.FromJson(json);
                 }
 
-                return navigationHelper;
+                return _navigationHelper;
             }
         }
 
         private void saveNavigationHelper()
         {
-            var json = navigationHelper.ToJson();
+            var json = _navigationHelper.ToJson();
             HttpContext.Session.SetString("NavigationHelper", json);
         }
 
         protected async Task<object> indexHelper(List<string> parameters = null, string actionSuffix = null, string controllerType = null)
         {
-            var type = controllerType ?? defaultType;
+            var type = controllerType ?? _defaultType;
 
             var args = UserId;
             if (parameters != null)
@@ -66,7 +67,7 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
             var url = $"{type}/GetAll{actionSuffix}/{args}";
 
             var response = WebApiHelper.GetWebApiResponseAsHttpResponseMessage(url);
-            var responseData = await response.Result.Content.ReadAsStringAsync();
+            var responseData = await (await response).Content.ReadAsStringAsync();
 
             if (!response.Result.IsSuccessStatusCode)
             {
@@ -82,17 +83,17 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
             return records;
         }
 
-        protected object detailsHelper(List<string> parameters = null, string actionSuffix = null)
+        protected async Task<object> detailsHelper(List<string> parameters = null, string actionSuffix = null)
         {
             var args = "";
             if (parameters != null)
             {
                 args = String.Join("/", parameters.ToArray());
             }
-            var url = $"{defaultType}/GetAll{actionSuffix}/{args}";
+            var url = $"{_defaultType}/GetAll{actionSuffix}/{args}";
 
             var response = WebApiHelper.GetWebApiResponseAsHttpResponseMessage(url);
-            var responseData = response.Result.Content.ReadAsStringAsync().Result;
+            var responseData = await (await response).Content.ReadAsStringAsync();
 
             if (!response.Result.IsSuccessStatusCode)
             {
@@ -130,7 +131,7 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
                 return View(item);
             }
 
-            var url = $"{defaultType}/Add";
+            var url = $"{_defaultType}/Add";
 
             return await processAction(item, url, true);
         }
@@ -142,7 +143,7 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
             var response = doPost ? 
                 WebApiHelper.PostWebApiResponseAsHttpResponseMessage(url, item) : 
                 WebApiHelper.PutWebApiResponseAsHttpResponseMessage(url, item);
-            var responseData = await response.Result.Content.ReadAsStringAsync();
+            var responseData = await (await response).Content.ReadAsStringAsync();
 
             if (response.Result.IsSuccessStatusCode)
             {
@@ -174,10 +175,10 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
                 return new BadRequestResult();
             }
 
-            var actionUrl = $"{defaultType}/Get/{id}";
+            var actionUrl = $"{_defaultType}/Get/{id}";
 
             var response = WebApiHelper.GetWebApiResponseAsHttpResponseMessage(actionUrl);
-            var responseData = await response.Result.Content.ReadAsStringAsync();
+            var responseData = await (await response).Content.ReadAsStringAsync();
 
             if (!response.Result.IsSuccessStatusCode)
             {
@@ -198,7 +199,7 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
                 return View(item);
             }
 
-            var url = $"{defaultType}/Update";
+            var url = $"{_defaultType}/Update";
 
             return await processAction(item, url, false);
         }
@@ -210,10 +211,10 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
                 return new BadRequestResult();
             }
 
-            var url = $"{defaultType}/Delete/{id}";
+            var url = $"{_defaultType}/Delete/{id}";
 
             var response = WebApiHelper.DeleteWebApiResponseAsHttpResponseMessage(url);
-            await response.Result.Content.ReadAsStringAsync();
+            await (await response).Content.ReadAsStringAsync();
 
             if (!response.Result.IsSuccessStatusCode)
             {

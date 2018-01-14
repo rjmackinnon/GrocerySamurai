@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Linq;
+using System.Linq.Expressions;
+using System.Threading.Tasks;
 using MagicHamster.GrocerySamurai.DataAccess.Interfaces;
 using MagicHamster.GrocerySamurai.DataAccess.UnitsOfWork;
 using MagicHamster.GrocerySamurai.Model;
@@ -13,24 +15,22 @@ namespace MagicHamster.GrocerySamurai.DataAccess.UnitTest.Common
     public abstract class EntityRepositoryTest<T>
         where T : Entity, new()
     {
-        protected IUnitOfWork unitOfWork;
-
-        protected IRepository<T> repository;
+        private IUnitOfWork _unitOfWork;
+        private IRepository<T> _repository;
+        private DbContextOptions<GroceryContext> _options;
 
         protected Action<T> updateAction;
 
-        private DbContextOptions<GroceryContext> options;
-
         [SetUp]
-        public virtual void Init()
+        public async Task InitAsync()
         {
-            options = new DbContextOptionsBuilder<GroceryContext>()
+            _options = new DbContextOptionsBuilder<GroceryContext>()
                 .UseInMemoryDatabase(Guid.NewGuid().ToString())
                 .Options;
 
-            var context = new GroceryContext(options);
-            unitOfWork = new UnitOfWork(context);
-            repository = unitOfWork.GetRepository<T>();
+            var context = new GroceryContext(_options);
+            _unitOfWork = new UnitOfWork(context);
+            _repository = await _unitOfWork.GetRepository<T>();
 
             var testData = Enumerable.Range(1, 4).Select(e => new T {Id = e}).ToList();
 
@@ -40,24 +40,24 @@ namespace MagicHamster.GrocerySamurai.DataAccess.UnitTest.Common
         }
 
         [TearDown]
-        public virtual void TearDown()
+        public async Task TearDown()
         {
-            using (var context = new GroceryContext(options))
+            using (var context = new GroceryContext(_options))
             {
-                context.Database.EnsureDeleted();
+                await context.Database.EnsureDeletedAsync();
             }
         }
 
-        protected void get_ById_TestHelper()
+        protected async Task get_ById_TestHelper()
         {
-            var result = repository.Get(1);
+            var result = await _repository.Get(1);
 
             Assert.AreEqual(1, result.Id);
         }
 
-        protected void get_ByCriteria_All_TestHelper()
+        protected async Task get_ByCriteria_All_TestHelper()
         {
-            var result = repository.Get(r => true);
+            var result = await _repository.Get(r => true);
 
             Assert.AreEqual(4, result.ToList().Count);
             Assert.AreEqual(1, result.ToList()[0].Id);
@@ -66,160 +66,153 @@ namespace MagicHamster.GrocerySamurai.DataAccess.UnitTest.Common
             Assert.AreEqual(4, result.ToList()[3].Id);
         }
 
-        protected void get_ByCriteria_Single_TestHelper()
+        protected async Task get_ByCriteria_Single_TestHelper()
         {
-            var result = repository.Get(r => r.Id == 1).FirstOrDefault();
+            var result = (await _repository.Get(r => r.Id == 1)).FirstOrDefault();
 
             Assert.AreEqual(1, result?.Id);
         }
 
-        protected void add_ByEntity_TestHelper()
+        protected async Task add_ByEntity_TestHelper()
         {
-            var maxId = repository.Get().Max(r => r.Id);
+            var maxId = (await _repository.Get()).Max(r => r.Id);
             var newRecord = new T{ Id = ++maxId};
 
-            repository.Add(newRecord);
+            await _repository.Add(newRecord);
 
-            var result = unitOfWork.Save();
+            var result = await _unitOfWork.Save();
 
             Assert.AreEqual(1, result);
         }
 
-        protected void add_ByEntities_TestHelper()
+        protected async Task add_ByEntities_TestHelper()
         {
-            var maxId = repository.Get().Max(r => r.Id);
+            var maxId = (await _repository.Get()).Max(r => r.Id);
             var newEntities = Enumerable.Range(1, 10).Select(e => new T{Id = ++maxId}).ToList();
 
-            repository.Add(newEntities);
+            await _repository.Add(newEntities);
 
-            var result = unitOfWork.Save();
+            var result = await _unitOfWork.Save();
 
             Assert.AreEqual(10, result);
         }
 
-        protected void update_ByEntity_TestHelper()
+        protected async Task update_ByEntity_TestHelper()
         {
-            var entity = repository.Get().First();
+            var entity = (await _repository.Get()).First();
 
             updateAction(entity);
 
-            repository.Update(entity);
+            await _repository.Update(entity);
 
-            var result = unitOfWork.Save();
+            var result = await _unitOfWork.Save();
 
-            var check = repository.Get(entity.Id);
+            var check = await _repository.Get(entity.Id);
 
             Assert.AreEqual(entity, check);
             Assert.AreEqual(1, result);
         }
 
-        protected void update_ById_TestHelper()
+        protected async Task update_ById_TestHelper()
         {
-            var entity = repository.Get().First();
+            var entity = (await _repository.Get()).First();
 
             updateAction(entity);
 
-            repository.Update(entity.Id);
+            await _repository.Update(entity.Id);
 
-            var result = unitOfWork.Save();
+            var result = await _unitOfWork.Save();
 
-            var check = repository.Get(entity.Id);
+            var check = await _repository.Get(entity.Id);
 
             Assert.AreEqual(entity, check);
             Assert.AreEqual(1, result);
         }
 
-        protected void update_ByEntities_TestHelper()
+        protected async Task update_ByEntities_TestHelper()
         {
-            bool criteria(T record) => record.Id == (int)Math.Floor(record.Id / 2.0);
-
-            var entities = repository.Get(criteria);
+            var entities = await _repository.Get(r => r.Id == (int)Math.Floor(r.Id / 2.0));
 
             entities.ToList().ForEach(updateAction);
 
-            repository.Update(entities);
+            await _repository.Update(entities);
 
-            var result = unitOfWork.Save();
+            var result = await _unitOfWork.Save();
 
-            var check = repository.Get(criteria);
+            var check = await _repository.Get(r => r.Id == (int)Math.Floor(r.Id / 2.0));
 
             Assert.IsTrue(entities.All(e => e == check.FirstOrDefault(c => c.Id == e.Id)));
             Assert.AreEqual(result, check.ToList().Count);
         }
 
-        protected void update_ByCriteria_TestHelper()
+        protected async Task update_ByCriteria_TestHelper()
         {
-            bool criteria(T record) => record.Id != (int)Math.Floor(record.Id / 2.0);
-            var entities = repository.Get(criteria);
+            var entities = await _repository.Get(r => r.Id != (int)Math.Floor(r.Id / 2.0));
 
             entities.ToList().ForEach(updateAction);
 
-            repository.Update(criteria);
+            await _repository.Update(r => r.Id != (int)Math.Floor(r.Id / 2.0));
 
-            var result = unitOfWork.Save();
+            var result = await _unitOfWork.Save();
 
-            var check = repository.Get(criteria);
+            var check = await _repository.Get(r => r.Id != (int)Math.Floor(r.Id / 2.0));
 
             Assert.IsTrue(entities.All(e => e == check.FirstOrDefault(c => c.Id == e.Id)));
             Assert.AreEqual(result, check.ToList().Count);
         }
 
-        protected void delete_ByEntity_TestHelper()
+        protected async Task delete_ByEntity_TestHelperAsync()
         {
-            var entity = repository.Get().First();
+            var entity = (await _repository.Get()).First();
 
-            repository.Delete(entity);
+            await _repository.Delete(entity);
 
-            var result = unitOfWork.Save();
+            var result = await _unitOfWork.Save();
 
-            var check = repository.Get(entity.Id);
+            var check = await _repository.Get(entity.Id);
 
             Assert.AreEqual(1, result);
             Assert.IsNull(check);
         }
 
-        protected void delete_ById_TestHelper()
+        protected async Task delete_ById_TestHelper()
         {
-            var id = repository.Get().First().Id;
+            var id = (await _repository.Get()).First().Id;
 
-            repository.Delete(id);
+            await _repository.Delete(id);
 
-            var result = unitOfWork.Save();
+            var result = await _unitOfWork.Save();
 
-            var check = repository.Get(id);
+            var check = await _repository.Get(id);
 
             Assert.AreEqual(1, result);
             Assert.IsNull(check);
         }
 
-        protected void delete_ByEntities_TestHelper()
+        protected async Task delete_ByEntities_TestHelper()
         {
-            bool criteria(T record) => record.Id == (int)Math.Floor(record.Id / 2.0);
+            var entities = await _repository.Get(r => r.Id == (int)Math.Floor(r.Id / 2.0));
 
-            var entities = repository.Get(criteria);
+            await _repository.Delete(entities);
 
-            repository.Delete(entities);
+            var result = await _unitOfWork.Save();
 
-            var result = unitOfWork.Save();
-
-            var check = repository.Get(criteria);
+            var check = await _repository.Get(r => r.Id == (int)Math.Floor(r.Id / 2.0));
 
             Assert.AreEqual(result, entities.ToList().Count);
             Assert.IsEmpty(check);
         }
 
-        protected void delete_ByCriteria_TestHelper()
+        protected async Task delete_ByCriteria_TestHelper()
         {
-            bool criteria(T record) => record.Id != (int)Math.Floor(record.Id / 2.0);
-
-            var entities = repository.Get(criteria).ToList();
+            var entities = (await _repository.Get(r => r.Id != (int)Math.Floor(r.Id / 2.0))).ToList();
             var numRecords = entities.Count;
 
-            repository.Delete(criteria);
+            await _repository.Delete(r => r.Id != (int)Math.Floor(r.Id / 2.0));
 
-            var result = unitOfWork.Save();
+            var result = await _unitOfWork.Save();
 
-            var check = repository.Get(criteria);
+            var check = await _repository.Get(r => r.Id != (int)Math.Floor(r.Id / 2.0));
 
             Assert.AreEqual(result, numRecords);
             Assert.IsEmpty(check);

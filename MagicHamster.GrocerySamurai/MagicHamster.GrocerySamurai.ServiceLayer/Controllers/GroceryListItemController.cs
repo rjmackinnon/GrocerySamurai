@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using MagicHamster.GrocerySamurai.BusinessLayer.Interfaces;
 using MagicHamster.GrocerySamurai.Model.Entities;
 using Microsoft.AspNetCore.Mvc;
@@ -15,37 +16,37 @@ namespace MagicHamster.GrocerySamurai.ServiceLayer.Controllers
 
         // GET: api/GroceryListItem/GetAll
         [HttpGet("GetAll")]
-        public override IActionResult GetAll(string userId = null, int? pageSize = 0)
+        public override async Task<IActionResult> GetAll(string userId = null, int? pageSize = 0)
         {
-            return getAllHelper(e=> e.Id, pageSize);
+            return await getAllHelper(e=> e.Id, pageSize);
         }
 
         // GET: api/GroceryListItem/Get/1
         [HttpGet("{id:int}")]
-        public override IActionResult Get(int? id)
+        public override async Task<IActionResult> Get(int? id)
         {
-            return getHelper(id);
+            return await getHelper(id);
         }
 
         // POST: api/GroceryListItem/Add
         [HttpPost("Add")]
-        public override IActionResult Add([FromBody]GroceryListItem record)
+        public override async Task<IActionResult> Add([FromBody]GroceryListItem record)
         {
-            return addHelper(record);
+            return await addHelper(record);
         }
 
         // PUT: api/GroceryListItem/Update
         [HttpPut("Update")]
-        public override IActionResult Update([FromBody]GroceryListItem record)
+        public override async Task<IActionResult> Update([FromBody]GroceryListItem record)
         {
-            return updateHelper(record);
+            return await updateHelper(record);
         }
 
         // DELETE: api/GroceryListItem/Delete
         [HttpDelete("{id:int}")]
-        public override IActionResult Delete(int id)
+        public override async Task<IActionResult> Delete(int id)
         {
-            return deleteHelper(id);
+            return await deleteHelper(id);
         }
     }
 }

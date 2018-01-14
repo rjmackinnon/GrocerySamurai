@@ -1,4 +1,5 @@
-﻿using MagicHamster.GrocerySamurai.Model.Common;
+﻿using System.Threading.Tasks;
+using MagicHamster.GrocerySamurai.Model.Common;
 using Microsoft.EntityFrameworkCore;
 
 namespace MagicHamster.GrocerySamurai.DataAccess.Interfaces
@@ -8,13 +9,13 @@ namespace MagicHamster.GrocerySamurai.DataAccess.Interfaces
         DbContext Context { get; }
         bool AutoCommit { get; set; }
 
-        IRepository<T> GetRepository<T>()
+        Task<IRepository<T>> GetRepository<T>()
             where T : Entity;
 
-        void Commit();
-        void Rollback();
-        void CommitAll();
-        void RollbackAll();
-        int Save();
+        Task Commit();
+        Task Rollback();
+        Task CommitAll();
+        Task RollbackAll();
+        Task<int> Save();
     }
 }

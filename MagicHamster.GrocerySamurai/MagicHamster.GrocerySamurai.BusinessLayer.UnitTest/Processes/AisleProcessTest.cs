@@ -1,4 +1,5 @@
-﻿using MagicHamster.GrocerySamurai.BusinessLayer.UnitTest.Common;
+﻿using System.Threading.Tasks;
+using MagicHamster.GrocerySamurai.BusinessLayer.UnitTest.Common;
 using MagicHamster.GrocerySamurai.Model.Entities;
 using NUnit.Framework;
 
@@ -8,51 +9,51 @@ namespace MagicHamster.GrocerySamurai.BusinessLayer.UnitTest.Processes
     public class AisleProcessTest : BaseUserFilterProcessTest<Aisle>
     {
         [Test]
-        public void GetById_AisleProcess_Test()
+        public async Task GetById_AisleProcess_Test()
         {
-            getById_TestHelper();
+            await getById_TestHelper();
         }
 
         [Test]
-        public void GetAll_Defaults_AisleProcess_Test()
+        public async Task GetAll_Defaults_AisleProcess_Test()
         {
-            getAll_Defaults_TestHelper();
+            await getAll_Defaults_TestHelper();
         }
 
         [Test]
-        public void GetAll_PageSize_AisleProcess_Test()
+        public async Task GetAll_PageSize_AisleProcess_Test()
         {
-            getAll_PageSize_TestHelper();
+            await getAll_PageSize_TestHelper();
         }
 
         [Test]
-        public void GetAllByUser_Defaults_AisleProcess_Test()
+        public async Task GetAllByUser_Defaults_AisleProcess_Test()
         {
-            getAllByUser_Defaults_TestHelper();
+            await getAllByUser_Defaults_TestHelper();
         }
 
         [Test]
-        public void GetAllByUser_PageSize_AisleProcess_Test()
+        public async Task GetAllByUser_PageSize_AisleProcess_Test()
         {
-            getAllByUser_PageSize_TestHelper();
+            await getAllByUser_PageSize_TestHelper();
         }
 
         [Test]
-        public void AddRecord_AisleProcess_Test()
+        public async Task AddRecord_AisleProcess_Test()
         {
-            addRecord_TestHelper();
+            await addRecord_TestHelper();
         }
 
         [Test]
-        public void UpdateRecord_AisleProcess_Test()
+        public async Task UpdateRecord_AisleProcess_Test()
         {
-            updateRecord_TestHelper();
+            await updateRecord_TestHelper();
         }
 
         [Test]
-        public void DeleteRecord_AisleProcess_Test()
+        public async Task DeleteRecord_AisleProcess_Test()
         {
-            deleteRecord_TestHelper();
+            await deleteRecord_TestHelper();
         }
     }
 }

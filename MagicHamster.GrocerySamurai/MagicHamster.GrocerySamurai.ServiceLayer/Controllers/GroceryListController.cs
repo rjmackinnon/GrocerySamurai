@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Threading.Tasks;
 using MagicHamster.GrocerySamurai.BusinessLayer.Interfaces;
 using MagicHamster.GrocerySamurai.BusinessLayer.Processes;
 using MagicHamster.GrocerySamurai.Model.Entities;
@@ -18,14 +19,14 @@ namespace MagicHamster.GrocerySamurai.ServiceLayer.Controllers
 
         // GET: api/GroceryList/GetAll
         [HttpGet("GetAll")]
-        public override IActionResult GetAll(string userId = null, int? pageSize = 0)
+        public override async Task<IActionResult> GetAll(string userId = null, int? pageSize = 0)
         {
-            return getAllHelper(e=> e.Id, pageSize);
+            return await getAllHelper(e=> e.Id, pageSize);
         }
 
         // GET: api/GroceryList/GetAllByStore
         [HttpGet("GetAllByStore/{storeId:int}")]
-        public IActionResult GetAllByStore(int? storeId = null, int? pageSize = 0)
+        public async Task<IActionResult> GetAllByStore(int? storeId = null, int? pageSize = 0)
         {
             if (storeId == null)
             {
@@ -34,7 +35,7 @@ namespace MagicHamster.GrocerySamurai.ServiceLayer.Controllers
 
             try
             {
-                var data = ((GroceryListProcess)BusinessProcess).GetAllByStore(storeId.Value, e => e.Id, childProperties, pageSize ?? 0);
+                var data = await((GroceryListProcess)BusinessProcess).GetAllByStore(storeId.Value, e => e.Id, childProperties, pageSize ?? 0);
                 return Ok(data);
             }
             catch (Exception ex)
@@ -45,30 +46,30 @@ namespace MagicHamster.GrocerySamurai.ServiceLayer.Controllers
 
         // GET: api/GroceryList/Get/1
         [HttpGet("{id:int}")]
-        public override IActionResult Get(int? id)
+        public override async Task<IActionResult> Get(int? id)
         {
-            return getHelper(id);
+            return await getHelper(id);
         }
 
         // POST: api/GroceryList/Add
         [HttpPost("Add")]
-        public override IActionResult Add([FromBody]GroceryList record)
+        public override async Task<IActionResult> Add([FromBody]GroceryList record)
         {
-            return addHelper(record);
+            return await addHelper(record);
         }
 
         // PUT: api/GroceryList/Update
         [HttpPut("Update")]
-        public override IActionResult Update([FromBody]GroceryList record)
+        public override async Task<IActionResult> Update([FromBody]GroceryList record)
         {
-            return updateHelper(record);
+            return await updateHelper(record);
         }
 
         // DELETE: api/GroceryList/Delete
         [HttpDelete("{id:int}")]
-        public override IActionResult Delete(int id)
+        public override async Task<IActionResult> Delete(int id)
         {
-            return deleteHelper(id);
+            return await deleteHelper(id);
         }
     }
 }

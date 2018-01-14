@@ -14,99 +14,99 @@ namespace MagicHamster.GrocerySamurai.ServiceLayer.UnitTest.Controllers
         }
 
         [Test]
-        public void Get_ItemController_Test()
+        public async System.Threading.Tasks.Task Get_ItemController_TestAsync()
         {
-            getTestHelper();
+            await getTestHelper();
         }
 
         [Test]
-        public void Get_Null_ItemController_Test()
+        public async System.Threading.Tasks.Task Get_Null_ItemController_TestAsync()
         {
-            getNullTestHelper();
+            await getNullTestHelper();
         }
 
         [Test]
-        public void Get_Exception_ItemController_Test()
+        public async System.Threading.Tasks.Task Get_Exception_ItemController_TestAsync()
         {
-            getExceptionTestHelper();
+            await getExceptionTestHelper();
         }
 
         [Test]
-        public void GetAll_Defaults_ItemController_Test()
+        public async System.Threading.Tasks.Task GetAll_Defaults_ItemController_TestAsync()
         {
-            getAllDefaultsTestHelper();
+            await getAllDefaultsTestHelper();
         }
 
         [Test]
-        public void GetAll_PageSize_ItemController_Test()
+        public async System.Threading.Tasks.Task GetAll_PageSize_ItemController_TestAsync()
         {
-            getAllPageSizeTestHelper();
+            await getAllPageSizeTestHelper();
         }
 
         [Test]
-        public void GetAll_Exception_ItemController_Test()
+        public async System.Threading.Tasks.Task GetAll_Exception_ItemController_TestAsync()
         {
-            getAllExceptionTestHelper();
+            await getAllExceptionTestHelper();
         }
 
         [Test]
-        public void GetAll_NullUser_ItemController_Test()
+        public async System.Threading.Tasks.Task GetAll_NullUser_ItemController_TestAsync()
         {
-            getAllNoUserTestHelper();
+            await getAllNoUserTestHelper();
         }
 
         [Test]
-        public void Add_ItemController_Test()
+        public async System.Threading.Tasks.Task Add_ItemController_TestAsync()
         {
-            addTestHelper();
+            await addTestHelper();
         }
 
         [Test]
-        public void Add_NotInserted_ItemController_Test()
+        public async System.Threading.Tasks.Task Add_NotInserted_ItemController_TestAsync()
         {
-            addNotInsertedTestHelper();
+            await addNotInsertedTestHelper();
         }
 
         [Test]
-        public void Add_Exception_ItemController_Test()
+        public async System.Threading.Tasks.Task Add_Exception_ItemController_TestAsync()
         {
-            addExceptionTestHelper();
+            await addExceptionTestHelper();
         }
 
         [Test]
-        public void Update_ItemController_Test()
+        public async System.Threading.Tasks.Task Update_ItemController_TestAsync()
         {
-            updateTestHelper();
+            await updateTestHelper();
         }
 
         [Test]
-        public void Update_NotUpdated_ItemController_Test()
+        public async System.Threading.Tasks.Task Update_NotUpdated_ItemController_TestAsync()
         {
-            updateNotUpdatedTestHelper();
+            await updateNotUpdatedTestHelper();
         }
 
         [Test]
-        public void Update_Exception_ItemController_Test()
+        public async System.Threading.Tasks.Task Update_Exception_ItemController_TestAsync()
         {
-            updateExceptionTestHelper();
+            await updateExceptionTestHelper();
         }
 
         [Test]
-        public void Delete_ItemController_Test()
+        public async System.Threading.Tasks.Task Delete_ItemController_TestAsync()
         {
-            deleteTestHelper();
+            await deleteTestHelper();
         }
 
         [Test]
-        public void Delete_NotDeleted_ItemController_Test()
+        public async System.Threading.Tasks.Task Delete_NotDeleted_ItemController_TestAsync()
         {
-            deleteNotDeletedTestHelper();
+            await deleteNotDeletedTestHelper();
         }
 
         [Test]
-        public void Delete_Exception_ItemController_Test()
+        public async System.Threading.Tasks.Task Delete_Exception_ItemController_TestAsync()
         {
-            deleteExceptionTestHelper();
+            await deleteExceptionTestHelper();
         }
     }
 }

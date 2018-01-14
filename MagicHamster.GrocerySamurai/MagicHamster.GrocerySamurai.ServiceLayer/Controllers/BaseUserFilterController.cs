@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Linq.Expressions;
 using System.Net;
+using System.Threading.Tasks;
 using MagicHamster.GrocerySamurai.BusinessLayer.Interfaces;
 using MagicHamster.GrocerySamurai.Model.Common;
 using Microsoft.AspNetCore.Mvc;
@@ -13,7 +15,7 @@ namespace MagicHamster.GrocerySamurai.ServiceLayer.Controllers
         {
         }
 
-        protected IActionResult getAllHelper(string userId, Func<T, object> orderBy, int? pageSize)
+        protected async Task<IActionResult> getAllHelper(string userId, Expression<Func<T, object>> orderBy, int? pageSize)
         {
             if (userId == null)
             {
@@ -22,7 +24,7 @@ namespace MagicHamster.GrocerySamurai.ServiceLayer.Controllers
 
             try
             {
-                var data = ((IBaseUserFilterProcess<T>)BusinessProcess).GetAllByUser(userId, orderBy, childProperties, pageSize ?? 0);
+                var data = await ((IBaseUserFilterProcess<T>)BusinessProcess).GetAllByUser(userId, orderBy, childProperties, pageSize ?? 0);
                 return Ok(data);
             }
             catch (Exception ex)

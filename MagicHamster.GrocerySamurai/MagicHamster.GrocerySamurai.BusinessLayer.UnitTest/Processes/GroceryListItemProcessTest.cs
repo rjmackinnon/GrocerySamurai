@@ -1,4 +1,5 @@
-﻿using MagicHamster.GrocerySamurai.BusinessLayer.UnitTest.Common;
+﻿using System.Threading.Tasks;
+using MagicHamster.GrocerySamurai.BusinessLayer.UnitTest.Common;
 using MagicHamster.GrocerySamurai.Model.Entities;
 using NUnit.Framework;
 
@@ -8,39 +9,39 @@ namespace MagicHamster.GrocerySamurai.BusinessLayer.UnitTest.Processes
     public class GroceryListItemProcessTest : BaseProcessTest<GroceryListItem>
     {
         [Test]
-        public void GetById_GroceryListItemProcess_Test()
+        public async Task GetById_GroceryListItemProcess_Test()
         {
-            getById_TestHelper();
+            await getById_TestHelper();
         }
 
         [Test]
-        public void GetAll_Defaults_GroceryListItemProcess_Test()
+        public async Task GetAll_Defaults_GroceryListItemProcess_Test()
         {
-            getAll_Defaults_TestHelper();
+            await getAll_Defaults_TestHelper();
         }
 
         [Test]
-        public void GetAll_PageSize_GroceryListItemProcess_Test()
+        public async Task GetAll_PageSize_GroceryListItemProcess_Test()
         {
-            getAll_PageSize_TestHelper();
+            await getAll_PageSize_TestHelper();
         }
 
         [Test]
-        public void AddRecord_GroceryListItemProcess_Test()
+        public async Task AddRecord_GroceryListItemProcess_Test()
         {
-            addRecord_TestHelper();
+            await addRecord_TestHelper();
         }
 
         [Test]
-        public void UpdateRecord_GroceryListItemProcess_Test()
+        public async Task UpdateRecord_GroceryListItemProcess_Test()
         {
-            updateRecord_TestHelper();
+            await updateRecord_TestHelper();
         }
 
         [Test]
-        public void DeleteRecord_GroceryListItemProcess_Test()
+        public async Task DeleteRecord_GroceryListItemProcess_Test()
         {
-            deleteRecord_TestHelper();
+            await deleteRecord_TestHelper();
         }
     }
 }
