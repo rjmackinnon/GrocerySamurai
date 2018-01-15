@@ -20,7 +20,7 @@ namespace MagicHamster.GrocerySamurai.ServiceLayer.Controllers
         }
 
         // GET: api/Aisle/Get/1
-        [HttpGet("{id:int}")]
+        [HttpGet("{id:int}", Name = "GetAisle")]
         public override async Task<IActionResult> Get(int? id)
         {
             return await getHelper(id);

@@ -73,7 +73,7 @@ namespace MagicHamster.GrocerySamurai.ServiceLayer.Controllers
                 await BusinessProcess.AddRecord(record);
                 var result = await BusinessProcess.Save();
 
-                return result == 1 ? Ok($"{typeof(T).Name} was successfully inserted.") :
+                return result == 1 ? CreatedAtRoute($"Get{typeof(T).Name}", new {id = record.Id}, record) :
                     StatusCode((int)HttpStatusCode.NotModified, $"No {typeof(T).Name} data was inserted.");
             }
             catch (Exception ex)
