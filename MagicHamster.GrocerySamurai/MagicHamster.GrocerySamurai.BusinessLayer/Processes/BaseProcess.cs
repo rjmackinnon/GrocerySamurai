@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using MagicHamster.GrocerySamurai.BusinessLayer.Interfaces;
 using MagicHamster.GrocerySamurai.DataAccess.Interfaces;
 using MagicHamster.GrocerySamurai.Model.Common;
-using Microsoft.EntityFrameworkCore;
 
 namespace MagicHamster.GrocerySamurai.BusinessLayer.Processes
 {
@@ -38,7 +37,7 @@ namespace MagicHamster.GrocerySamurai.BusinessLayer.Processes
             {
                 result = result.OrderBy(orderBy);
             }
-            return pageSize <= 0 ? await result.ToListAsync() : await result.Take(pageSize).ToListAsync();
+            return pageSize <= 0 ? result.ToList() : result.Take(pageSize).ToList();
         }
 
         internal virtual async Task<IQueryable> getAsQueryble(Expression<Func<T, bool>> criteria, 

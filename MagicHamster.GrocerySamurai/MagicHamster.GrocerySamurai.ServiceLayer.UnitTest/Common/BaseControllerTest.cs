@@ -120,10 +120,10 @@ namespace MagicHamster.GrocerySamurai.ServiceLayer.UnitTest.Common
             baseProcessMock.Setup(x => x.Save()).Returns(Task.FromResult(1));
 
             var results = await controller.Add(_newRecord);
-            var resultData = results as OkObjectResult;
+            var resultData = results as CreatedAtRouteResult;
 
             Assert.IsNotNull(resultData);
-            Assert.AreEqual($"{typeof(T).Name} was successfully inserted.", resultData.Value);
+            Assert.AreEqual(_newRecord, resultData.Value);
         }
 
         protected async Task addNotInsertedTestHelper()
