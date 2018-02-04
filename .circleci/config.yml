@@ -1,0 +1,24 @@
+version: 2
+jobs:
+  build:
+    working_directory: /temp
+    docker:
+      - image: microsoft/dotnet:2.0-sdk
+    environment:
+      DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
+      DOTNET_CLI_TELEMETRY_OPTOUT: 1
+    steps:
+      - checkout
+      - run: 
+          name: test
+          command: |
+            dotnet restore
+            cd PRANxt.HelloWorld.Test
+            dotnet restore
+            dotnet xunit -xml /tmp/test-results/junit.xml -fxversion 2.0.4
+      # collect reports
+      - store_test_results:
+          path: /tmp/test-results
+      - store_artifacts:
+          path: /tmp/test-results
+          destination: test-results

@@ -1,0 +1,15 @@
+version: '3'
+
+services:
+  magichamster.grocerysamurai.servicelayer:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "51992:80"
+
+  magichamster.grocerysamurai.presentationlayer:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "51993:80"
+

@@ -4,6 +4,7 @@
     <TargetFramework>netcoreapp2.0</TargetFramework>
     <PreserveCompilationContext>true</PreserveCompilationContext>
     <UserSecretsId>aspnet-MagicHamster.GrocerySamurai.PresentationLayer-818CA9B1-AE9F-45D2-9058-0852314F5449</UserSecretsId>
+    <DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>
   </PropertyGroup>
 
 
