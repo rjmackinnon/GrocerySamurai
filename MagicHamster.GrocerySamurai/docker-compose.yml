@@ -1,0 +1,15 @@
+version: '3'
+
+services:
+  magichamster.grocerysamurai.servicelayer:
+    image: magichamster.grocerysamurai.servicelayer
+    build:
+      context: .
+      dockerfile: MagicHamster.GrocerySamurai.ServiceLayer/Dockerfile
+
+  magichamster.grocerysamurai.presentationlayer:
+    image: magichamster.grocerysamurai.presentationlayer
+    build:
+      context: .
+      dockerfile: MagicHamster.GrocerySamurai.PresentationLayer/Dockerfile
+

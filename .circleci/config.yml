@@ -1,0 +1,20 @@
+version: 2
+jobs:
+  build:
+    working_directory: /temp
+    docker:
+      - image: microsoft/dotnet:2.0-sdk
+    environment:
+      DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
+      DOTNET_CLI_TELEMETRY_OPTOUT: 1
+    steps:
+      - checkout
+      - run: 
+          name: test
+          command: |
+            dotnet restore
+            cd MagicHamster.GrocerySamurai
+            dotnet restore MagicHamster.GrocerySamurai.sln
+      - run: cd MagicHamster.GrocerySamurai/MagicHamster.GrocerySamurai.BusinessLayer.UnitTest && dotnet test
+      - run: cd MagicHamster.GrocerySamurai/MagicHamster.GrocerySamurai.DataAccess.UnitTest && dotnet test
+      - run: cd MagicHamster.GrocerySamurai/MagicHamster.GrocerySamurai.ServiceLayer.UnitTest && dotnet test
