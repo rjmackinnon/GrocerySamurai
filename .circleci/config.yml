@@ -13,12 +13,8 @@ jobs:
           name: test
           command: |
             dotnet restore
-            cd PRANxt.HelloWorld.Test
-            dotnet restore
-            dotnet xunit -xml /tmp/test-results/junit.xml -fxversion 2.0.4
-      # collect reports
-      - store_test_results:
-          path: /tmp/test-results
-      - store_artifacts:
-          path: /tmp/test-results
-          destination: test-results
+            cd MagicHamster.GrocerySamurai
+            dotnet restore MagicHamster.GrocerySamurai.sln
+      - run: cd MagicHamster.GrocerySamurai/MagicHamster.GrocerySamurai.BusinessLayer.UnitTest && dotnet test
+      - run: cd MagicHamster.GrocerySamurai/MagicHamster.GrocerySamurai.DataAccess.UnitTest && dotnet test
+      - run: cd MagicHamster.GrocerySamurai/MagicHamster.GrocerySamurai.ServiceLayer.UnitTest && dotnet test
