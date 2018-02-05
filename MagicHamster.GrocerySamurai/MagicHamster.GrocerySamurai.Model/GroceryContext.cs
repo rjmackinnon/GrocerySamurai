@@ -1,6 +1,6 @@
 ﻿namespace MagicHamster.GrocerySamurai.Model
 {
-    using MagicHamster.GrocerySamurai.Model.Entities;
+    using Entities;
     using Microsoft.EntityFrameworkCore;
 
     public class GroceryContext : DbContext

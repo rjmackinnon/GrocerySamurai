@@ -4,7 +4,7 @@
     using System.Collections.Generic;
     using System.Linq.Expressions;
     using System.Threading.Tasks;
-    using MagicHamster.GrocerySamurai.Model.Entities;
+    using Model.Entities;
 
     public interface IGroceryListProcess
     {

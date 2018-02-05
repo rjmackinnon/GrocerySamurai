@@ -2,10 +2,10 @@
 {
     using System;
     using System.Diagnostics;
-    using MagicHamster.GrocerySamurai.PresentationLayer.Models;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
+    using Models;
 
     public class HomeController : Controller
     {

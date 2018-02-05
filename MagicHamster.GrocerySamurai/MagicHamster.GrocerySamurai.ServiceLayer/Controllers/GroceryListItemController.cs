@@ -2,9 +2,9 @@
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
-    using MagicHamster.GrocerySamurai.BusinessLayer.Interfaces;
-    using MagicHamster.GrocerySamurai.Model.Entities;
+    using BusinessLayer.Interfaces;
     using Microsoft.AspNetCore.Mvc;
+    using Model.Entities;
 
     [Route("api/[controller]")]
     public class GroceryListItemController : BaseController<GroceryListItem>

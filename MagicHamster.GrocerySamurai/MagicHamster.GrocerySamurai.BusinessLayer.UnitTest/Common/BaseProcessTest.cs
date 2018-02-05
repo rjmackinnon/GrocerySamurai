@@ -5,9 +5,9 @@
     using System.Linq;
     using System.Linq.Expressions;
     using System.Threading.Tasks;
-    using MagicHamster.GrocerySamurai.BusinessLayer.Processes;
-    using MagicHamster.GrocerySamurai.DataAccess.Interfaces;
-    using MagicHamster.GrocerySamurai.Model.Common;
+    using BusinessLayer.Processes;
+    using DataAccess.Interfaces;
+    using Model.Common;
     using Moq;
     using NUnit.Framework;
 

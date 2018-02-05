@@ -5,9 +5,9 @@
     using System.Linq.Expressions;
     using System.Net;
     using System.Threading.Tasks;
-    using MagicHamster.GrocerySamurai.BusinessLayer.Interfaces;
-    using MagicHamster.GrocerySamurai.Model.Common;
+    using BusinessLayer.Interfaces;
     using Microsoft.AspNetCore.Mvc;
+    using Model.Common;
     using Moq;
     using NUnit.Framework;
 

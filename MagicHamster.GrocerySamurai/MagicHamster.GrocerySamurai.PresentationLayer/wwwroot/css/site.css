@@ -35,7 +35,7 @@
     }
 }
 
-button.btn-table {
+.btn-table {
     height: 30px;
     min-width: 75px;
     padding: 2px;
@@ -76,6 +76,9 @@ button.btn-table {
 body.modal-open .modal {
     display: flex !important;
     height: 100%;
+    -ms-align-items: center;
+    -o-align-items: center;
+    -webkit-align-items: center;
     align-items: center;
 }
 
@@ -84,6 +87,7 @@ body.modal-open .modal .modal-dialog {
 }
 
 .modal.fade .modal-dialog {
+    -moz-transition: opacity .01s linear;
     -webkit-transition: opacity .01s linear;
     -o-transition: opacity .01s linear;
 }
@@ -92,7 +96,7 @@ body.modal-open .modal .modal-dialog {
     width: 80%;
 }
 
-body.waiting * {
+.waiting * {
     cursor: progress;
 }
 

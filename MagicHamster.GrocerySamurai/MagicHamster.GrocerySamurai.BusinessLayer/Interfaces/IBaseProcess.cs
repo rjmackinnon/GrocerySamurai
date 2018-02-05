@@ -4,8 +4,8 @@
     using System.Collections.Generic;
     using System.Linq.Expressions;
     using System.Threading.Tasks;
-    using MagicHamster.GrocerySamurai.DataAccess.Interfaces;
-    using MagicHamster.GrocerySamurai.Model.Common;
+    using DataAccess.Interfaces;
+    using Model.Common;
 
     public interface IBaseProcess<T>
         where T : Entity

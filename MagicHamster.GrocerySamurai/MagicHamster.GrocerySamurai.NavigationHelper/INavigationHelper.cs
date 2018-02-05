@@ -1,7 +1,5 @@
 namespace MagicHamster.GrocerySamurai.NavigationHelper
 {
-    using System;
-
     public interface INavigationHelper
     {
         /// <summary>

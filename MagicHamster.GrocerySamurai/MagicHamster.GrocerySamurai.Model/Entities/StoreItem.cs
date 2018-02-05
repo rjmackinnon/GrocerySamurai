@@ -1,7 +1,7 @@
 ﻿namespace MagicHamster.GrocerySamurai.Model.Entities
 {
     using System.ComponentModel.DataAnnotations.Schema;
-    using MagicHamster.GrocerySamurai.Model.Common;
+    using Common;
 
     [Table("store_item")]
     public class StoreItem : Entity

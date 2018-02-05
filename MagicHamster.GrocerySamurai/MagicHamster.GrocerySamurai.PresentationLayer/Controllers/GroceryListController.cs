@@ -4,10 +4,10 @@
     using System.Collections.Generic;
     using System.Globalization;
     using System.Threading.Tasks;
-    using MagicHamster.GrocerySamurai.Model.Entities;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
+    using Model.Entities;
 
     [Authorize]
     public class GroceryListController : BaseController<GroceryList>

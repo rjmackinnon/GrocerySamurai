@@ -5,14 +5,15 @@
     using System.Text;
     using System.Text.Encodings.Web;
     using System.Threading.Tasks;
-    using MagicHamster.GrocerySamurai.PresentationLayer.Models;
-    using MagicHamster.GrocerySamurai.PresentationLayer.Models.ManageViewModels;
-    using MagicHamster.GrocerySamurai.PresentationLayer.Services;
+    using Extensions;
     using Microsoft.AspNetCore.Authentication;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
+    using Models;
+    using Models.ManageViewModels;
+    using Services;
 
     [Authorize]
     [Route("[controller]/[action]")]
@@ -463,15 +464,7 @@
 
         #region Helpers
 
-        private void addErrors(IdentityResult result)
-        {
-            foreach (var error in result.Errors)
-            {
-                ModelState.AddModelError(string.Empty, error.Description);
-            }
-        }
-
-        private string formatKey(string unformattedKey)
+        private static string formatKey(string unformattedKey)
         {
             var result = new StringBuilder();
             var currentPosition = 0;
@@ -489,6 +482,14 @@
 #pragma warning disable CA1308 // Normalize strings to uppercase
             return result.ToString().ToLowerInvariant();
 #pragma warning restore CA1308 // Normalize strings to uppercase
+        }
+
+        private void addErrors(IdentityResult result)
+        {
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError(string.Empty, error.Description);
+            }
         }
 
         private string generateQrCodeUri(string email, string unformattedKey)

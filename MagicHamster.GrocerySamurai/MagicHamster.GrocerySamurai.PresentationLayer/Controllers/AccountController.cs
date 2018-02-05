@@ -3,15 +3,16 @@
     using System;
     using System.Security.Claims;
     using System.Threading.Tasks;
-    using MagicHamster.GrocerySamurai.PresentationLayer.Models;
-    using MagicHamster.GrocerySamurai.PresentationLayer.Models.AccountViewModels;
-    using MagicHamster.GrocerySamurai.PresentationLayer.Services;
+    using Extensions;
     using Microsoft.AspNetCore.Authentication;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
+    using Models;
+    using Models.AccountViewModels;
+    using Services;
 
     [Authorize]
     [Route("[controller]/[action]")]
@@ -54,35 +55,36 @@
         public async Task<IActionResult> Login(LoginViewModel model, string returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                // This doesn't count login failures towards account lockout
-                // To enable password failures to trigger account lockout, set lockoutOnFailure: true
-                var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, false).ConfigureAwait(false);
-                if (result.Succeeded)
-                {
-                    _logger.LogInformation("User logged in.");
-                    setUserId();
-                    return redirectToLocal(returnUrl);
-                }
-
-                if (result.RequiresTwoFactor)
-                {
-                    return RedirectToAction(nameof(LoginWith2Fa), new { returnUrl, model.RememberMe });
-                }
-
-                if (result.IsLockedOut)
-                {
-                    _logger.LogWarning("User account locked out.");
-                    return RedirectToAction(nameof(Lockout));
-                }
-
-                ModelState.AddModelError(string.Empty, "Invalid login attempt.");
                 return View(model);
             }
 
-            // If we got this far, something failed, redisplay form
+            // This doesn't count login failures towards account lockout
+            // To enable password failures to trigger account lockout, set lockoutOnFailure: true
+            var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, false).ConfigureAwait(false);
+            if (result.Succeeded)
+            {
+                _logger.LogInformation("User logged in.");
+                setUserId();
+                return redirectToLocal(returnUrl);
+            }
+
+            if (result.RequiresTwoFactor)
+            {
+                return RedirectToAction(nameof(LoginWith2Fa), new { returnUrl, model.RememberMe });
+            }
+
+            if (result.IsLockedOut)
+            {
+                _logger.LogWarning("User account locked out.");
+                return RedirectToAction(nameof(Lockout));
+            }
+
+            ModelState.AddModelError(string.Empty, "Invalid login attempt.");
             return View(model);
+
+            // If we got this far, something failed, redisplay form
         }
 
         [HttpGet]
@@ -94,7 +96,7 @@
 
             if (user == null)
             {
-                throw new ApplicationException($"Unable to load two-factor authentication user.");
+                throw new ApplicationException("Unable to load two-factor authentication user.");
             }
 
             var model = new LoginWith2FaViewModel { RememberMe = rememberMe };
@@ -150,7 +152,7 @@
             var user = await _signInManager.GetTwoFactorAuthenticationUserAsync().ConfigureAwait(false);
             if (user == null)
             {
-                throw new ApplicationException($"Unable to load two-factor authentication user.");
+                throw new ApplicationException("Unable to load two-factor authentication user.");
             }
 
             ViewData["ReturnUrl"] = returnUrl;
@@ -171,7 +173,7 @@
             var user = await _signInManager.GetTwoFactorAuthenticationUserAsync().ConfigureAwait(false);
             if (user == null)
             {
-                throw new ApplicationException($"Unable to load two-factor authentication user.");
+                throw new ApplicationException("Unable to load two-factor authentication user.");
             }
 
             var recoveryCode = model.RecoveryCode.Replace(" ", string.Empty, StringComparison.CurrentCulture);
@@ -217,26 +219,28 @@
         public async Task<IActionResult> Register(RegisterViewModel model, string returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
-                var result = await _userManager.CreateAsync(user, model.Password).ConfigureAwait(false);
-                if (result.Succeeded)
-                {
-                    _logger.LogInformation("User created a new account with password.");
-
-                    var code = await _userManager.GenerateEmailConfirmationTokenAsync(user).ConfigureAwait(false);
-                    var callbackUrl = Url.EmailConfirmationLink(user.Id, code, Request.Scheme);
-                    await _emailSender.SendEmailConfirmationAsync(model.Email, callbackUrl).ConfigureAwait(false);
-
-                    await _signInManager.SignInAsync(user, false).ConfigureAwait(false);
-                    _logger.LogInformation("User created a new account with password.");
-                    setUserId();
-                    return redirectToLocal(returnUrl);
-                }
-
-                addErrors(result);
+                return View(model);
             }
+
+            var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+            var result = await _userManager.CreateAsync(user, model.Password).ConfigureAwait(false);
+            if (result.Succeeded)
+            {
+                _logger.LogInformation("User created a new account with password.");
+
+                var code = await _userManager.GenerateEmailConfirmationTokenAsync(user).ConfigureAwait(false);
+                var callbackUrl = Url.EmailConfirmationLink(user.Id, code, Request.Scheme);
+                await _emailSender.SendEmailConfirmationAsync(model.Email, callbackUrl).ConfigureAwait(false);
+
+                await _signInManager.SignInAsync(user, false).ConfigureAwait(false);
+                _logger.LogInformation("User created a new account with password.");
+                setUserId();
+                return redirectToLocal(returnUrl);
+            }
+
+            addErrors(result);
 
             // If we got this far, something failed, redisplay form
             return View(model);
@@ -366,28 +370,29 @@
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel model)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                var user = await _userManager.FindByEmailAsync(model.Email).ConfigureAwait(false);
-                if (user == null || !await _userManager.IsEmailConfirmedAsync(user).ConfigureAwait(false))
-                {
-                    // Don't reveal that the user does not exist or is not confirmed
-                    return RedirectToAction(nameof(ForgotPasswordConfirmation));
-                }
+                return View(model);
+            }
 
-                // For more information on how to enable account confirmation and password reset please
-                // visit https://go.microsoft.com/fwlink/?LinkID=532713
-                var code = await _userManager.GeneratePasswordResetTokenAsync(user).ConfigureAwait(false);
-                var callbackUrl = Url.ResetPasswordCallbackLink(user.Id, code, Request.Scheme);
-                await _emailSender.SendEmailAsync(
-                    model.Email,
-                    "Reset Password",
-                    $"Please reset your password by clicking here: <a href='{callbackUrl}'>link</a>").ConfigureAwait(false);
+            var user = await _userManager.FindByEmailAsync(model.Email).ConfigureAwait(false);
+            if (user == null || !await _userManager.IsEmailConfirmedAsync(user).ConfigureAwait(false))
+            {
+                // Don't reveal that the user does not exist or is not confirmed
                 return RedirectToAction(nameof(ForgotPasswordConfirmation));
             }
 
+            // For more information on how to enable account confirmation and password reset please
+            // visit https://go.microsoft.com/fwlink/?LinkID=532713
+            var code = await _userManager.GeneratePasswordResetTokenAsync(user).ConfigureAwait(false);
+            var callbackUrl = Url.ResetPasswordCallbackLink(user.Id, code, Request.Scheme);
+            await _emailSender.SendEmailAsync(
+                model.Email,
+                "Reset Password",
+                $"Please reset your password by clicking here: <a href='{callbackUrl}'>link</a>").ConfigureAwait(false);
+            return RedirectToAction(nameof(ForgotPasswordConfirmation));
+
             // If we got this far, something failed, redisplay form
-            return View(model);
         }
 
         [HttpGet]

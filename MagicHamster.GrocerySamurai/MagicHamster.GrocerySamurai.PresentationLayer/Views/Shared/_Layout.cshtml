@@ -1,9 +1,8 @@
 ﻿@using MagicHamster.GrocerySamurai.PresentationLayer.Helpers
 @using MagicHamster.GrocerySamurai.PresentationLayer.Models
 @using Microsoft.AspNetCore.Identity
-@using Microsoft.AspNetCore.Mvc.Routing
-@inject SignInManager<ApplicationUser> SignInManager
-@inject IUrlHelper UrlHelper
+@inject SignInManager<ApplicationUser> signInManager
+@inject IUrlHelper urlHelper
 <!DOCTYPE html>
 <html>
 <head>
@@ -45,7 +44,7 @@
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
-                    @if (SignInManager.IsSignedIn(User))
+                    @if (signInManager.IsSignedIn(User))
                     {
                         <li><a asp-area="" asp-controller="Store" asp-action="Index">Stores</a></li>
                     }
@@ -92,11 +91,11 @@
         <script src="~/js/site.min.js" asp-append-version="true"></script>
     </environment>
 
-    @RenderSection("Scripts", false)
+    @RenderSectionAsync("Scripts", false)
 </body>
 </html>
 
-@{ var request = UrlHelper.ActionContext.HttpContext.Request; }
+@{ var request = urlHelper.ActionContext.HttpContext.Request; }
 <script type="text/javascript">
     var appVariables = {
         baseUrl: '@($"{request.Scheme}://{request.Host.Value}/")',

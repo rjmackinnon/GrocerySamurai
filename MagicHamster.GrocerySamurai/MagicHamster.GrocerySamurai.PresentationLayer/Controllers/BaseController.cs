@@ -6,15 +6,16 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
-    using MagicHamster.GrocerySamurai.Model.Common;
-    using MagicHamster.GrocerySamurai.NavigationHelper;
-    using MagicHamster.GrocerySamurai.PresentationLayer.Exceptions;
-    using MagicHamster.GrocerySamurai.PresentationLayer.Helpers;
+    using Exceptions;
+    using Helpers;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Http.Extensions;
     using Microsoft.AspNetCore.Mvc;
+    using Model.Common;
+    using NavigationHelper;
     using Newtonsoft.Json;
 
+    /// <inheritdoc cref="IBaseController{T}" />
     /// <summary>
     /// This works like the generic unit tests. The non-generic controllers have the real web methods, but they are simply wrappers
     /// around the generic methods.
@@ -241,11 +242,13 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
         protected void addToNavigationHelper()
         {
             var fromBack = TempData["FromBack"] as bool?;
-            if (fromBack == null || !fromBack.Value)
+            if (fromBack != null && fromBack.Value)
             {
-                NavigationHelper.Add(Request.Headers["Referer"].First(), Request.GetDisplayUrl());
-                saveNavigationHelper();
+                return;
             }
+
+            NavigationHelper.Add(Request.Headers["Referer"].First(), Request.GetDisplayUrl());
+            saveNavigationHelper();
         }
 
         protected string getUserId()

@@ -6,12 +6,12 @@
     using System.Linq.Expressions;
     using System.Net;
     using System.Threading.Tasks;
-    using MagicHamster.GrocerySamurai.BusinessLayer.Interfaces;
-    using MagicHamster.GrocerySamurai.Model.Common;
-    using MagicHamster.GrocerySamurai.ServiceLayer.Controllers;
+    using BusinessLayer.Interfaces;
     using Microsoft.AspNetCore.Mvc;
+    using Model.Common;
     using Moq;
     using NUnit.Framework;
+    using ServiceLayer.Controllers;
 
     [TestFixture]
     public abstract class BaseControllerTest<T>
@@ -233,34 +233,34 @@
             {
                 new T
                 {
-                    Id = 1001,
+                    Id = 1001
                 },
                 new T
                 {
-                    Id = 1002,
+                    Id = 1002
                 },
                 new T
                 {
-                    Id = 1003,
+                    Id = 1003
                 },
                 new T
                 {
-                    Id = 1004,
+                    Id = 1004
                 },
                 new T
                 {
-                    Id = 1005,
+                    Id = 1005
                 }
             };
 
             _newRecord = new T
             {
-                Id = 5001,
+                Id = 5001
             };
 
             _modifiedRecord = new T
             {
-                Id = 1001,
+                Id = 1001
             };
         }
     }

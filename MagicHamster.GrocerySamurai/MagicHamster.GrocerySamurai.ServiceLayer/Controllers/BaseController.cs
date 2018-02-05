@@ -5,10 +5,11 @@
     using System.Linq.Expressions;
     using System.Net;
     using System.Threading.Tasks;
-    using MagicHamster.GrocerySamurai.BusinessLayer.Interfaces;
-    using MagicHamster.GrocerySamurai.Model.Common;
+    using BusinessLayer.Interfaces;
     using Microsoft.AspNetCore.Mvc;
+    using Model.Common;
 
+    /// <inheritdoc cref="IBaseController{T}" />
     /// <summary>
     /// This works like the generic unit tests. The non-generic controllers have the real web methods, but they are simply wrappers
     /// around the generic methods.
@@ -17,11 +18,11 @@
     public abstract class BaseController<T> : Controller, IBaseController<T>
         where T : Entity
     {
-        public BaseController()
+        protected BaseController()
         {
         }
 
-        public BaseController(IBaseProcess<T> process)
+        protected BaseController(IBaseProcess<T> process)
         {
             BusinessProcess = process;
         }

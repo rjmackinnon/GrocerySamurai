@@ -1,18 +1,18 @@
 ﻿namespace MagicHamster.GrocerySamurai.ServiceLayer
 {
-    using MagicHamster.GrocerySamurai.BusinessLayer.Interfaces;
-    using MagicHamster.GrocerySamurai.BusinessLayer.Processes;
-    using MagicHamster.GrocerySamurai.DataAccess.Interfaces;
-    using MagicHamster.GrocerySamurai.DataAccess.Repositories;
-    using MagicHamster.GrocerySamurai.DataAccess.UnitsOfWork;
-    using MagicHamster.GrocerySamurai.Model;
-    using MagicHamster.GrocerySamurai.Model.Common;
-    using MagicHamster.GrocerySamurai.Model.Entities;
+    using BusinessLayer.Interfaces;
+    using BusinessLayer.Processes;
+    using DataAccess.Interfaces;
+    using DataAccess.Repositories;
+    using DataAccess.UnitsOfWork;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
+    using Model;
+    using Model.Common;
+    using Model.Entities;
 
     public class Startup
     {
@@ -53,7 +53,7 @@
             app.UseMvc();
         }
 
-        private void registerServices<T, TProcess>(IServiceCollection services)
+        private static void registerServices<T, TProcess>(IServiceCollection services)
             where T : Entity
             where TProcess : class, IBaseProcess<T>
         {
@@ -61,7 +61,7 @@
             services.AddScoped<IBaseProcess<T>, TProcess>();
         }
 
-        private void registerUserFilterServices<T, TProcess>(IServiceCollection services)
+        private static void registerUserFilterServices<T, TProcess>(IServiceCollection services)
             where T : UserFilter
             where TProcess : class, IBaseUserFilterProcess<T>
         {

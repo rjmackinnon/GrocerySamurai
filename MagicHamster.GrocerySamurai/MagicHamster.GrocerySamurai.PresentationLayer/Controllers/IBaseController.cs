@@ -1,9 +1,9 @@
 ﻿namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
 {
     using System.Threading.Tasks;
-    using MagicHamster.GrocerySamurai.Model.Common;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.ModelBinding;
+    using Model.Common;
 
     public interface IBaseController<in T>
         where T : Entity, new()

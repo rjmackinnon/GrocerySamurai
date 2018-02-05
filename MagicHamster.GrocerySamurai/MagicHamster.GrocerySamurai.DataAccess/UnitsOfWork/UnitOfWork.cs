@@ -4,11 +4,11 @@
     using System.Collections.Generic;
     using System.Threading;
     using System.Threading.Tasks;
-    using MagicHamster.GrocerySamurai.DataAccess.Interfaces;
-    using MagicHamster.GrocerySamurai.DataAccess.Repositories;
-    using MagicHamster.GrocerySamurai.Model.Common;
+    using Interfaces;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.EntityFrameworkCore.Storage;
+    using Model.Common;
+    using Repositories;
 
     public class UnitOfWork : IDisposable, IUnitOfWork
     {

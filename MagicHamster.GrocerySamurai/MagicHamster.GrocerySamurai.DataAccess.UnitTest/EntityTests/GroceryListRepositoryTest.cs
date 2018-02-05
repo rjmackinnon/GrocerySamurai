@@ -1,8 +1,8 @@
 ﻿namespace MagicHamster.GrocerySamurai.DataAccess.UnitTest.EntityTests
 {
     using System.Threading.Tasks;
-    using MagicHamster.GrocerySamurai.DataAccess.UnitTest.Common;
-    using MagicHamster.GrocerySamurai.Model.Entities;
+    using Common;
+    using Model.Entities;
     using NUnit.Framework;
 
     public class GroceryListRepositoryTest : EntityRepositoryTest<GroceryList>

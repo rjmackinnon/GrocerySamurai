@@ -1,8 +1,8 @@
 ﻿namespace MagicHamster.GrocerySamurai.ServiceLayer.Controllers
 {
     using System.Threading.Tasks;
-    using MagicHamster.GrocerySamurai.Model.Common;
     using Microsoft.AspNetCore.Mvc;
+    using Model.Common;
 
     public interface IBaseController<in T>
         where T : Entity

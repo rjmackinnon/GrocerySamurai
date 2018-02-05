@@ -1,10 +1,10 @@
 ﻿namespace MagicHamster.GrocerySamurai.ServiceLayer.UnitTest.Controllers
 {
     using System.Threading.Tasks;
-    using MagicHamster.GrocerySamurai.Model.Entities;
-    using MagicHamster.GrocerySamurai.ServiceLayer.Controllers;
-    using MagicHamster.GrocerySamurai.ServiceLayer.UnitTest.Common;
+    using Common;
+    using Model.Entities;
     using NUnit.Framework;
+    using ServiceLayer.Controllers;
 
     [TestFixture]
     public class AisleControllerTest : BaseUserFilterControllerTest<Aisle>

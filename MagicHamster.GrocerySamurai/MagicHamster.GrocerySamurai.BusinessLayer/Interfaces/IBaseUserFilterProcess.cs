@@ -4,7 +4,7 @@
     using System.Collections.Generic;
     using System.Linq.Expressions;
     using System.Threading.Tasks;
-    using MagicHamster.GrocerySamurai.Model.Common;
+    using Model.Common;
 
     public interface IBaseUserFilterProcess<T> : IBaseProcess<T>
         where T : UserFilter

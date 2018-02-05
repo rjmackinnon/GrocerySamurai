@@ -4,14 +4,15 @@
     using System.Linq.Expressions;
     using System.Net;
     using System.Threading.Tasks;
-    using MagicHamster.GrocerySamurai.BusinessLayer.Interfaces;
-    using MagicHamster.GrocerySamurai.Model.Common;
+    using BusinessLayer.Interfaces;
     using Microsoft.AspNetCore.Mvc;
+    using Model.Common;
 
     public abstract class BaseUserFilterController<T> : BaseController<T>
         where T : UserFilter
     {
-        public BaseUserFilterController(IBaseUserFilterProcess<T> process)
+        // ReSharper disable once SuggestBaseTypeForParameter
+        protected BaseUserFilterController(IBaseUserFilterProcess<T> process)
             : base(process)
         {
         }

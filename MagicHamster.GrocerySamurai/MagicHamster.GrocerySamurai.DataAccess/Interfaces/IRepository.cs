@@ -5,7 +5,7 @@
     using System.Linq;
     using System.Linq.Expressions;
     using System.Threading.Tasks;
-    using MagicHamster.GrocerySamurai.Model.Common;
+    using Model.Common;
 
     public interface IRepository<T>
         where T : Entity

@@ -6,9 +6,9 @@
     using System.Linq.Expressions;
     using System.Threading;
     using System.Threading.Tasks;
-    using MagicHamster.GrocerySamurai.DataAccess.Interfaces;
-    using MagicHamster.GrocerySamurai.Model.Common;
+    using Interfaces;
     using Microsoft.EntityFrameworkCore;
+    using Model.Common;
 
     public class Repository<T> : IRepository<T>, IDisposable
         where T : Entity
@@ -17,7 +17,7 @@
 
         internal Repository(DbContext context)
         {
-            Context = context ?? throw new ArgumentNullException(nameof(context));
+            this.context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
         ~Repository()
@@ -25,11 +25,11 @@
             Dispose(false);
         }
 
-        private DbContext Context { get; }
+        private DbContext context { get; }
 
         public async Task<T> Get(int id, List<string> childProperties = null, bool noTracking = false)
         {
-            var result = Context.Set<T>().AsQueryable();
+            var result = context.Set<T>().AsQueryable();
 
             if (noTracking)
             {
@@ -43,7 +43,7 @@
 
         public async Task<IQueryable<T>> Get(Expression<Func<T, bool>> where = null, List<string> childProperties = null, bool noTracking = false)
         {
-            var result = Context.Set<T>().AsQueryable();
+            var result = context.Set<T>().AsQueryable();
 
             if (where != null)
             {
@@ -62,17 +62,17 @@
 
         public Task Add(T entity)
         {
-            return Context.Set<T>().AddAsync(entity, _disposeCts.Token);
+            return context.Set<T>().AddAsync(entity, _disposeCts.Token);
         }
 
         public Task Add(IEnumerable<T> entities)
         {
-            return Context.Set<T>().AddRangeAsync(entities, _disposeCts.Token);
+            return context.Set<T>().AddRangeAsync(entities, _disposeCts.Token);
         }
 
         public Task Update(T entity)
         {
-            Context.Entry(entity).State = EntityState.Modified;
+            context.Entry(entity).State = EntityState.Modified;
             return Task.CompletedTask;
         }
 
@@ -101,7 +101,7 @@
 
         public Task Delete(T entity)
         {
-            Context.Set<T>().Remove(entity);
+            context.Set<T>().Remove(entity);
             return Task.CompletedTask;
         }
 
@@ -138,12 +138,14 @@
         // ReSharper disable once InconsistentNaming
         protected virtual void Dispose(bool disposing)
         {
-            if (disposing)
+            if (!disposing)
             {
-                _disposeCts.Cancel();
-                _disposeCts.Dispose();
-                Context?.Dispose();
+                return;
             }
+
+            _disposeCts.Cancel();
+            _disposeCts.Dispose();
+            context?.Dispose();
         }
 
         private async Task loadChildProperties(IReadOnlyCollection<string> childProperties, IQueryable<T> result)

@@ -1,17 +1,17 @@
 ﻿namespace MagicHamster.GrocerySamurai.PresentationLayer
 {
     using System;
-    using MagicHamster.GrocerySamurai.Model;
-    using MagicHamster.GrocerySamurai.PresentationLayer.Data;
-    using MagicHamster.GrocerySamurai.PresentationLayer.Helpers;
-    using MagicHamster.GrocerySamurai.PresentationLayer.Models;
-    using MagicHamster.GrocerySamurai.PresentationLayer.Services;
+    using Data;
+    using Helpers;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
+    using Model;
+    using Models;
+    using Services;
 
     public class Startup
     {

@@ -1,8 +1,8 @@
 ﻿namespace MagicHamster.GrocerySamurai.DataAccess.Interfaces
 {
     using System.Threading.Tasks;
-    using MagicHamster.GrocerySamurai.Model.Common;
     using Microsoft.EntityFrameworkCore;
+    using Model.Common;
 
     public interface IUnitOfWork
     {

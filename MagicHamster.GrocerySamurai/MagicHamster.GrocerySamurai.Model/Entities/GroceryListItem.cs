@@ -2,7 +2,7 @@
 {
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
-    using MagicHamster.GrocerySamurai.Model.Common;
+    using Common;
 
     [Table("grocery_list_item")]
     public class GroceryListItem : Entity

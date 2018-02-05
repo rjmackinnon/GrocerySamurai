@@ -1,7 +1,8 @@
-namespace MagicHamster.GrocerySamurai.PresentationLayer.Services
+namespace MagicHamster.GrocerySamurai.PresentationLayer.Extensions
 {
     using System.Text.Encodings.Web;
     using System.Threading.Tasks;
+    using Services;
 
     public static class EmailSenderExtensions
     {

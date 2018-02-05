@@ -1,8 +1,8 @@
 ﻿namespace MagicHamster.GrocerySamurai.BusinessLayer.UnitTest.Processes
 {
     using System.Threading.Tasks;
-    using MagicHamster.GrocerySamurai.BusinessLayer.UnitTest.Common;
-    using MagicHamster.GrocerySamurai.Model.Entities;
+    using Common;
+    using Model.Entities;
     using NUnit.Framework;
 
     [TestFixture]

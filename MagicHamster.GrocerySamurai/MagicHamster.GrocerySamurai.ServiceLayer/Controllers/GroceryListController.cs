@@ -4,10 +4,10 @@
     using System.Collections.Generic;
     using System.Net;
     using System.Threading.Tasks;
-    using MagicHamster.GrocerySamurai.BusinessLayer.Interfaces;
-    using MagicHamster.GrocerySamurai.BusinessLayer.Processes;
-    using MagicHamster.GrocerySamurai.Model.Entities;
+    using BusinessLayer.Interfaces;
+    using BusinessLayer.Processes;
     using Microsoft.AspNetCore.Mvc;
+    using Model.Entities;
 
     [Route("api/[controller]")]
     public class GroceryListController : BaseController<GroceryList>

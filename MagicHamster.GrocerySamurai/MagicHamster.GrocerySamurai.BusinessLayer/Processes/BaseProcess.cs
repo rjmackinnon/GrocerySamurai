@@ -5,9 +5,9 @@
     using System.Linq;
     using System.Linq.Expressions;
     using System.Threading.Tasks;
-    using MagicHamster.GrocerySamurai.BusinessLayer.Interfaces;
-    using MagicHamster.GrocerySamurai.DataAccess.Interfaces;
-    using MagicHamster.GrocerySamurai.Model.Common;
+    using DataAccess.Interfaces;
+    using Interfaces;
+    using Model.Common;
 
     public class BaseProcess<T> : IBaseProcess<T>
         where T : Entity
