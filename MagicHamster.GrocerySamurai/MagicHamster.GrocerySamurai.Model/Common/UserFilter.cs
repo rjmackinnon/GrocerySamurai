@@ -1,8 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-
-namespace MagicHamster.GrocerySamurai.Model.Common
+﻿namespace MagicHamster.GrocerySamurai.Model.Common
 {
+    using System.ComponentModel.DataAnnotations;
+    using System.ComponentModel.DataAnnotations.Schema;
+
     public abstract class UserFilter : Entity
     {
         [Column("user_id")]

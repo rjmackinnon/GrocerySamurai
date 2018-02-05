@@ -1,8 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using MagicHamster.GrocerySamurai.Model.Common;
-
-namespace MagicHamster.GrocerySamurai.Model.Entities
+﻿namespace MagicHamster.GrocerySamurai.Model.Entities
 {
+    using System.ComponentModel.DataAnnotations.Schema;
+    using MagicHamster.GrocerySamurai.Model.Common;
+
     [Table("store_item")]
     public class StoreItem : Entity
     {
@@ -17,7 +17,7 @@ namespace MagicHamster.GrocerySamurai.Model.Entities
 
         [ForeignKey("StoreId")]
         public Store Store { get; set; }
-        
+
         [ForeignKey("AisleId")]
         public Aisle Aisle { get; set; }
 

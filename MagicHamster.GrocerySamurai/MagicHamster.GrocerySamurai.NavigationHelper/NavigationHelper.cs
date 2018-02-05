@@ -1,24 +1,19 @@
-﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace MagicHamster.GrocerySamurai.NavigationHelper
+﻿namespace MagicHamster.GrocerySamurai.NavigationHelper
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using Newtonsoft.Json;
+
     /// <summary>
     /// Store navigation history smartly, so that a validation error doesn't duplicate the history.
-    /// 
+    ///
     /// Only instantiate once per session.
     /// </summary>
     public sealed class NavigationHelper : INavigationHelper
     {
-        private Stack<string> navigationStack { get; set; }
-
-        /// <inheritdoc />
-        public int Count => navigationStack.Count;
-
         /// <summary>
-        /// Default constructor.
+        /// Initializes a new instance of the <see cref="NavigationHelper"/> class.
         /// </summary>
         public NavigationHelper()
         {
@@ -26,7 +21,20 @@ namespace MagicHamster.GrocerySamurai.NavigationHelper
         }
 
         /// <inheritdoc />
-        public void Add(string referral, string current, AddOptions addOptions = AddOptions.DoNotMatchQueryParameters)
+        public int Count => navigationStack.Count;
+
+        private Stack<string> navigationStack { get; set; }
+
+        public static INavigationHelper FromJson(string json)
+        {
+            var list = JsonConvert.DeserializeObject<List<string>>(json);
+            list.Reverse();
+            var result = new NavigationHelper { navigationStack = new Stack<string>(list) };
+            return result;
+        }
+
+        /// <inheritdoc />
+        public void Add(string referral, string current, AddOption addOptions = AddOption.DoNotMatchQueryParameters)
         {
             if (referral == null || current == null)
             {
@@ -44,14 +52,14 @@ namespace MagicHamster.GrocerySamurai.NavigationHelper
 
                 switch (addOptions)
                 {
-                    case AddOptions.MatchQueryParameters:
-                        isStackDuplicate = stackTop.AbsoluteUri.Equals(referralUri.AbsoluteUri);
-                        isCurrentDuplicate = currentUri.AbsoluteUri.Equals(referralUri.AbsoluteUri);
+                    case AddOption.MatchQueryParameters:
+                        isStackDuplicate = stackTop.AbsoluteUri.Equals(referralUri.AbsoluteUri, StringComparison.CurrentCulture);
+                        isCurrentDuplicate = currentUri.AbsoluteUri.Equals(referralUri.AbsoluteUri, StringComparison.CurrentCulture);
                         break;
 
-                    case AddOptions.DoNotMatchQueryParameters:
-                        isStackDuplicate = stackTop.GetLeftPart(UriPartial.Path).Equals(referralUri.GetLeftPart(UriPartial.Path));
-                        isCurrentDuplicate = currentUri.GetLeftPart(UriPartial.Path).Equals(referralUri.GetLeftPart(UriPartial.Path));
+                    case AddOption.DoNotMatchQueryParameters:
+                        isStackDuplicate = stackTop.GetLeftPart(UriPartial.Path).Equals(referralUri.GetLeftPart(UriPartial.Path), StringComparison.CurrentCulture);
+                        isCurrentDuplicate = currentUri.GetLeftPart(UriPartial.Path).Equals(referralUri.GetLeftPart(UriPartial.Path), StringComparison.CurrentCulture);
                         break;
 
                     default:
@@ -85,14 +93,6 @@ namespace MagicHamster.GrocerySamurai.NavigationHelper
         public string ToJson()
         {
             return JsonConvert.SerializeObject(navigationStack.ToList());
-        }
-
-        public static INavigationHelper FromJson(string json)
-        {
-            var list = JsonConvert.DeserializeObject<List<string>>(json);
-            list.Reverse();
-            var result = new NavigationHelper {navigationStack = new Stack<string>(list)};
-            return result;
         }
     }
 }

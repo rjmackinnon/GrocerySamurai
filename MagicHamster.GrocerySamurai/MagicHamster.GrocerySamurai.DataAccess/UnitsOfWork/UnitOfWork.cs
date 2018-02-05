@@ -1,25 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-using MagicHamster.GrocerySamurai.DataAccess.Interfaces;
-using MagicHamster.GrocerySamurai.DataAccess.Repositories;
-using MagicHamster.GrocerySamurai.Model.Common;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage;
-
-namespace MagicHamster.GrocerySamurai.DataAccess.UnitsOfWork
+﻿namespace MagicHamster.GrocerySamurai.DataAccess.UnitsOfWork
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Threading;
+    using System.Threading.Tasks;
+    using MagicHamster.GrocerySamurai.DataAccess.Interfaces;
+    using MagicHamster.GrocerySamurai.DataAccess.Repositories;
+    using MagicHamster.GrocerySamurai.Model.Common;
+    using Microsoft.EntityFrameworkCore;
+    using Microsoft.EntityFrameworkCore.Storage;
+
     public class UnitOfWork : IDisposable, IUnitOfWork
     {
-        public DbContext Context { get; }
-
-        public bool AutoCommit { get; set; }
-
         private readonly Dictionary<Type, object> _repositories;
         private readonly Stack<IDbContextTransaction> _transactions = new Stack<IDbContextTransaction>();
         private readonly CancellationTokenSource _disposeCts = new CancellationTokenSource();
-
 
         public UnitOfWork(DbContext context, bool autoCommit = true)
         {
@@ -28,6 +23,15 @@ namespace MagicHamster.GrocerySamurai.DataAccess.UnitsOfWork
             _repositories = new Dictionary<Type, object>();
         }
 
+        ~UnitOfWork()
+        {
+            Dispose(false);
+        }
+
+        public DbContext Context { get; }
+
+        public bool AutoCommit { get; set; }
+
         public Task<IRepository<T>> GetRepository<T>()
             where T : Entity
         {
@@ -35,7 +39,8 @@ namespace MagicHamster.GrocerySamurai.DataAccess.UnitsOfWork
             {
                 _repositories[typeof(T)] = new Repository<T>(Context);
             }
-            return Task.FromResult((IRepository<T>) _repositories[typeof(T)]);
+
+            return Task.FromResult((IRepository<T>)_repositories[typeof(T)]);
         }
 
         public Task Commit()
@@ -78,13 +83,25 @@ namespace MagicHamster.GrocerySamurai.DataAccess.UnitsOfWork
             return Task.CompletedTask;
         }
 
-        public async Task<int> Save()
+        public Task<int> Save()
         {
-            return await Context.SaveChangesAsync(_disposeCts.Token);
+            return Context.SaveChangesAsync(_disposeCts.Token);
         }
 
         public void Dispose()
         {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        // ReSharper disable once InconsistentNaming
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposing)
+            {
+                return;
+            }
+
             if (Context == null)
             {
                 return;
@@ -103,6 +120,7 @@ namespace MagicHamster.GrocerySamurai.DataAccess.UnitsOfWork
             }
 
             _disposeCts.Cancel();
+            _disposeCts.Dispose();
             Context.Dispose();
         }
     }

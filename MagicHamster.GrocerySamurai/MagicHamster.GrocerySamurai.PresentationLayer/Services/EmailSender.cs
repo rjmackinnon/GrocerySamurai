@@ -1,7 +1,7 @@
-﻿using System.Threading.Tasks;
-
-namespace MagicHamster.GrocerySamurai.PresentationLayer.Services
+﻿namespace MagicHamster.GrocerySamurai.PresentationLayer.Services
 {
+    using System.Threading.Tasks;
+
     // This class is used by the application to send email for account confirmation and password reset.
     // For more details see https://go.microsoft.com/fwlink/?LinkID=532713
     public class EmailSender : IEmailSender

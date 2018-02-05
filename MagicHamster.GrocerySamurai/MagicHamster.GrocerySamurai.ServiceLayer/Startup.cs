@@ -1,19 +1,19 @@
-﻿using MagicHamster.GrocerySamurai.BusinessLayer.Interfaces;
-using MagicHamster.GrocerySamurai.BusinessLayer.Processes;
-using MagicHamster.GrocerySamurai.DataAccess.Interfaces;
-using MagicHamster.GrocerySamurai.DataAccess.Repositories;
-using MagicHamster.GrocerySamurai.DataAccess.UnitsOfWork;
-using MagicHamster.GrocerySamurai.Model;
-using MagicHamster.GrocerySamurai.Model.Common;
-using MagicHamster.GrocerySamurai.Model.Entities;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-
-namespace MagicHamster.GrocerySamurai.ServiceLayer
+﻿namespace MagicHamster.GrocerySamurai.ServiceLayer
 {
+    using MagicHamster.GrocerySamurai.BusinessLayer.Interfaces;
+    using MagicHamster.GrocerySamurai.BusinessLayer.Processes;
+    using MagicHamster.GrocerySamurai.DataAccess.Interfaces;
+    using MagicHamster.GrocerySamurai.DataAccess.Repositories;
+    using MagicHamster.GrocerySamurai.DataAccess.UnitsOfWork;
+    using MagicHamster.GrocerySamurai.Model;
+    using MagicHamster.GrocerySamurai.Model.Common;
+    using MagicHamster.GrocerySamurai.Model.Entities;
+    using Microsoft.AspNetCore.Builder;
+    using Microsoft.AspNetCore.Hosting;
+    using Microsoft.EntityFrameworkCore;
+    using Microsoft.Extensions.Configuration;
+    using Microsoft.Extensions.DependencyInjection;
+
     public class Startup
     {
         public Startup(IConfiguration configuration)
@@ -42,6 +42,17 @@ namespace MagicHamster.GrocerySamurai.ServiceLayer
             registerUserFilterServices<Store, BaseUserFilterProcess<Store>>(services);
         }
 
+        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        {
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+            }
+
+            app.UseMvc();
+        }
+
         private void registerServices<T, TProcess>(IServiceCollection services)
             where T : Entity
             where TProcess : class, IBaseProcess<T>
@@ -56,17 +67,6 @@ namespace MagicHamster.GrocerySamurai.ServiceLayer
         {
             services.AddScoped<IRepository<T>, Repository<T>>();
             services.AddScoped<IBaseUserFilterProcess<T>, TProcess>();
-        }
-
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
-        {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-
-            app.UseMvc();
         }
     }
 }

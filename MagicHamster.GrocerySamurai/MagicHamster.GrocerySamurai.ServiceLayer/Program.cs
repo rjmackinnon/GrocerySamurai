@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore;
-using Microsoft.AspNetCore.Hosting;
-
-namespace MagicHamster.GrocerySamurai.ServiceLayer
+﻿namespace MagicHamster.GrocerySamurai.ServiceLayer
 {
+    using Microsoft.AspNetCore;
+    using Microsoft.AspNetCore.Hosting;
+
+#pragma warning disable CA1052 // Static holder types should be Static or NotInheritable
     public class Program
+#pragma warning restore CA1052 // Static holder types should be Static or NotInheritable
     {
         public static void Main(string[] args)
         {

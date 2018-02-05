@@ -1,8 +1,8 @@
-﻿using System;
-using System.Runtime.Serialization;
-
-namespace MagicHamster.GrocerySamurai.PresentationLayer.Exceptions
+﻿namespace MagicHamster.GrocerySamurai.PresentationLayer.Exceptions
 {
+    using System;
+    using System.Runtime.Serialization;
+
     [Serializable]
     public class UnknownValueException : Exception
     {
@@ -10,15 +10,18 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Exceptions
         {
         }
 
-        public UnknownValueException(string message) : base(message)
+        public UnknownValueException(string message)
+            : base(message)
         {
         }
 
-        public UnknownValueException(string message, Exception innerException) : base(message, innerException)
+        public UnknownValueException(string message, Exception innerException)
+            : base(message, innerException)
         {
         }
 
-        protected UnknownValueException(SerializationInfo info, StreamingContext context) : base(info, context)
+        protected UnknownValueException(SerializationInfo info, StreamingContext context)
+            : base(info, context)
         {
         }
     }

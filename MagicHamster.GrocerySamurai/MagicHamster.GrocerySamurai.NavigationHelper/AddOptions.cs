@@ -1,6 +1,6 @@
 ﻿namespace MagicHamster.GrocerySamurai.NavigationHelper
 {
-    public enum AddOptions
+    public enum AddOption
     {
         MatchQueryParameters,
         DoNotMatchQueryParameters

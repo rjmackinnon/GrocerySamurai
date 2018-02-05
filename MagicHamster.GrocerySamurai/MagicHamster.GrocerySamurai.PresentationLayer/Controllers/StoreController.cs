@@ -1,13 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using MagicHamster.GrocerySamurai.Model.Entities;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-
-namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
+﻿namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Globalization;
+    using System.Threading.Tasks;
+    using MagicHamster.GrocerySamurai.Model.Entities;
+    using Microsoft.AspNetCore.Authorization;
+    using Microsoft.AspNetCore.Http;
+    using Microsoft.AspNetCore.Mvc;
+
     [Authorize]
     public class StoreController : BaseController<Store>
     {
@@ -16,7 +17,7 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
         {
             addToNavigationHelper();
 
-            var result = await indexHelper();
+            var result = await indexHelper().ConfigureAwait(false);
 
             if (!(result is List<Store>))
             {
@@ -30,39 +31,39 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
         // GET: Store/Create
         public IActionResult Create()
         {
-            return createGetHelper(s=> s.UserId = getUserId());
+            return createGetHelper(s => s.UserId = getUserId());
         }
 
         // POST: Store/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public override async Task<IActionResult> Create([Bind("Name,Description,UserId,Id")] Store store)
         {
-            return await createPostHelper(store);
+            return await createPostHelper(store).ConfigureAwait(false);
         }
 
         // GET: Store/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            return await editGetHelper(id);
+            return await editGetHelper(id).ConfigureAwait(false);
         }
 
         // POST: Store/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public override async Task<IActionResult> Edit([Bind("Name,Description,UserId,Id")] Store store)
         {
-            return await editPostHelper(store);
+            return await editPostHelper(store).ConfigureAwait(false);
         }
 
         // GET: Store/Delete/5
         public override async Task<IActionResult> Delete(int? id)
         {
-            return await deleteHelper(id);
+            return await deleteHelper(id).ConfigureAwait(false);
         }
 
         // GET: Store/SetSelected/5
@@ -71,8 +72,9 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
         {
             if (id != null)
             {
-                HttpContext.Session.SetString("StoreSelected", id.Value.ToString());
+                HttpContext.Session.SetString("StoreSelected", id.Value.ToString("n", CultureInfo.CurrentCulture));
             }
+
             return new OkResult();
         }
 

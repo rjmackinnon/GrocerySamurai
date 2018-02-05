@@ -1,18 +1,18 @@
-﻿using System;
-using MagicHamster.GrocerySamurai.Model;
-using MagicHamster.GrocerySamurai.PresentationLayer.Data;
-using MagicHamster.GrocerySamurai.PresentationLayer.Helpers;
-using MagicHamster.GrocerySamurai.PresentationLayer.Models;
-using MagicHamster.GrocerySamurai.PresentationLayer.Services;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-
-namespace MagicHamster.GrocerySamurai.PresentationLayer
+﻿namespace MagicHamster.GrocerySamurai.PresentationLayer
 {
+    using System;
+    using MagicHamster.GrocerySamurai.Model;
+    using MagicHamster.GrocerySamurai.PresentationLayer.Data;
+    using MagicHamster.GrocerySamurai.PresentationLayer.Helpers;
+    using MagicHamster.GrocerySamurai.PresentationLayer.Models;
+    using MagicHamster.GrocerySamurai.PresentationLayer.Services;
+    using Microsoft.AspNetCore.Builder;
+    using Microsoft.AspNetCore.Hosting;
+    using Microsoft.AspNetCore.Identity;
+    using Microsoft.EntityFrameworkCore;
+    using Microsoft.Extensions.Configuration;
+    using Microsoft.Extensions.DependencyInjection;
+
     public class Startup
     {
         public Startup(IConfiguration configuration)

@@ -1,28 +1,28 @@
-﻿using System;
-using System.Diagnostics;
-using MagicHamster.GrocerySamurai.PresentationLayer.Models;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-
-namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
+﻿namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
 {
+    using System;
+    using System.Diagnostics;
+    using MagicHamster.GrocerySamurai.PresentationLayer.Models;
+    using Microsoft.AspNetCore.Http;
+    using Microsoft.AspNetCore.Identity;
+    using Microsoft.AspNetCore.Mvc;
+
     public class HomeController : Controller
     {
-        private readonly UserManager<ApplicationUser> userManager;
-        private readonly SignInManager<ApplicationUser> signInManager;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
 
         public HomeController(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager)
         {
-            this.userManager = userManager;
-            this.signInManager = signInManager;
+            _userManager = userManager;
+            _signInManager = signInManager;
         }
 
         public IActionResult Index()
         {
-            if (signInManager.IsSignedIn(User))
+            if (_signInManager.IsSignedIn(User))
             {
                 setUserId();
             }
@@ -55,15 +55,15 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
 
         private void setUserId()
         {
-            if (String.IsNullOrEmpty(HttpContext.Session.GetString("UserId")) && userManager.GetUserId(User) != null)
+            if (String.IsNullOrEmpty(HttpContext.Session.GetString("UserId")) && _userManager.GetUserId(User) != null)
             {
-                HttpContext.Session.SetString("UserId", userManager.GetUserId(User));
+                HttpContext.Session.SetString("UserId", _userManager.GetUserId(User));
             }
         }
 
         private void clearUserId()
         {
-            HttpContext.Session.SetString("UserId", "");
+            HttpContext.Session.SetString("UserId", string.Empty);
         }
     }
 }

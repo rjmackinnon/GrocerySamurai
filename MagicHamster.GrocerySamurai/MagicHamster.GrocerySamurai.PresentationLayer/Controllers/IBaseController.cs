@@ -1,10 +1,10 @@
-﻿using System.Threading.Tasks;
-using MagicHamster.GrocerySamurai.Model.Common;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-
-namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
+﻿namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
 {
+    using System.Threading.Tasks;
+    using MagicHamster.GrocerySamurai.Model.Common;
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.Mvc.ModelBinding;
+
     public interface IBaseController<in T>
         where T : Entity, new()
     {
@@ -15,9 +15,13 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
         ModelStateDictionary ModelState { get; }
 
         Task<IActionResult> Create(T item);
+
         Task<IActionResult> Delete(int? id);
+
         Task<IActionResult> Details(int? id);
+
         Task<IActionResult> Edit(T item);
+
         ActionResult Back();
     }
 }

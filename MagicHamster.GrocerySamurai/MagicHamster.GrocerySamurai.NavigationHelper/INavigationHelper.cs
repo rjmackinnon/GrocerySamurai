@@ -1,11 +1,11 @@
-using System;
-
 namespace MagicHamster.GrocerySamurai.NavigationHelper
 {
+    using System;
+
     public interface INavigationHelper
     {
         /// <summary>
-        /// Get the current count in the navigation stack.
+        /// Gets the current count in the navigation stack.
         /// </summary>
         int Count { get; }
 
@@ -15,7 +15,7 @@ namespace MagicHamster.GrocerySamurai.NavigationHelper
         /// <param name="referralAddress">Address of the referral</param>
         /// <param name="currentAddress">Current address</param>
         /// <param name="addOptions">How to process duplicates</param>
-        void Add(string referralAddress, string currentAddress, AddOptions addOptions = AddOptions.DoNotMatchQueryParameters);
+        void Add(string referralAddress, string currentAddress, AddOption addOptions = AddOption.DoNotMatchQueryParameters);
 
         /// <summary>
         /// Get the latest address on the stack.

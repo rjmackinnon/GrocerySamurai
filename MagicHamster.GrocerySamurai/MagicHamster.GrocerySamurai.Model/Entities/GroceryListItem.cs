@@ -1,9 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using MagicHamster.GrocerySamurai.Model.Common;
-
-namespace MagicHamster.GrocerySamurai.Model.Entities
+﻿namespace MagicHamster.GrocerySamurai.Model.Entities
 {
+    using System.ComponentModel.DataAnnotations;
+    using System.ComponentModel.DataAnnotations.Schema;
+    using MagicHamster.GrocerySamurai.Model.Common;
+
     [Table("grocery_list_item")]
     public class GroceryListItem : Entity
     {

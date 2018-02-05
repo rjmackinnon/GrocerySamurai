@@ -1,7 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace MagicHamster.GrocerySamurai.PresentationLayer.Models.ManageViewModels
+﻿namespace MagicHamster.GrocerySamurai.PresentationLayer.Models.ManageViewModels
 {
+    using System.ComponentModel.DataAnnotations;
+
     public class IndexViewModel
     {
         public string Username { get; set; }

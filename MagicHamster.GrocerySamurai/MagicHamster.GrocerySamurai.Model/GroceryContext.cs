@@ -1,14 +1,13 @@
-﻿using MagicHamster.GrocerySamurai.Model.Entities;
-using Microsoft.EntityFrameworkCore;
-
-namespace MagicHamster.GrocerySamurai.Model
+﻿namespace MagicHamster.GrocerySamurai.Model
 {
+    using MagicHamster.GrocerySamurai.Model.Entities;
+    using Microsoft.EntityFrameworkCore;
+
     public class GroceryContext : DbContext
     {
         public GroceryContext(DbContextOptions options)
             : base(options)
         {
-            
         }
 
         public virtual DbSet<Aisle> Aisles { get; set; }
