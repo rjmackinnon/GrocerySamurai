@@ -1,9 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace MagicHamster.GrocerySamurai.PresentationLayer.Models.ManageViewModels
+﻿namespace MagicHamster.GrocerySamurai.PresentationLayer.Models.ManageViewModels
 {
+    using System.ComponentModel.DataAnnotations;
+    using JetBrains.Annotations;
+
     public class IndexViewModel
     {
+        [UsedImplicitly]
         public string Username { get; set; }
 
         public bool IsEmailConfirmed { get; set; }

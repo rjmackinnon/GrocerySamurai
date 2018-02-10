@@ -1,19 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using MagicHamster.GrocerySamurai.Model.Common;
-using MagicHamster.GrocerySamurai.NavigationHelper;
-using MagicHamster.GrocerySamurai.PresentationLayer.Exceptions;
-using MagicHamster.GrocerySamurai.PresentationLayer.Helpers;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Extensions;
-using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
-#pragma warning disable 1998
+﻿#pragma warning disable 1998
 
 namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading.Tasks;
+    using Exceptions;
+    using Helpers;
+    using JetBrains.Annotations;
+    using Microsoft.AspNetCore.Http;
+    using Microsoft.AspNetCore.Http.Extensions;
+    using Microsoft.AspNetCore.Mvc;
+    using Model.Common;
+    using NavigationHelper;
+    using Newtonsoft.Json;
+
+    /// <inheritdoc cref="IBaseController{T}" />
     /// <summary>
     /// This works like the generic unit tests. The non-generic controllers have the real web methods, but they are simply wrappers
     /// around the generic methods.
@@ -23,51 +26,69 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
         where T : Entity, new()
     {
         private readonly string _defaultType = typeof(T).Name;
-
         private string _userId;
-
-        public string UserId => _userId ?? (_userId = getUserId());
-
         private INavigationHelper _navigationHelper;
 
-        public INavigationHelper NavigationHelper
+        protected INavigationHelper navigationHelper
         {
             get
             {
                 var json = HttpContext.Session.GetString("NavigationHelper");
                 if (json == null)
                 {
-                    _navigationHelper = new NavigationHelper.NavigationHelper();
+                    _navigationHelper = new NavigationHelper();
                     saveNavigationHelper();
                 }
                 else if (_navigationHelper == null)
                 {
-                    _navigationHelper = GrocerySamurai.NavigationHelper.NavigationHelper.FromJson(json);
+                    _navigationHelper = NavigationHelper.FromJson(json);
                 }
 
                 return _navigationHelper;
             }
         }
 
-        private void saveNavigationHelper()
+        private string userId => _userId ?? (_userId = getUserId());
+
+        public virtual async Task<IActionResult> Create(T item)
         {
-            var json = _navigationHelper.ToJson();
-            HttpContext.Session.SetString("NavigationHelper", json);
+            return null;
+        }
+
+        public virtual async Task<IActionResult> Edit(T item)
+        {
+            return null;
+        }
+
+        public virtual async Task<IActionResult> Delete(int? id)
+        {
+            return null;
+        }
+
+        public virtual async Task<IActionResult> Details(int? id)
+        {
+            return null;
+        }
+
+        public virtual ActionResult Back()
+        {
+            return null;
         }
 
         protected async Task<object> indexHelper(List<string> parameters = null, string actionSuffix = null, string controllerType = null)
         {
             var type = controllerType ?? _defaultType;
 
-            var args = UserId;
+            var args = userId;
             if (parameters != null)
             {
                 args = String.Join("/", parameters.ToArray());
             }
+
             var url = $"{type}/GetAll{actionSuffix}/{args}";
 
             var response = WebApiHelper.GetWebApiResponseAsHttpResponseMessage(url);
-            var responseData = await (await response).Content.ReadAsStringAsync();
+            var responseData = await (await response.ConfigureAwait(false)).Content.ReadAsStringAsync().ConfigureAwait(false);
 
             if (!response.Result.IsSuccessStatusCode)
             {
@@ -83,17 +104,19 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
             return records;
         }
 
+        [UsedImplicitly]
         protected async Task<object> detailsHelper(List<string> parameters = null, string actionSuffix = null)
         {
-            var args = "";
+            var args = string.Empty;
             if (parameters != null)
             {
                 args = String.Join("/", parameters.ToArray());
             }
+
             var url = $"{_defaultType}/GetAll{actionSuffix}/{args}";
 
             var response = WebApiHelper.GetWebApiResponseAsHttpResponseMessage(url);
-            var responseData = await (await response).Content.ReadAsStringAsync();
+            var responseData = await (await response.ConfigureAwait(false)).Content.ReadAsStringAsync().ConfigureAwait(false);
 
             if (!response.Result.IsSuccessStatusCode)
             {
@@ -119,7 +142,7 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
 
             createAction?.Invoke(item);
 
-            ViewBag.NavigationHelper = NavigationHelper;
+            ViewBag.NavigationHelper = navigationHelper;
 
             return View(item);
         }
@@ -133,37 +156,7 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
 
             var url = $"{_defaultType}/Add";
 
-            return await processAction(item, url, true);
-        }
-
-        private async Task<ActionResult> processAction(T item, string url, bool doPost)
-        {
-            var validationError = false;
-
-            var response = doPost ? 
-                WebApiHelper.PostWebApiResponseAsHttpResponseMessage(url, item) : 
-                WebApiHelper.PutWebApiResponseAsHttpResponseMessage(url, item);
-            var responseData = await (await response).Content.ReadAsStringAsync();
-
-            if (response.Result.IsSuccessStatusCode)
-            {
-                return RedirectToAction("Back");
-            }
-
-            ViewBag.NavigationHelper = NavigationHelper;
-
-            if (responseData.Contains("ORA-00001"))
-            {
-                ModelState.AddModelError("Name", "Name already exists");
-                validationError = true;
-            }
-
-            if (!processActionResponse(responseData) || validationError)
-            {
-                return View(item);
-            }
-
-            throw new ApplicationException($"{(int)response.Result.StatusCode} {response.Result.ReasonPhrase}: {response.Result.RequestMessage}");
+            return await processAction(item, url, true).ConfigureAwait(false);
         }
 
         protected async Task<ActionResult> editGetHelper(int? id)
@@ -178,7 +171,7 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
             var actionUrl = $"{_defaultType}/Get/{id}";
 
             var response = WebApiHelper.GetWebApiResponseAsHttpResponseMessage(actionUrl);
-            var responseData = await (await response).Content.ReadAsStringAsync();
+            var responseData = await (await response.ConfigureAwait(false)).Content.ReadAsStringAsync().ConfigureAwait(false);
 
             if (!response.Result.IsSuccessStatusCode)
             {
@@ -187,7 +180,7 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
 
             var data = JsonConvert.DeserializeObject<T>(responseData);
 
-            ViewBag.NavigationHelper = NavigationHelper;
+            ViewBag.NavigationHelper = navigationHelper;
 
             return View(data);
         }
@@ -201,7 +194,7 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
 
             var url = $"{_defaultType}/Update";
 
-            return await processAction(item, url, false);
+            return await processAction(item, url, false).ConfigureAwait(false);
         }
 
         protected async Task<ActionResult> deleteHelper(int? id, string controllerName = null)
@@ -214,7 +207,7 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
             var url = $"{_defaultType}/Delete/{id}";
 
             var response = WebApiHelper.DeleteWebApiResponseAsHttpResponseMessage(url);
-            await (await response).Content.ReadAsStringAsync();
+            await (await response.ConfigureAwait(false)).Content.ReadAsStringAsync().ConfigureAwait(false);
 
             if (!response.Result.IsSuccessStatusCode)
             {
@@ -224,36 +217,12 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
             return RedirectToAction("Index", controllerName);
         }
 
-        public virtual async Task<IActionResult> Create(T item)
-        {
-            return null;
-        }
-
-        public virtual async Task<IActionResult> Edit(T item)
-        {
-            return null;
-        }
-
-        public virtual async Task<IActionResult> Delete(int? id)
-        {
-            return null;
-        }
-
-        public virtual async Task<IActionResult> Details(int? id)
-        {
-            return null;
-        }
-        
-        public virtual ActionResult Back()
-        {
-            return null;
-        }
-
         /// <summary>
         /// Use this method to do additional validation
         /// </summary>
         /// <param name="responseData">Response from the API call</param>
         /// <returns>true to continue default processing, false to display page with validation messages</returns>
+        // ReSharper disable once UnusedParameter.Global
         protected virtual bool processActionResponse(string responseData)
         {
             return true;
@@ -261,14 +230,14 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
 
         protected ActionResult backHelper()
         {
-            if (NavigationHelper.Count == 0)
+            if (navigationHelper.Count == 0)
             {
                 return new OkResult();
             }
 
             TempData["FromBack"] = true;
 
-            var uri = new Uri(NavigationHelper.Remove());
+            var uri = new Uri(navigationHelper.Remove());
             saveNavigationHelper();
             return Redirect(uri.AbsoluteUri);
         }
@@ -276,16 +245,54 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
         protected void addToNavigationHelper()
         {
             var fromBack = TempData["FromBack"] as bool?;
-            if (fromBack == null || !fromBack.Value)
+            if (fromBack != null && fromBack.Value)
             {
-                NavigationHelper.Add(Request.Headers["Referer"].First(), Request.GetDisplayUrl());
-                saveNavigationHelper();
+                return;
             }
+
+            navigationHelper.Add(Request.Headers["Referer"].First(), Request.GetDisplayUrl());
+            saveNavigationHelper();
         }
 
         protected string getUserId()
         {
             return HttpContext.Session.GetString("UserId");
+        }
+
+        private void saveNavigationHelper()
+        {
+            var json = _navigationHelper.ToJson();
+            HttpContext.Session.SetString("NavigationHelper", json);
+        }
+
+        private async Task<ActionResult> processAction(T item, string url, bool doPost)
+        {
+            var validationError = false;
+
+            var response = doPost ?
+                WebApiHelper.PostWebApiResponseAsHttpResponseMessage(url, item) :
+                WebApiHelper.PutWebApiResponseAsHttpResponseMessage(url, item);
+            var responseData = await (await response.ConfigureAwait(false)).Content.ReadAsStringAsync().ConfigureAwait(false);
+
+            if (response.Result.IsSuccessStatusCode)
+            {
+                return RedirectToAction("Back");
+            }
+
+            ViewBag.NavigationHelper = navigationHelper;
+
+            if (responseData.Contains("ORA-00001"))
+            {
+                ModelState.AddModelError("Name", "Name already exists");
+                validationError = true;
+            }
+
+            if (!processActionResponse(responseData) || validationError)
+            {
+                return View(item);
+            }
+
+            throw new ApplicationException($"{(int)response.Result.StatusCode} {response.Result.ReasonPhrase}: {response.Result.RequestMessage}");
         }
     }
 }

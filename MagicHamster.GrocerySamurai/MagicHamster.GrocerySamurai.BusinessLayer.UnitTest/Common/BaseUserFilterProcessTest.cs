@@ -1,15 +1,15 @@
-﻿using System.Threading.Tasks;
-using MagicHamster.GrocerySamurai.BusinessLayer.Processes;
-using MagicHamster.GrocerySamurai.Model.Common;
-using NUnit.Framework;
-
-namespace MagicHamster.GrocerySamurai.BusinessLayer.UnitTest.Common
+﻿namespace MagicHamster.GrocerySamurai.BusinessLayer.UnitTest.Common
 {
+    using System.Threading.Tasks;
+    using BusinessLayer.Processes;
+    using Model.Common;
+    using NUnit.Framework;
+
     [TestFixture]
     public abstract class BaseUserFilterProcessTest<T> : BaseProcessTest<T>
         where T : UserFilter, new()
     {
-        protected BaseUserFilterProcess<T> userFilterProcess;
+        private BaseUserFilterProcess<T> userFilterProcess { get; set; }
 
         public override void Init()
         {
@@ -19,7 +19,7 @@ namespace MagicHamster.GrocerySamurai.BusinessLayer.UnitTest.Common
 
         protected async Task getAllByUser_Defaults_TestHelper()
         {
-            var result = await userFilterProcess.GetAllByUser("test");
+            var result = await userFilterProcess.GetAllByUser("test").ConfigureAwait(false);
 
             Assert.AreEqual(4, result.Count);
             Assert.AreEqual(1, result[0].Id);
@@ -32,7 +32,7 @@ namespace MagicHamster.GrocerySamurai.BusinessLayer.UnitTest.Common
         {
             const int pageSize = 2;
 
-            var result = await userFilterProcess.GetAllByUser("test", null, null, pageSize);
+            var result = await userFilterProcess.GetAllByUser("test", null, null, pageSize).ConfigureAwait(false);
 
             Assert.Greater(result.Count, 0);
             Assert.LessOrEqual(pageSize, result.Count);

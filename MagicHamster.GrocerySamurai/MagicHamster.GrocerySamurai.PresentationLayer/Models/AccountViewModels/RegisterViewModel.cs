@@ -1,7 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace MagicHamster.GrocerySamurai.PresentationLayer.Models.AccountViewModels
+﻿namespace MagicHamster.GrocerySamurai.PresentationLayer.Models.AccountViewModels
 {
+    using System.ComponentModel.DataAnnotations;
+
     public class RegisterViewModel
     {
         [Required]

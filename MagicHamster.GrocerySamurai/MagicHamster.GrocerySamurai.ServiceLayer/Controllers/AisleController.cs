@@ -1,50 +1,51 @@
-﻿using System.Threading.Tasks;
-using MagicHamster.GrocerySamurai.BusinessLayer.Interfaces;
-using MagicHamster.GrocerySamurai.Model.Entities;
-using Microsoft.AspNetCore.Mvc;
-
-namespace MagicHamster.GrocerySamurai.ServiceLayer.Controllers
+﻿namespace MagicHamster.GrocerySamurai.ServiceLayer.Controllers
 {
+    using System.Threading.Tasks;
+    using BusinessLayer.Interfaces;
+    using Microsoft.AspNetCore.Mvc;
+    using Model.Entities;
+
     [Route("api/[controller]")]
     public class AisleController : BaseUserFilterController<Aisle>
     {
-        public AisleController(IBaseUserFilterProcess<Aisle> process) : base(process)
+        public AisleController(IBaseUserFilterProcess<Aisle> process)
+            : base(process)
         {
         }
 
         // GET: api/Aisle/GetAll
         [HttpGet("GetAll/{userId}")]
-        public override async Task<IActionResult> GetAll(string userId = null, int? pageSize = 0)
+        public override Task<IActionResult> GetAll(string userId = null, int? pageSize = 0)
         {
-            return await getAllHelper(userId, e=> e.Id, pageSize);
+            return getAllHelper(userId, e => e.Id, pageSize);
         }
 
         // GET: api/Aisle/Get/1
         [HttpGet("{id:int}", Name = "GetAisle")]
-        public override async Task<IActionResult> Get(int? id)
+        public override Task<IActionResult> Get(int? id)
         {
-            return await getHelper(id);
+            return getHelper(id);
         }
 
         // POST: api/Aisle/Add
         [HttpPost("Add")]
-        public override async Task<IActionResult> Add([FromBody]Aisle record)
+        public override Task<IActionResult> Add([FromBody]Aisle record)
         {
-            return await addHelper(record);
+            return addHelper(record);
         }
 
         // PUT: api/Aisle/Update
         [HttpPut("Update")]
-        public override async Task<IActionResult> Update([FromBody]Aisle record)
+        public override Task<IActionResult> Update([FromBody]Aisle record)
         {
-            return await updateHelper(record);
+            return updateHelper(record);
         }
 
         // DELETE: api/Aisle/Delete
         [HttpDelete("{id:int}")]
-        public override async Task<IActionResult> Delete(int id)
+        public override Task<IActionResult> Delete(int id)
         {
-            return await deleteHelper(id);
+            return deleteHelper(id);
         }
     }
 }

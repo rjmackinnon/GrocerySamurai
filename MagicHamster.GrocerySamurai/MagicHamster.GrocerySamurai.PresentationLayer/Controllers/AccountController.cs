@@ -1,26 +1,28 @@
-﻿using System;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using MagicHamster.GrocerySamurai.PresentationLayer.Models;
-using MagicHamster.GrocerySamurai.PresentationLayer.Models.AccountViewModels;
-using MagicHamster.GrocerySamurai.PresentationLayer.Services;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-
-namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
+﻿namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
 {
+    using System;
+    using System.Security.Claims;
+    using System.Threading.Tasks;
+    using Extensions;
+    using JetBrains.Annotations;
+    using Microsoft.AspNetCore.Authentication;
+    using Microsoft.AspNetCore.Authorization;
+    using Microsoft.AspNetCore.Http;
+    using Microsoft.AspNetCore.Identity;
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.Extensions.Logging;
+    using Models;
+    using Models.AccountViewModels;
+    using Services;
+
     [Authorize]
     [Route("[controller]/[action]")]
     public class AccountController : Controller
     {
-        private readonly UserManager<ApplicationUser> userManager;
-        private readonly SignInManager<ApplicationUser> signInManager;
-        private readonly IEmailSender emailSender;
-        private readonly ILogger<AccountController> logger;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly IEmailSender _emailSender;
+        private readonly ILogger<AccountController> _logger;
 
         public AccountController(
             UserManager<ApplicationUser> userManager,
@@ -28,13 +30,14 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
             IEmailSender emailSender,
             ILogger<AccountController> logger)
         {
-            this.userManager = userManager;
-            this.signInManager = signInManager;
-            this.emailSender = emailSender;
-            this.logger = logger;
+            _userManager = userManager;
+            _signInManager = signInManager;
+            _emailSender = emailSender;
+            _logger = logger;
         }
 
         [TempData]
+        [UsedImplicitly]
         public string ErrorMessage { get; set; }
 
         [HttpGet]
@@ -42,7 +45,7 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
         public async Task<IActionResult> Login(string returnUrl = null)
         {
             // Clear the existing external cookie to ensure a clean login process
-            await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
+            await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme).ConfigureAwait(false);
 
             ViewData["ReturnUrl"] = returnUrl;
             return View();
@@ -54,32 +57,36 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
         public async Task<IActionResult> Login(LoginViewModel model, string returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                // This doesn't count login failures towards account lockout
-                // To enable password failures to trigger account lockout, set lockoutOnFailure: true
-                var result = await signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, false);
-                if (result.Succeeded)
-                {
-                    logger.LogInformation("User logged in.");
-                    setUserId();
-                    return redirectToLocal(returnUrl);
-                }
-                if (result.RequiresTwoFactor)
-                {
-                    return RedirectToAction(nameof(LoginWith2Fa), new { returnUrl, model.RememberMe });
-                }
-                if (result.IsLockedOut)
-                {
-                    logger.LogWarning("User account locked out.");
-                    return RedirectToAction(nameof(Lockout));
-                }
-                ModelState.AddModelError(string.Empty, "Invalid login attempt.");
                 return View(model);
             }
 
-            // If we got this far, something failed, redisplay form
+            // This doesn't count login failures towards account lockout
+            // To enable password failures to trigger account lockout, set lockoutOnFailure: true
+            var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, false).ConfigureAwait(false);
+            if (result.Succeeded)
+            {
+                _logger.LogInformation("User logged in.");
+                setUserId();
+                return redirectToLocal(returnUrl);
+            }
+
+            if (result.RequiresTwoFactor)
+            {
+                return RedirectToAction(nameof(LoginWith2Fa), new { returnUrl, model.RememberMe });
+            }
+
+            if (result.IsLockedOut)
+            {
+                _logger.LogWarning("User account locked out.");
+                return RedirectToAction(nameof(Lockout));
+            }
+
+            ModelState.AddModelError(string.Empty, "Invalid login attempt.");
             return View(model);
+
+            // If we got this far, something failed, redisplay form
         }
 
         [HttpGet]
@@ -87,11 +94,11 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
         public async Task<IActionResult> LoginWith2Fa(bool rememberMe, string returnUrl = null)
         {
             // Ensure the user has gone through the username & password screen first
-            var user = await signInManager.GetTwoFactorAuthenticationUserAsync();
+            var user = await _signInManager.GetTwoFactorAuthenticationUserAsync().ConfigureAwait(false);
 
             if (user == null)
             {
-                throw new ApplicationException($"Unable to load two-factor authentication user.");
+                throw new ApplicationException("Unable to load two-factor authentication user.");
             }
 
             var model = new LoginWith2FaViewModel { RememberMe = rememberMe };
@@ -110,28 +117,31 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
                 return View(model);
             }
 
-            var user = await signInManager.GetTwoFactorAuthenticationUserAsync();
+            var user = await _signInManager.GetTwoFactorAuthenticationUserAsync().ConfigureAwait(false);
             if (user == null)
             {
-                throw new ApplicationException($"Unable to load user with ID '{userManager.GetUserId(User)}'.");
+                throw new ApplicationException($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            var authenticatorCode = model.TwoFactorCode.Replace(" ", string.Empty).Replace("-", string.Empty);
+            var authenticatorCode = model.TwoFactorCode.Replace(" ", string.Empty, StringComparison.CurrentCulture)
+                .Replace("-", string.Empty, StringComparison.CurrentCulture);
 
-            var result = await signInManager.TwoFactorAuthenticatorSignInAsync(authenticatorCode, rememberMe, model.RememberMachine);
+            var result = await _signInManager.TwoFactorAuthenticatorSignInAsync(authenticatorCode, rememberMe, model.RememberMachine).ConfigureAwait(false);
 
             if (result.Succeeded)
             {
-                logger.LogInformation("User with ID {UserId} logged in with 2fa.", user.Id);
+                _logger.LogInformation("User with ID {UserId} logged in with 2fa.", user.Id);
                 setUserId();
                 return redirectToLocal(returnUrl);
             }
+
             if (result.IsLockedOut)
             {
-                logger.LogWarning("User with ID {UserId} account locked out.", user.Id);
+                _logger.LogWarning("User with ID {UserId} account locked out.", user.Id);
                 return RedirectToAction(nameof(Lockout));
             }
-            logger.LogWarning("Invalid authenticator code entered for user with ID {UserId}.", user.Id);
+
+            _logger.LogWarning("Invalid authenticator code entered for user with ID {UserId}.", user.Id);
             ModelState.AddModelError(string.Empty, "Invalid authenticator code.");
             return View();
         }
@@ -141,10 +151,10 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
         public async Task<IActionResult> LoginWithRecoveryCode(string returnUrl = null)
         {
             // Ensure the user has gone through the username & password screen first
-            var user = await signInManager.GetTwoFactorAuthenticationUserAsync();
+            var user = await _signInManager.GetTwoFactorAuthenticationUserAsync().ConfigureAwait(false);
             if (user == null)
             {
-                throw new ApplicationException($"Unable to load two-factor authentication user.");
+                throw new ApplicationException("Unable to load two-factor authentication user.");
             }
 
             ViewData["ReturnUrl"] = returnUrl;
@@ -162,28 +172,30 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
                 return View(model);
             }
 
-            var user = await signInManager.GetTwoFactorAuthenticationUserAsync();
+            var user = await _signInManager.GetTwoFactorAuthenticationUserAsync().ConfigureAwait(false);
             if (user == null)
             {
-                throw new ApplicationException($"Unable to load two-factor authentication user.");
+                throw new ApplicationException("Unable to load two-factor authentication user.");
             }
 
-            var recoveryCode = model.RecoveryCode.Replace(" ", string.Empty);
+            var recoveryCode = model.RecoveryCode.Replace(" ", string.Empty, StringComparison.CurrentCulture);
 
-            var result = await signInManager.TwoFactorRecoveryCodeSignInAsync(recoveryCode);
+            var result = await _signInManager.TwoFactorRecoveryCodeSignInAsync(recoveryCode).ConfigureAwait(false);
 
             if (result.Succeeded)
             {
-                logger.LogInformation("User with ID {UserId} logged in with a recovery code.", user.Id);
+                _logger.LogInformation("User with ID {UserId} logged in with a recovery code.", user.Id);
                 setUserId();
                 return redirectToLocal(returnUrl);
             }
+
             if (result.IsLockedOut)
             {
-                logger.LogWarning("User with ID {UserId} account locked out.", user.Id);
+                _logger.LogWarning("User with ID {UserId} account locked out.", user.Id);
                 return RedirectToAction(nameof(Lockout));
             }
-            logger.LogWarning("Invalid recovery code entered for user with ID {UserId}", user.Id);
+
+            _logger.LogWarning("Invalid recovery code entered for user with ID {UserId}", user.Id);
             ModelState.AddModelError(string.Empty, "Invalid recovery code entered.");
             return View();
         }
@@ -209,25 +221,28 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
         public async Task<IActionResult> Register(RegisterViewModel model, string returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
-                var result = await userManager.CreateAsync(user, model.Password);
-                if (result.Succeeded)
-                {
-                    logger.LogInformation("User created a new account with password.");
-
-                    var code = await userManager.GenerateEmailConfirmationTokenAsync(user);
-                    var callbackUrl = Url.EmailConfirmationLink(user.Id, code, Request.Scheme);
-                    await emailSender.SendEmailConfirmationAsync(model.Email, callbackUrl);
-
-                    await signInManager.SignInAsync(user, false);
-                    logger.LogInformation("User created a new account with password.");
-                    setUserId();
-                    return redirectToLocal(returnUrl);
-                }
-                addErrors(result);
+                return View(model);
             }
+
+            var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+            var result = await _userManager.CreateAsync(user, model.Password).ConfigureAwait(false);
+            if (result.Succeeded)
+            {
+                _logger.LogInformation("User created a new account with password.");
+
+                var code = await _userManager.GenerateEmailConfirmationTokenAsync(user).ConfigureAwait(false);
+                var callbackUrl = Url.EmailConfirmationLink(user.Id, code, Request.Scheme);
+                await _emailSender.SendEmailConfirmationAsync(model.Email, callbackUrl).ConfigureAwait(false);
+
+                await _signInManager.SignInAsync(user, false).ConfigureAwait(false);
+                _logger.LogInformation("User created a new account with password.");
+                setUserId();
+                return redirectToLocal(returnUrl);
+            }
+
+            addErrors(result);
 
             // If we got this far, something failed, redisplay form
             return View(model);
@@ -237,8 +252,8 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Logout()
         {
-            await signInManager.SignOutAsync();
-            logger.LogInformation("User logged out.");
+            await _signInManager.SignOutAsync().ConfigureAwait(false);
+            _logger.LogInformation("User logged out.");
             clearUserId();
             return RedirectToAction(nameof(HomeController.Index), "Home");
         }
@@ -250,7 +265,7 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
         {
             // Request a redirect to the external login provider.
             var redirectUrl = Url.Action(nameof(ExternalLoginCallback), "Account", new { returnUrl });
-            var properties = signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl);
+            var properties = _signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl);
             return Challenge(properties, provider);
         }
 
@@ -263,24 +278,27 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
                 ErrorMessage = $"Error from external provider: {remoteError}";
                 return RedirectToAction(nameof(Login));
             }
-            var info = await signInManager.GetExternalLoginInfoAsync();
+
+            var info = await _signInManager.GetExternalLoginInfoAsync().ConfigureAwait(false);
             if (info == null)
             {
                 return RedirectToAction(nameof(Login));
             }
 
             // Sign in the user with this external login provider if the user already has a login.
-            var result = await signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, false, true);
+            var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, false, true).ConfigureAwait(false);
             if (result.Succeeded)
             {
-                logger.LogInformation("User logged in with {Name} provider.", info.LoginProvider);
+                _logger.LogInformation("User logged in with {Name} provider.", info.LoginProvider);
                 setUserId();
                 return redirectToLocal(returnUrl);
             }
+
             if (result.IsLockedOut)
             {
                 return RedirectToAction(nameof(Lockout));
             }
+
             // If the user does not have an account, then ask the user to create an account.
             ViewData["ReturnUrl"] = returnUrl;
             ViewData["LoginProvider"] = info.LoginProvider;
@@ -296,24 +314,26 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
             if (ModelState.IsValid)
             {
                 // Get the information about the user from the external login provider
-                var info = await signInManager.GetExternalLoginInfoAsync();
+                var info = await _signInManager.GetExternalLoginInfoAsync().ConfigureAwait(false);
                 if (info == null)
                 {
                     throw new ApplicationException("Error loading external login information during confirmation.");
                 }
+
                 var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
-                var result = await userManager.CreateAsync(user);
+                var result = await _userManager.CreateAsync(user).ConfigureAwait(false);
                 if (result.Succeeded)
                 {
-                    result = await userManager.AddLoginAsync(user, info);
+                    result = await _userManager.AddLoginAsync(user, info).ConfigureAwait(false);
                     if (result.Succeeded)
                     {
-                        await signInManager.SignInAsync(user, false);
-                        logger.LogInformation("User created an account using {Name} provider.", info.LoginProvider);
+                        await _signInManager.SignInAsync(user, false).ConfigureAwait(false);
+                        _logger.LogInformation("User created an account using {Name} provider.", info.LoginProvider);
                         setUserId();
                         return redirectToLocal(returnUrl);
                     }
                 }
+
                 addErrors(result);
             }
 
@@ -329,12 +349,14 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
             {
                 return RedirectToAction(nameof(HomeController.Index), "Home");
             }
-            var user = await userManager.FindByIdAsync(userId);
+
+            var user = await _userManager.FindByIdAsync(userId).ConfigureAwait(false);
             if (user == null)
             {
                 throw new ApplicationException($"Unable to load user with ID '{userId}'.");
             }
-            var result = await userManager.ConfirmEmailAsync(user, code);
+
+            var result = await _userManager.ConfirmEmailAsync(user, code).ConfigureAwait(false);
             return View(result.Succeeded ? "ConfirmEmail" : "Error");
         }
 
@@ -350,26 +372,29 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel model)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                var user = await userManager.FindByEmailAsync(model.Email);
-                if (user == null || !(await userManager.IsEmailConfirmedAsync(user)))
-                {
-                    // Don't reveal that the user does not exist or is not confirmed
-                    return RedirectToAction(nameof(ForgotPasswordConfirmation));
-                }
+                return View(model);
+            }
 
-                // For more information on how to enable account confirmation and password reset please
-                // visit https://go.microsoft.com/fwlink/?LinkID=532713
-                var code = await userManager.GeneratePasswordResetTokenAsync(user);
-                var callbackUrl = Url.ResetPasswordCallbackLink(user.Id, code, Request.Scheme);
-                await emailSender.SendEmailAsync(model.Email, "Reset Password",
-                   $"Please reset your password by clicking here: <a href='{callbackUrl}'>link</a>");
+            var user = await _userManager.FindByEmailAsync(model.Email).ConfigureAwait(false);
+            if (user == null || !await _userManager.IsEmailConfirmedAsync(user).ConfigureAwait(false))
+            {
+                // Don't reveal that the user does not exist or is not confirmed
                 return RedirectToAction(nameof(ForgotPasswordConfirmation));
             }
 
+            // For more information on how to enable account confirmation and password reset please
+            // visit https://go.microsoft.com/fwlink/?LinkID=532713
+            var code = await _userManager.GeneratePasswordResetTokenAsync(user).ConfigureAwait(false);
+            var callbackUrl = Url.ResetPasswordCallbackLink(user.Id, code, Request.Scheme);
+            await _emailSender.SendEmailAsync(
+                model.Email,
+                "Reset Password",
+                $"Please reset your password by clicking here: <a href='{callbackUrl}'>link</a>").ConfigureAwait(false);
+            return RedirectToAction(nameof(ForgotPasswordConfirmation));
+
             // If we got this far, something failed, redisplay form
-            return View(model);
         }
 
         [HttpGet]
@@ -387,6 +412,7 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
             {
                 throw new ApplicationException("A code must be supplied for password reset.");
             }
+
             var model = new ResetPasswordViewModel { Code = code };
             return View(model);
         }
@@ -400,17 +426,20 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
             {
                 return View(model);
             }
-            var user = await userManager.FindByEmailAsync(model.Email);
+
+            var user = await _userManager.FindByEmailAsync(model.Email).ConfigureAwait(false);
             if (user == null)
             {
                 // Don't reveal that the user does not exist
                 return RedirectToAction(nameof(ResetPasswordConfirmation));
             }
-            var result = await userManager.ResetPasswordAsync(user, model.Code, model.Password);
+
+            var result = await _userManager.ResetPasswordAsync(user, model.Code, model.Password).ConfigureAwait(false);
             if (result.Succeeded)
             {
                 return RedirectToAction(nameof(ResetPasswordConfirmation));
             }
+
             addErrors(result);
             return View();
         }
@@ -421,7 +450,6 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
         {
             return View();
         }
-
 
         [HttpGet]
         public IActionResult AccessDenied()
@@ -445,20 +473,21 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
             {
                 return Redirect(returnUrl);
             }
+
             return RedirectToAction(nameof(HomeController.Index), "Home");
         }
 
         private void setUserId()
         {
-            if (String.IsNullOrEmpty(HttpContext.Session.GetString("UserId")) && userManager.GetUserId(User) != null)
+            if (String.IsNullOrEmpty(HttpContext.Session.GetString("UserId")) && _userManager.GetUserId(User) != null)
             {
-                HttpContext.Session.SetString("UserId", userManager.GetUserId(User));
+                HttpContext.Session.SetString("UserId", _userManager.GetUserId(User));
             }
         }
 
         private void clearUserId()
         {
-            HttpContext.Session.SetString("UserId", "");
+            HttpContext.Session.SetString("UserId", string.Empty);
         }
         #endregion
     }

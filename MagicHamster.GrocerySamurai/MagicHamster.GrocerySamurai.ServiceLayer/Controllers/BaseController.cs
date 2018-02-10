@@ -1,14 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq.Expressions;
-using System.Net;
-using System.Threading.Tasks;
-using MagicHamster.GrocerySamurai.BusinessLayer.Interfaces;
-using MagicHamster.GrocerySamurai.Model.Common;
-using Microsoft.AspNetCore.Mvc;
-
-namespace MagicHamster.GrocerySamurai.ServiceLayer.Controllers
+﻿namespace MagicHamster.GrocerySamurai.ServiceLayer.Controllers
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq.Expressions;
+    using System.Net;
+    using System.Threading.Tasks;
+    using BusinessLayer.Interfaces;
+    using JetBrains.Annotations;
+    using Microsoft.AspNetCore.Mvc;
+    using Model.Common;
+
+    /// <inheritdoc cref="IBaseController{T}" />
     /// <summary>
     /// This works like the generic unit tests. The non-generic controllers have the real web methods, but they are simply wrappers
     /// around the generic methods.
@@ -17,24 +19,38 @@ namespace MagicHamster.GrocerySamurai.ServiceLayer.Controllers
     public abstract class BaseController<T> : Controller, IBaseController<T>
         where T : Entity
     {
-        protected List<string> childProperties;
-
-        public IBaseProcess<T> BusinessProcess { get; set; }
-
-        public BaseController()
+        protected BaseController()
         {
         }
 
-        public BaseController(IBaseProcess<T> process)
+        protected BaseController(IBaseProcess<T> process)
         {
             BusinessProcess = process;
         }
+
+        [UsedImplicitly]
+        public IBaseProcess<T> BusinessProcess { get; set; }
+
+#pragma warning disable CA2227 // Collection properties should be read only
+        protected List<string> childProperties { get; set; }
+#pragma warning restore CA2227 // Collection properties should be read only
+
+        public abstract Task<IActionResult> GetAll(string userId = null, int? pageSize = 0);
+
+        public abstract Task<IActionResult> Get(int? id);
+
+        public abstract Task<IActionResult> Add(T record);
+
+        public abstract Task<IActionResult> Update(T record);
+
+        public abstract Task<IActionResult> Delete(int id);
 
         protected async Task<IActionResult> getAllHelper(Expression<Func<T, object>> orderBy, int? pageSize)
         {
             try
             {
-                var data = await BusinessProcess.GetAll(orderBy, childProperties, pageSize ?? 0);
+                var data = await BusinessProcess.GetAll(orderBy, childProperties, pageSize ?? 0)
+                    .ConfigureAwait(false);
                 return Ok(data);
             }
             catch (Exception ex)
@@ -52,7 +68,8 @@ namespace MagicHamster.GrocerySamurai.ServiceLayer.Controllers
 
             try
             {
-                var data = await BusinessProcess.GetById(id.Value, childProperties);
+                var data = await BusinessProcess.GetById(id.Value, childProperties)
+                    .ConfigureAwait(false);
                 return Ok(data);
             }
             catch (Exception ex)
@@ -70,10 +87,12 @@ namespace MagicHamster.GrocerySamurai.ServiceLayer.Controllers
 
             try
             {
-                await BusinessProcess.AddRecord(record);
-                var result = await BusinessProcess.Save();
+                await BusinessProcess.AddRecord(record)
+                    .ConfigureAwait(false);
+                var result = await BusinessProcess.Save()
+                    .ConfigureAwait(false);
 
-                return result == 1 ? CreatedAtRoute($"Get{typeof(T).Name}", new {id = record.Id}, record) :
+                return result == 1 ? CreatedAtRoute($"Get{typeof(T).Name}", new { id = record.Id }, record) :
                     StatusCode((int)HttpStatusCode.NotModified, $"No {typeof(T).Name} data was inserted.");
             }
             catch (Exception ex)
@@ -91,8 +110,10 @@ namespace MagicHamster.GrocerySamurai.ServiceLayer.Controllers
 
             try
             {
-                await BusinessProcess.UpdateRecord(record);
-                var result = await BusinessProcess.Save();
+                await BusinessProcess.UpdateRecord(record)
+                    .ConfigureAwait(false);
+                var result = await BusinessProcess.Save()
+                    .ConfigureAwait(false);
 
                 return result == 1 ? Ok($"{typeof(T).Name} was successfully updated.") :
                     StatusCode((int)HttpStatusCode.NotModified, $"No {typeof(T).Name} data was updated.");
@@ -112,8 +133,10 @@ namespace MagicHamster.GrocerySamurai.ServiceLayer.Controllers
 
             try
             {
-                await BusinessProcess.DeleteRecord(id);
-                var result = await BusinessProcess.Save();
+                await BusinessProcess.DeleteRecord(id)
+                    .ConfigureAwait(false);
+                var result = await BusinessProcess.Save()
+                    .ConfigureAwait(false);
 
                 return result == 1 ? Ok($"{typeof(T).Name} was successfully deleted.") :
                     StatusCode((int)HttpStatusCode.NotModified, $"No {typeof(T).Name} data was deleted.");
@@ -123,15 +146,5 @@ namespace MagicHamster.GrocerySamurai.ServiceLayer.Controllers
                 return StatusCode((int)HttpStatusCode.InternalServerError, ex.GetBaseException().Message);
             }
         }
-
-        public abstract Task<IActionResult> GetAll(string userId = null, int? pageSize = 0);
-
-        public abstract Task<IActionResult> Get(int? id);
-
-        public abstract Task<IActionResult> Add(T record);
-
-        public abstract Task<IActionResult> Update(T record);
-
-        public abstract Task<IActionResult> Delete(int id);
     }
 }

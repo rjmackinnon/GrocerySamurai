@@ -1,9 +1,9 @@
 ﻿@using MagicHamster.GrocerySamurai.PresentationLayer.Models
 @using MagicHamster.GrocerySamurai.PresentationLayer.Views.Manage
 @using Microsoft.AspNetCore.Identity
-@inject SignInManager<ApplicationUser> SignInManager
+@inject SignInManager<ApplicationUser> signInManager
 @{
-    var hasExternalLogins = (await SignInManager.GetExternalAuthenticationSchemesAsync()).Any();
+    var hasExternalLogins = (await signInManager.GetExternalAuthenticationSchemesAsync()).Any();
 }
 
 <ul class="nav nav-pills nav-stacked">

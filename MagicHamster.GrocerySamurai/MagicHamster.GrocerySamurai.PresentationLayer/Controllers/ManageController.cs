@@ -1,30 +1,30 @@
-﻿using System;
-using System.Linq;
-using System.Text;
-using System.Text.Encodings.Web;
-using System.Threading.Tasks;
-using MagicHamster.GrocerySamurai.PresentationLayer.Models;
-using MagicHamster.GrocerySamurai.PresentationLayer.Models.ManageViewModels;
-using MagicHamster.GrocerySamurai.PresentationLayer.Services;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-
-namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
+﻿namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
 {
+    using System;
+    using System.Linq;
+    using System.Text;
+    using System.Text.Encodings.Web;
+    using System.Threading.Tasks;
+    using Extensions;
+    using JetBrains.Annotations;
+    using Microsoft.AspNetCore.Authentication;
+    using Microsoft.AspNetCore.Authorization;
+    using Microsoft.AspNetCore.Identity;
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.Extensions.Logging;
+    using Models;
+    using Models.ManageViewModels;
+    using Services;
+
     [Authorize]
     [Route("[controller]/[action]")]
     public class ManageController : Controller
     {
-        private readonly UserManager<ApplicationUser> userManager;
-        private readonly SignInManager<ApplicationUser> signInManager;
-        private readonly IEmailSender emailSender;
-        private readonly ILogger<ManageController> logger;
-        private readonly UrlEncoder urlEncoder;
-
-        private const string AuthenicatorUriFormat = "otpauth://totp/{0}:{1}?secret={2}&issuer={0}&digits=6";
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly IEmailSender _emailSender;
+        private readonly ILogger<ManageController> _logger;
+        private readonly UrlEncoder _urlEncoder;
 
         public ManageController(
           UserManager<ApplicationUser> userManager,
@@ -33,23 +33,24 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
           ILogger<ManageController> logger,
           UrlEncoder urlEncoder)
         {
-            this.userManager = userManager;
-            this.signInManager = signInManager;
-            this.emailSender = emailSender;
-            this.logger = logger;
-            this.urlEncoder = urlEncoder;
+            _userManager = userManager;
+            _signInManager = signInManager;
+            _emailSender = emailSender;
+            _logger = logger;
+            _urlEncoder = urlEncoder;
         }
 
         [TempData]
+        [UsedImplicitly]
         public string StatusMessage { get; set; }
 
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var user = await userManager.GetUserAsync(User);
+            var user = await _userManager.GetUserAsync(User).ConfigureAwait(false);
             if (user == null)
             {
-                throw new ApplicationException($"Unable to load user with ID '{userManager.GetUserId(User)}'.");
+                throw new ApplicationException($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
             var model = new IndexViewModel
@@ -73,16 +74,16 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
                 return View(model);
             }
 
-            var user = await userManager.GetUserAsync(User);
+            var user = await _userManager.GetUserAsync(User).ConfigureAwait(false);
             if (user == null)
             {
-                throw new ApplicationException($"Unable to load user with ID '{userManager.GetUserId(User)}'.");
+                throw new ApplicationException($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
             var email = user.Email;
             if (model.Email != email)
             {
-                var setEmailResult = await userManager.SetEmailAsync(user, model.Email);
+                var setEmailResult = await _userManager.SetEmailAsync(user, model.Email).ConfigureAwait(false);
                 if (!setEmailResult.Succeeded)
                 {
                     throw new ApplicationException($"Unexpected error occurred setting email for user with ID '{user.Id}'.");
@@ -92,7 +93,7 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
             var phoneNumber = user.PhoneNumber;
             if (model.PhoneNumber != phoneNumber)
             {
-                var setPhoneResult = await userManager.SetPhoneNumberAsync(user, model.PhoneNumber);
+                var setPhoneResult = await _userManager.SetPhoneNumberAsync(user, model.PhoneNumber).ConfigureAwait(false);
                 if (!setPhoneResult.Succeeded)
                 {
                     throw new ApplicationException($"Unexpected error occurred setting phone number for user with ID '{user.Id}'.");
@@ -112,16 +113,16 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
                 return View("Index", model);
             }
 
-            var user = await userManager.GetUserAsync(User);
+            var user = await _userManager.GetUserAsync(User).ConfigureAwait(false);
             if (user == null)
             {
-                throw new ApplicationException($"Unable to load user with ID '{userManager.GetUserId(User)}'.");
+                throw new ApplicationException($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            var code = await userManager.GenerateEmailConfirmationTokenAsync(user);
+            var code = await _userManager.GenerateEmailConfirmationTokenAsync(user).ConfigureAwait(false);
             var callbackUrl = Url.EmailConfirmationLink(user.Id, code, Request.Scheme);
             var email = user.Email;
-            await emailSender.SendEmailConfirmationAsync(email, callbackUrl);
+            await _emailSender.SendEmailConfirmationAsync(email, callbackUrl).ConfigureAwait(false);
 
             StatusMessage = "Verification email sent. Please check your email.";
             return RedirectToAction(nameof(Index));
@@ -130,13 +131,13 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
         [HttpGet]
         public async Task<IActionResult> ChangePassword()
         {
-            var user = await userManager.GetUserAsync(User);
+            var user = await _userManager.GetUserAsync(User).ConfigureAwait(false);
             if (user == null)
             {
-                throw new ApplicationException($"Unable to load user with ID '{userManager.GetUserId(User)}'.");
+                throw new ApplicationException($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            var hasPassword = await userManager.HasPasswordAsync(user);
+            var hasPassword = await _userManager.HasPasswordAsync(user).ConfigureAwait(false);
             if (!hasPassword)
             {
                 return RedirectToAction(nameof(SetPassword));
@@ -155,21 +156,21 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
                 return View(model);
             }
 
-            var user = await userManager.GetUserAsync(User);
+            var user = await _userManager.GetUserAsync(User).ConfigureAwait(false);
             if (user == null)
             {
-                throw new ApplicationException($"Unable to load user with ID '{userManager.GetUserId(User)}'.");
+                throw new ApplicationException($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            var changePasswordResult = await userManager.ChangePasswordAsync(user, model.OldPassword, model.NewPassword);
+            var changePasswordResult = await _userManager.ChangePasswordAsync(user, model.OldPassword, model.NewPassword).ConfigureAwait(false);
             if (!changePasswordResult.Succeeded)
             {
                 addErrors(changePasswordResult);
                 return View(model);
             }
 
-            await signInManager.SignInAsync(user, false);
-            logger.LogInformation("User changed their password successfully.");
+            await _signInManager.SignInAsync(user, false).ConfigureAwait(false);
+            _logger.LogInformation("User changed their password successfully.");
             StatusMessage = "Your password has been changed.";
 
             return RedirectToAction(nameof(ChangePassword));
@@ -178,13 +179,13 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
         [HttpGet]
         public async Task<IActionResult> SetPassword()
         {
-            var user = await userManager.GetUserAsync(User);
+            var user = await _userManager.GetUserAsync(User).ConfigureAwait(false);
             if (user == null)
             {
-                throw new ApplicationException($"Unable to load user with ID '{userManager.GetUserId(User)}'.");
+                throw new ApplicationException($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            var hasPassword = await userManager.HasPasswordAsync(user);
+            var hasPassword = await _userManager.HasPasswordAsync(user).ConfigureAwait(false);
 
             if (hasPassword)
             {
@@ -204,20 +205,20 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
                 return View(model);
             }
 
-            var user = await userManager.GetUserAsync(User);
+            var user = await _userManager.GetUserAsync(User).ConfigureAwait(false);
             if (user == null)
             {
-                throw new ApplicationException($"Unable to load user with ID '{userManager.GetUserId(User)}'.");
+                throw new ApplicationException($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            var addPasswordResult = await userManager.AddPasswordAsync(user, model.NewPassword);
+            var addPasswordResult = await _userManager.AddPasswordAsync(user, model.NewPassword).ConfigureAwait(false);
             if (!addPasswordResult.Succeeded)
             {
                 addErrors(addPasswordResult);
                 return View(model);
             }
 
-            await signInManager.SignInAsync(user, false);
+            await _signInManager.SignInAsync(user, false).ConfigureAwait(false);
             StatusMessage = "Your password has been set.";
 
             return RedirectToAction(nameof(SetPassword));
@@ -226,17 +227,17 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
         [HttpGet]
         public async Task<IActionResult> ExternalLogins()
         {
-            var user = await userManager.GetUserAsync(User);
+            var user = await _userManager.GetUserAsync(User).ConfigureAwait(false);
             if (user == null)
             {
-                throw new ApplicationException($"Unable to load user with ID '{userManager.GetUserId(User)}'.");
+                throw new ApplicationException($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            var model = new ExternalLoginsViewModel { CurrentLogins = await userManager.GetLoginsAsync(user) };
-            model.OtherLogins = (await signInManager.GetExternalAuthenticationSchemesAsync())
+            var model = new ExternalLoginsViewModel { CurrentLogins = await _userManager.GetLoginsAsync(user).ConfigureAwait(false) };
+            model.OtherLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync().ConfigureAwait(false))
                 .Where(auth => model.CurrentLogins.All(ul => auth.Name != ul.LoginProvider))
                 .ToList();
-            model.ShowRemoveButton = await userManager.HasPasswordAsync(user) || model.CurrentLogins.Count > 1;
+            model.ShowRemoveButton = await _userManager.HasPasswordAsync(user).ConfigureAwait(false) || model.CurrentLogins.Count > 1;
             model.StatusMessage = StatusMessage;
 
             return View(model);
@@ -247,37 +248,37 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
         public async Task<IActionResult> LinkLogin(string provider)
         {
             // Clear the existing external cookie to ensure a clean login process
-            await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
+            await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme).ConfigureAwait(false);
 
             // Request a redirect to the external login provider to link a login for the current user
             var redirectUrl = Url.Action(nameof(LinkLoginCallback));
-            var properties = signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl, userManager.GetUserId(User));
+            var properties = _signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl, _userManager.GetUserId(User));
             return new ChallengeResult(provider, properties);
         }
 
         [HttpGet]
         public async Task<IActionResult> LinkLoginCallback()
         {
-            var user = await userManager.GetUserAsync(User);
+            var user = await _userManager.GetUserAsync(User).ConfigureAwait(false);
             if (user == null)
             {
-                throw new ApplicationException($"Unable to load user with ID '{userManager.GetUserId(User)}'.");
+                throw new ApplicationException($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            var info = await signInManager.GetExternalLoginInfoAsync(user.Id);
+            var info = await _signInManager.GetExternalLoginInfoAsync(user.Id).ConfigureAwait(false);
             if (info == null)
             {
                 throw new ApplicationException($"Unexpected error occurred loading external login info for user with ID '{user.Id}'.");
             }
 
-            var result = await userManager.AddLoginAsync(user, info);
+            var result = await _userManager.AddLoginAsync(user, info).ConfigureAwait(false);
             if (!result.Succeeded)
             {
                 throw new ApplicationException($"Unexpected error occurred adding external login for user with ID '{user.Id}'.");
             }
 
             // Clear the existing external cookie to ensure a clean login process
-            await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
+            await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme).ConfigureAwait(false);
 
             StatusMessage = "The external login was added.";
             return RedirectToAction(nameof(ExternalLogins));
@@ -287,19 +288,19 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> RemoveLogin(RemoveLoginViewModel model)
         {
-            var user = await userManager.GetUserAsync(User);
+            var user = await _userManager.GetUserAsync(User).ConfigureAwait(false);
             if (user == null)
             {
-                throw new ApplicationException($"Unable to load user with ID '{userManager.GetUserId(User)}'.");
+                throw new ApplicationException($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            var result = await userManager.RemoveLoginAsync(user, model.LoginProvider, model.ProviderKey);
+            var result = await _userManager.RemoveLoginAsync(user, model.LoginProvider, model.ProviderKey).ConfigureAwait(false);
             if (!result.Succeeded)
             {
                 throw new ApplicationException($"Unexpected error occurred removing external login for user with ID '{user.Id}'.");
             }
 
-            await signInManager.SignInAsync(user, false);
+            await _signInManager.SignInAsync(user, false).ConfigureAwait(false);
             StatusMessage = "The external login was removed.";
             return RedirectToAction(nameof(ExternalLogins));
         }
@@ -307,17 +308,17 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
         [HttpGet]
         public async Task<IActionResult> TwoFactorAuthentication()
         {
-            var user = await userManager.GetUserAsync(User);
+            var user = await _userManager.GetUserAsync(User).ConfigureAwait(false);
             if (user == null)
             {
-                throw new ApplicationException($"Unable to load user with ID '{userManager.GetUserId(User)}'.");
+                throw new ApplicationException($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
             var model = new TwoFactorAuthenticationViewModel
             {
-                HasAuthenticator = await userManager.GetAuthenticatorKeyAsync(user) != null,
+                HasAuthenticator = await _userManager.GetAuthenticatorKeyAsync(user).ConfigureAwait(false) != null,
                 Is2FaEnabled = user.TwoFactorEnabled,
-                RecoveryCodesLeft = await userManager.CountRecoveryCodesAsync(user)
+                RecoveryCodesLeft = await _userManager.CountRecoveryCodesAsync(user).ConfigureAwait(false)
             };
 
             return View(model);
@@ -326,10 +327,10 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
         [HttpGet]
         public async Task<IActionResult> Disable2FaWarning()
         {
-            var user = await userManager.GetUserAsync(User);
+            var user = await _userManager.GetUserAsync(User).ConfigureAwait(false);
             if (user == null)
             {
-                throw new ApplicationException($"Unable to load user with ID '{userManager.GetUserId(User)}'.");
+                throw new ApplicationException($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
             if (!user.TwoFactorEnabled)
@@ -344,36 +345,36 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Disable2Fa()
         {
-            var user = await userManager.GetUserAsync(User);
+            var user = await _userManager.GetUserAsync(User).ConfigureAwait(false);
             if (user == null)
             {
-                throw new ApplicationException($"Unable to load user with ID '{userManager.GetUserId(User)}'.");
+                throw new ApplicationException($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            var disable2FaResult = await userManager.SetTwoFactorEnabledAsync(user, false);
+            var disable2FaResult = await _userManager.SetTwoFactorEnabledAsync(user, false).ConfigureAwait(false);
             if (!disable2FaResult.Succeeded)
             {
                 throw new ApplicationException($"Unexpected error occured disabling 2FA for user with ID '{user.Id}'.");
             }
 
-            logger.LogInformation("User with ID {UserId} has disabled 2fa.", user.Id);
+            _logger.LogInformation("User with ID {UserId} has disabled 2fa.", user.Id);
             return RedirectToAction(nameof(TwoFactorAuthentication));
         }
 
         [HttpGet]
         public async Task<IActionResult> EnableAuthenticator()
         {
-            var user = await userManager.GetUserAsync(User);
+            var user = await _userManager.GetUserAsync(User).ConfigureAwait(false);
             if (user == null)
             {
-                throw new ApplicationException($"Unable to load user with ID '{userManager.GetUserId(User)}'.");
+                throw new ApplicationException($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            var unformattedKey = await userManager.GetAuthenticatorKeyAsync(user);
+            var unformattedKey = await _userManager.GetAuthenticatorKeyAsync(user).ConfigureAwait(false);
             if (string.IsNullOrEmpty(unformattedKey))
             {
-                await userManager.ResetAuthenticatorKeyAsync(user);
-                unformattedKey = await userManager.GetAuthenticatorKeyAsync(user);
+                await _userManager.ResetAuthenticatorKeyAsync(user).ConfigureAwait(false);
+                unformattedKey = await _userManager.GetAuthenticatorKeyAsync(user).ConfigureAwait(false);
             }
 
             var model = new EnableAuthenticatorViewModel
@@ -394,17 +395,18 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
                 return View(model);
             }
 
-            var user = await userManager.GetUserAsync(User);
+            var user = await _userManager.GetUserAsync(User).ConfigureAwait(false);
             if (user == null)
             {
-                throw new ApplicationException($"Unable to load user with ID '{userManager.GetUserId(User)}'.");
+                throw new ApplicationException($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
             // Strip spaces and hypens
-            var verificationCode = model.Code.Replace(" ", string.Empty).Replace("-", string.Empty);
+            var verificationCode = model.Code.Replace(" ", string.Empty, StringComparison.CurrentCulture)
+                .Replace("-", string.Empty, StringComparison.CurrentCulture);
 
-            var is2FaTokenValid = await userManager.VerifyTwoFactorTokenAsync(
-                user, userManager.Options.Tokens.AuthenticatorTokenProvider, verificationCode);
+            var is2FaTokenValid = await _userManager.VerifyTwoFactorTokenAsync(
+                user, _userManager.Options.Tokens.AuthenticatorTokenProvider, verificationCode).ConfigureAwait(false);
 
             if (!is2FaTokenValid)
             {
@@ -412,8 +414,8 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
                 return View(model);
             }
 
-            await userManager.SetTwoFactorEnabledAsync(user, true);
-            logger.LogInformation("User with ID {UserId} has enabled 2FA with an authenticator app.", user.Id);
+            await _userManager.SetTwoFactorEnabledAsync(user, true).ConfigureAwait(false);
+            _logger.LogInformation("User with ID {UserId} has enabled 2FA with an authenticator app.", user.Id);
             return RedirectToAction(nameof(GenerateRecoveryCodes));
         }
 
@@ -427,15 +429,15 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ResetAuthenticator()
         {
-            var user = await userManager.GetUserAsync(User);
+            var user = await _userManager.GetUserAsync(User).ConfigureAwait(false);
             if (user == null)
             {
-                throw new ApplicationException($"Unable to load user with ID '{userManager.GetUserId(User)}'.");
+                throw new ApplicationException($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            await userManager.SetTwoFactorEnabledAsync(user, false);
-            await userManager.ResetAuthenticatorKeyAsync(user);
-            logger.LogInformation("User with id '{UserId}' has reset their authentication app key.", user.Id);
+            await _userManager.SetTwoFactorEnabledAsync(user, false).ConfigureAwait(false);
+            await _userManager.ResetAuthenticatorKeyAsync(user).ConfigureAwait(false);
+            _logger.LogInformation("User with id '{UserId}' has reset their authentication app key.", user.Id);
 
             return RedirectToAction(nameof(EnableAuthenticator));
         }
@@ -443,10 +445,10 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
         [HttpGet]
         public async Task<IActionResult> GenerateRecoveryCodes()
         {
-            var user = await userManager.GetUserAsync(User);
+            var user = await _userManager.GetUserAsync(User).ConfigureAwait(false);
             if (user == null)
             {
-                throw new ApplicationException($"Unable to load user with ID '{userManager.GetUserId(User)}'.");
+                throw new ApplicationException($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
             if (!user.TwoFactorEnabled)
@@ -454,15 +456,35 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
                 throw new ApplicationException($"Cannot generate recovery codes for user with ID '{user.Id}' as they do not have 2FA enabled.");
             }
 
-            var recoveryCodes = await userManager.GenerateNewTwoFactorRecoveryCodesAsync(user, 10);
+            var recoveryCodes = await _userManager.GenerateNewTwoFactorRecoveryCodesAsync(user, 10).ConfigureAwait(false);
             var model = new GenerateRecoveryCodesViewModel { RecoveryCodes = recoveryCodes.ToArray() };
 
-            logger.LogInformation("User with ID {UserId} has generated new 2FA recovery codes.", user.Id);
+            _logger.LogInformation("User with ID {UserId} has generated new 2FA recovery codes.", user.Id);
 
             return View(model);
         }
 
         #region Helpers
+
+        private static string formatKey(string unformattedKey)
+        {
+            var result = new StringBuilder();
+            var currentPosition = 0;
+            while (currentPosition + 4 < unformattedKey.Length)
+            {
+                result.Append(unformattedKey.Substring(currentPosition, 4)).Append(" ");
+                currentPosition += 4;
+            }
+
+            if (currentPosition < unformattedKey.Length)
+            {
+                result.Append(unformattedKey.Substring(currentPosition));
+            }
+
+#pragma warning disable CA1308 // Normalize strings to uppercase
+            return result.ToString().ToLowerInvariant();
+#pragma warning restore CA1308 // Normalize strings to uppercase
+        }
 
         private void addErrors(IdentityResult result)
         {
@@ -472,30 +494,9 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
             }
         }
 
-        private string formatKey(string unformattedKey)
-        {
-            var result = new StringBuilder();
-            int currentPosition = 0;
-            while (currentPosition + 4 < unformattedKey.Length)
-            {
-                result.Append(unformattedKey.Substring(currentPosition, 4)).Append(" ");
-                currentPosition += 4;
-            }
-            if (currentPosition < unformattedKey.Length)
-            {
-                result.Append(unformattedKey.Substring(currentPosition));
-            }
-
-            return result.ToString().ToLowerInvariant();
-        }
-
         private string generateQrCodeUri(string email, string unformattedKey)
         {
-            return string.Format(
-                AuthenicatorUriFormat,
-                urlEncoder.Encode("MagicHamster.GrocerySamurai.PresentationLayer"),
-                urlEncoder.Encode(email),
-                unformattedKey);
+            return $"otpauth://totp/{_urlEncoder.Encode("MagicHamster.GrocerySamurai.PresentationLayer")}:{_urlEncoder.Encode(email)}?secret={unformattedKey}&issuer={_urlEncoder.Encode("MagicHamster.GrocerySamurai.PresentationLayer")}&digits=6";
         }
 
         #endregion

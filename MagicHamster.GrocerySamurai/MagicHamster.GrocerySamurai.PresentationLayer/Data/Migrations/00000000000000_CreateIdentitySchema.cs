@@ -1,9 +1,11 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
-
-namespace MagicHamster.GrocerySamurai.PresentationLayer.Data.Migrations
+﻿namespace MagicHamster.GrocerySamurai.PresentationLayer.Data.Migrations
 {
+    using System;
+    using JetBrains.Annotations;
+    using Microsoft.EntityFrameworkCore.Metadata;
+    using Microsoft.EntityFrameworkCore.Migrations;
+
+    [UsedImplicitly]
     public partial class CreateIdentitySchema : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)

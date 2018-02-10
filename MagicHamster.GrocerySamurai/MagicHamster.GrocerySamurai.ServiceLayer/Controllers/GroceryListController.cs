@@ -1,27 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Net;
-using System.Threading.Tasks;
-using MagicHamster.GrocerySamurai.BusinessLayer.Interfaces;
-using MagicHamster.GrocerySamurai.BusinessLayer.Processes;
-using MagicHamster.GrocerySamurai.Model.Entities;
-using Microsoft.AspNetCore.Mvc;
-
-namespace MagicHamster.GrocerySamurai.ServiceLayer.Controllers
+﻿namespace MagicHamster.GrocerySamurai.ServiceLayer.Controllers
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Net;
+    using System.Threading.Tasks;
+    using BusinessLayer.Interfaces;
+    using BusinessLayer.Processes;
+    using Microsoft.AspNetCore.Mvc;
+    using Model.Entities;
+
     [Route("api/[controller]")]
     public class GroceryListController : BaseController<GroceryList>
     {
-        public GroceryListController(IBaseProcess<GroceryList> process) : base(process)
+        public GroceryListController(IBaseProcess<GroceryList> process)
+            : base(process)
         {
             childProperties = new List<string> { "Store" };
         }
 
         // GET: api/GroceryList/GetAll
         [HttpGet("GetAll")]
-        public override async Task<IActionResult> GetAll(string userId = null, int? pageSize = 0)
+        public override Task<IActionResult> GetAll(string userId = null, int? pageSize = 0)
         {
-            return await getAllHelper(e=> e.Id, pageSize);
+            return getAllHelper(e => e.Id, pageSize);
         }
 
         // GET: api/GroceryList/GetAllByStore
@@ -35,7 +36,7 @@ namespace MagicHamster.GrocerySamurai.ServiceLayer.Controllers
 
             try
             {
-                var data = await((GroceryListProcess)BusinessProcess).GetAllByStore(storeId.Value, e => e.Id, childProperties, pageSize ?? 0);
+                var data = await ((GroceryListProcess)BusinessProcess).GetAllByStore(storeId.Value, e => e.Id, childProperties, pageSize ?? 0).ConfigureAwait(false);
                 return Ok(data);
             }
             catch (Exception ex)
@@ -46,30 +47,30 @@ namespace MagicHamster.GrocerySamurai.ServiceLayer.Controllers
 
         // GET: api/GroceryList/Get/1
         [HttpGet("{id:int}", Name = "GetGroceryList")]
-        public override async Task<IActionResult> Get(int? id)
+        public override Task<IActionResult> Get(int? id)
         {
-            return await getHelper(id);
+            return getHelper(id);
         }
 
         // POST: api/GroceryList/Add
         [HttpPost("Add")]
-        public override async Task<IActionResult> Add([FromBody]GroceryList record)
+        public override Task<IActionResult> Add([FromBody]GroceryList record)
         {
-            return await addHelper(record);
+            return addHelper(record);
         }
 
         // PUT: api/GroceryList/Update
         [HttpPut("Update")]
-        public override async Task<IActionResult> Update([FromBody]GroceryList record)
+        public override Task<IActionResult> Update([FromBody]GroceryList record)
         {
-            return await updateHelper(record);
+            return updateHelper(record);
         }
 
         // DELETE: api/GroceryList/Delete
         [HttpDelete("{id:int}")]
-        public override async Task<IActionResult> Delete(int id)
+        public override Task<IActionResult> Delete(int id)
         {
-            return await deleteHelper(id);
+            return deleteHelper(id);
         }
     }
 }

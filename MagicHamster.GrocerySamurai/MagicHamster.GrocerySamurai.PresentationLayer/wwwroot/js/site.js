@@ -51,6 +51,7 @@ $(document).ready(function() {
             //alert("click");
             $("body").addClass("waiting");
             //try {
+// ReSharper disable once PossiblyUnassignedProperty
                 var myUrl = appVariables.actionUrl(action, itemType) + "/" + itemId;
             //} catch (err) {
                 //alert(err);

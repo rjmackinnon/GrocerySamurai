@@ -1,11 +1,11 @@
-﻿using System.Threading.Tasks;
-using MagicHamster.GrocerySamurai.Model.Entities;
-using MagicHamster.GrocerySamurai.ServiceLayer.Controllers;
-using MagicHamster.GrocerySamurai.ServiceLayer.UnitTest.Common;
-using NUnit.Framework;
-
-namespace MagicHamster.GrocerySamurai.ServiceLayer.UnitTest.Controllers
+﻿namespace MagicHamster.GrocerySamurai.ServiceLayer.UnitTest.Controllers
 {
+    using System.Threading.Tasks;
+    using Common;
+    using Model.Entities;
+    using NUnit.Framework;
+    using ServiceLayer.Controllers;
+
     [TestFixture]
     public class StoreControllerTest : BaseUserFilterControllerTest<Store>
     {
@@ -15,99 +15,99 @@ namespace MagicHamster.GrocerySamurai.ServiceLayer.UnitTest.Controllers
         }
 
         [Test]
-        public async Task Get_StoreController_TestAsync()
+        public Task Get_StoreController_TestAsync()
         {
-            await getTestHelper();
+            return getTestHelper();
         }
 
         [Test]
-        public async Task Get_Null_StoreController_TestAsync()
+        public Task Get_Null_StoreController_TestAsync()
         {
-            await getNullTestHelper();
+            return getNullTestHelper();
         }
 
         [Test]
-        public async Task Get_Exception_StoreController_TestAsync()
+        public Task Get_Exception_StoreController_TestAsync()
         {
-            await getExceptionTestHelper();
+            return getExceptionTestHelper();
         }
 
         [Test]
-        public async Task GetAll_Defaults_StoreController_TestAsync()
+        public Task GetAll_Defaults_StoreController_TestAsync()
         {
-            await getAllDefaultsTestHelper();
+            return getAllDefaultsTestHelper();
         }
 
         [Test]
-        public async Task GetAll_PageSize_StoreController_TestAsync()
+        public Task GetAll_PageSize_StoreController_TestAsync()
         {
-            await getAllPageSizeTestHelper();
+            return getAllPageSizeTestHelper();
         }
 
         [Test]
-        public async Task GetAll_Exception_StoreController_TestAsync()
+        public Task GetAll_Exception_StoreController_TestAsync()
         {
-            await getAllExceptionTestHelper();
+            return getAllExceptionTestHelper();
         }
 
         [Test]
-        public async Task GetAll_NullUser_StoreController_TestAsync()
+        public Task GetAll_NullUser_StoreController_TestAsync()
         {
-            await getAllNoUserTestHelper();
+            return getAllNoUserTestHelper();
         }
 
         [Test]
-        public async Task Add_StoreController_TestAsync()
+        public Task Add_StoreController_TestAsync()
         {
-            await addTestHelper();
+            return addTestHelper();
         }
 
         [Test]
-        public async Task Add_NotInserted_StoreController_TestAsync()
+        public Task Add_NotInserted_StoreController_TestAsync()
         {
-            await addNotInsertedTestHelper();
+            return addNotInsertedTestHelper();
         }
 
         [Test]
-        public async Task Add_Exception_StoreController_TestAsync()
+        public Task Add_Exception_StoreController_TestAsync()
         {
-            await addExceptionTestHelper();
+            return addExceptionTestHelper();
         }
 
         [Test]
-        public async Task Update_StoreController_TestAsync()
+        public Task Update_StoreController_TestAsync()
         {
-            await updateTestHelper();
+            return updateTestHelper();
         }
 
         [Test]
-        public async Task Update_NotUpdated_StoreController_TestAsync()
+        public Task Update_NotUpdated_StoreController_TestAsync()
         {
-            await updateNotUpdatedTestHelper();
+            return updateNotUpdatedTestHelper();
         }
 
         [Test]
-        public async Task Update_Exception_StoreController_TestAsync()
+        public Task Update_Exception_StoreController_TestAsync()
         {
-            await updateExceptionTestHelper();
+            return updateExceptionTestHelper();
         }
 
         [Test]
-        public async Task Delete_StoreController_TestAsync()
+        public Task Delete_StoreController_TestAsync()
         {
-            await deleteTestHelper();
+            return deleteTestHelper();
         }
 
         [Test]
-        public async Task Delete_NotDeleted_StoreController_TestAsync()
+        public Task Delete_NotDeleted_StoreController_TestAsync()
         {
-            await deleteNotDeletedTestHelper();
+            return deleteNotDeletedTestHelper();
         }
 
         [Test]
-        public async Task Delete_Exception_StoreController_Test()
+        public Task Delete_Exception_StoreController_Test()
         {
-            await deleteExceptionTestHelper();
+            return deleteExceptionTestHelper();
         }
     }
 }

@@ -1,12 +1,16 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Metadata;
-
-namespace MagicHamster.GrocerySamurai.PresentationLayer.Data.Migrations
+﻿namespace MagicHamster.GrocerySamurai.PresentationLayer.Data.Migrations
 {
+    using System;
+    using JetBrains.Annotations;
+    using Microsoft.EntityFrameworkCore;
+    using Microsoft.EntityFrameworkCore.Infrastructure;
+    using Microsoft.EntityFrameworkCore.Metadata;
+
     [DbContext(typeof(ApplicationDbContext))]
-    class ApplicationDbContextModelSnapshot : ModelSnapshot
+#pragma warning disable SA1400 // Access modifier must be declared
+    [UsedImplicitly]
+    internal class ApplicationDbContextModelSnapshot : ModelSnapshot
+#pragma warning restore SA1400 // Access modifier must be declared
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {

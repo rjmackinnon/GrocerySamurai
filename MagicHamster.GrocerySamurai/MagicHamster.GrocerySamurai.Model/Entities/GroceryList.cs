@@ -1,12 +1,15 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using MagicHamster.GrocerySamurai.Model.Common;
-// ReSharper disable VirtualMemberCallInConstructor
-
+﻿// ReSharper disable VirtualMemberCallInConstructor
 namespace MagicHamster.GrocerySamurai.Model.Entities
 {
+    using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
+    using System.ComponentModel.DataAnnotations.Schema;
+    using Common;
+    using JetBrains.Annotations;
+
+    // ReSharper disable once ClassWithVirtualMembersNeverInherited.Global
     [Table("grocery_list")]
+    [UsedImplicitly]
     public class GroceryList : Entity
     {
         public GroceryList()
@@ -28,6 +31,7 @@ namespace MagicHamster.GrocerySamurai.Model.Entities
         [ForeignKey("StoreId")]
         public Store Store { get; set; }
 
+        [UsedImplicitly]
         public virtual ICollection<GroceryListItem> GroceryListItems { get; set; }
     }
 }

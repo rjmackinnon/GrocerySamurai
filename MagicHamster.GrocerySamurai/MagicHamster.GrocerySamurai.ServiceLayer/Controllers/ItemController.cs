@@ -1,50 +1,51 @@
-﻿using System.Threading.Tasks;
-using MagicHamster.GrocerySamurai.BusinessLayer.Interfaces;
-using MagicHamster.GrocerySamurai.Model.Entities;
-using Microsoft.AspNetCore.Mvc;
-
-namespace MagicHamster.GrocerySamurai.ServiceLayer.Controllers
+﻿namespace MagicHamster.GrocerySamurai.ServiceLayer.Controllers
 {
+    using System.Threading.Tasks;
+    using BusinessLayer.Interfaces;
+    using Microsoft.AspNetCore.Mvc;
+    using Model.Entities;
+
     [Route("api/[controller]")]
     public class ItemController : BaseUserFilterController<Item>
     {
-        public ItemController(IBaseUserFilterProcess<Item> process) : base(process)
+        public ItemController(IBaseUserFilterProcess<Item> process)
+            : base(process)
         {
         }
 
         // GET: api/Item/GetAll
         [HttpGet("GetAll/{userId}")]
-        public override async Task<IActionResult> GetAll(string userId = null, int? pageSize = 0)
+        public override Task<IActionResult> GetAll(string userId = null, int? pageSize = 0)
         {
-            return await getAllHelper(userId, e=> e.Id, pageSize);
+            return getAllHelper(userId, e => e.Id, pageSize);
         }
 
         // GET: api/Item/Get/1
         [HttpGet("{id:int}", Name = "Item")]
-        public override async Task<IActionResult> Get(int? id)
+        public override Task<IActionResult> Get(int? id)
         {
-            return await getHelper(id);
+            return getHelper(id);
         }
 
         // POST: api/Item/Add
         [HttpPost("Add")]
-        public override async Task<IActionResult> Add([FromBody]Item record)
+        public override Task<IActionResult> Add([FromBody]Item record)
         {
-            return await addHelper(record);
+            return addHelper(record);
         }
 
         // PUT: api/Item/Update
         [HttpPut("Update")]
-        public override async Task<IActionResult> Update([FromBody]Item record)
+        public override Task<IActionResult> Update([FromBody]Item record)
         {
-            return await updateHelper(record);
+            return updateHelper(record);
         }
 
         // DELETE: api/Item/Delete
         [HttpDelete("{id:int}")]
-        public override async Task<IActionResult> Delete(int id)
+        public override Task<IActionResult> Delete(int id)
         {
-            return await deleteHelper(id);
+            return deleteHelper(id);
         }
     }
 }

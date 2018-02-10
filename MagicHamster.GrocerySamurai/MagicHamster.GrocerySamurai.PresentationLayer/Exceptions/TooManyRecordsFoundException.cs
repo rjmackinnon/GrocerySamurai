@@ -1,8 +1,9 @@
-﻿using System;
-using System.Runtime.Serialization;
-
-namespace MagicHamster.GrocerySamurai.PresentationLayer.Exceptions
+﻿namespace MagicHamster.GrocerySamurai.PresentationLayer.Exceptions
 {
+    using System;
+    using System.Runtime.Serialization;
+    using JetBrains.Annotations;
+
     [Serializable]
     public class TooManyRecordsFoundException : Exception
     {
@@ -10,15 +11,19 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Exceptions
         {
         }
 
-        public TooManyRecordsFoundException(string message) : base(message)
+        [UsedImplicitly]
+        public TooManyRecordsFoundException(string message)
+            : base(message)
         {
         }
 
-        public TooManyRecordsFoundException(string message, Exception innerException) : base(message, innerException)
+        public TooManyRecordsFoundException(string message, Exception innerException)
+            : base(message, innerException)
         {
         }
 
-        protected TooManyRecordsFoundException(SerializationInfo info, StreamingContext context) : base(info, context)
+        protected TooManyRecordsFoundException(SerializationInfo info, StreamingContext context)
+            : base(info, context)
         {
         }
     }

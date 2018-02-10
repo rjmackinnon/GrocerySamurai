@@ -1,19 +1,21 @@
-﻿using MagicHamster.GrocerySamurai.BusinessLayer.Interfaces;
-using MagicHamster.GrocerySamurai.BusinessLayer.Processes;
-using MagicHamster.GrocerySamurai.DataAccess.Interfaces;
-using MagicHamster.GrocerySamurai.DataAccess.Repositories;
-using MagicHamster.GrocerySamurai.DataAccess.UnitsOfWork;
-using MagicHamster.GrocerySamurai.Model;
-using MagicHamster.GrocerySamurai.Model.Common;
-using MagicHamster.GrocerySamurai.Model.Entities;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-
-namespace MagicHamster.GrocerySamurai.ServiceLayer
+﻿namespace MagicHamster.GrocerySamurai.ServiceLayer
 {
+    using BusinessLayer.Interfaces;
+    using BusinessLayer.Processes;
+    using DataAccess.Interfaces;
+    using DataAccess.Repositories;
+    using DataAccess.UnitsOfWork;
+    using JetBrains.Annotations;
+    using Microsoft.AspNetCore.Builder;
+    using Microsoft.AspNetCore.Hosting;
+    using Microsoft.EntityFrameworkCore;
+    using Microsoft.Extensions.Configuration;
+    using Microsoft.Extensions.DependencyInjection;
+    using Model;
+    using Model.Common;
+    using Model.Entities;
+
+    [UsedImplicitly]
     public class Startup
     {
         public Startup(IConfiguration configuration)
@@ -21,9 +23,11 @@ namespace MagicHamster.GrocerySamurai.ServiceLayer
             Configuration = configuration;
         }
 
+        [UsedImplicitly]
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
+        [UsedImplicitly]
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
@@ -42,23 +46,8 @@ namespace MagicHamster.GrocerySamurai.ServiceLayer
             registerUserFilterServices<Store, BaseUserFilterProcess<Store>>(services);
         }
 
-        private void registerServices<T, TProcess>(IServiceCollection services)
-            where T : Entity
-            where TProcess : class, IBaseProcess<T>
-        {
-            services.AddScoped<IRepository<T>, Repository<T>>();
-            services.AddScoped<IBaseProcess<T>, TProcess>();
-        }
-
-        private void registerUserFilterServices<T, TProcess>(IServiceCollection services)
-            where T : UserFilter
-            where TProcess : class, IBaseUserFilterProcess<T>
-        {
-            services.AddScoped<IRepository<T>, Repository<T>>();
-            services.AddScoped<IBaseUserFilterProcess<T>, TProcess>();
-        }
-
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        [UsedImplicitly]
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             if (env.IsDevelopment())
@@ -67,6 +56,22 @@ namespace MagicHamster.GrocerySamurai.ServiceLayer
             }
 
             app.UseMvc();
+        }
+
+        private static void registerServices<T, TProcess>(IServiceCollection services)
+            where T : Entity
+            where TProcess : class, IBaseProcess<T>
+        {
+            services.AddScoped<IRepository<T>, Repository<T>>();
+            services.AddScoped<IBaseProcess<T>, TProcess>();
+        }
+
+        private static void registerUserFilterServices<T, TProcess>(IServiceCollection services)
+            where T : UserFilter
+            where TProcess : class, IBaseUserFilterProcess<T>
+        {
+            services.AddScoped<IRepository<T>, Repository<T>>();
+            services.AddScoped<IBaseUserFilterProcess<T>, TProcess>();
         }
     }
 }

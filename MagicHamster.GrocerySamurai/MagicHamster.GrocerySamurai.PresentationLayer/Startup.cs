@@ -1,18 +1,20 @@
-﻿using System;
-using MagicHamster.GrocerySamurai.Model;
-using MagicHamster.GrocerySamurai.PresentationLayer.Data;
-using MagicHamster.GrocerySamurai.PresentationLayer.Helpers;
-using MagicHamster.GrocerySamurai.PresentationLayer.Models;
-using MagicHamster.GrocerySamurai.PresentationLayer.Services;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-
-namespace MagicHamster.GrocerySamurai.PresentationLayer
+﻿namespace MagicHamster.GrocerySamurai.PresentationLayer
 {
+    using System;
+    using Data;
+    using Helpers;
+    using JetBrains.Annotations;
+    using Microsoft.AspNetCore.Builder;
+    using Microsoft.AspNetCore.Hosting;
+    using Microsoft.AspNetCore.Identity;
+    using Microsoft.EntityFrameworkCore;
+    using Microsoft.Extensions.Configuration;
+    using Microsoft.Extensions.DependencyInjection;
+    using Model;
+    using Models;
+    using Services;
+
+    [UsedImplicitly]
     public class Startup
     {
         public Startup(IConfiguration configuration)
@@ -20,9 +22,11 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer
             Configuration = configuration;
         }
 
+        [UsedImplicitly]
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
+        [UsedImplicitly]
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ApplicationDbContext>(options =>
@@ -92,6 +96,7 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        [UsedImplicitly]
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             if (env.IsDevelopment())

@@ -1,14 +1,16 @@
-﻿using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
-
-namespace MagicHamster.GrocerySamurai.PresentationLayer.Models.ManageViewModels
+﻿namespace MagicHamster.GrocerySamurai.PresentationLayer.Models.ManageViewModels
 {
+    using System.ComponentModel;
+    using System.ComponentModel.DataAnnotations;
+    using JetBrains.Annotations;
+
     public class EnableAuthenticatorViewModel
     {
             [Required]
             [StringLength(7, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 8)]
             [DataType(DataType.Text)]
             [Display(Name = "Verification Code")]
+            [UsedImplicitly]
             public string Code { get; set; }
 
             [ReadOnly(true)]

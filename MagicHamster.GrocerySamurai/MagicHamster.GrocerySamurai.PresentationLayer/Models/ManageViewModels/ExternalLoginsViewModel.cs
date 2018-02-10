@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Identity;
-
-namespace MagicHamster.GrocerySamurai.PresentationLayer.Models.ManageViewModels
+﻿namespace MagicHamster.GrocerySamurai.PresentationLayer.Models.ManageViewModels
 {
+    using System.Collections.Generic;
+    using Microsoft.AspNetCore.Authentication;
+    using Microsoft.AspNetCore.Identity;
+
     public class ExternalLoginsViewModel
     {
         public IList<UserLoginInfo> CurrentLogins { get; set; }
