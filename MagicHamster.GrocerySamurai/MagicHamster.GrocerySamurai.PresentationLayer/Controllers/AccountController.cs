@@ -4,6 +4,7 @@
     using System.Security.Claims;
     using System.Threading.Tasks;
     using Extensions;
+    using JetBrains.Annotations;
     using Microsoft.AspNetCore.Authentication;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Http;
@@ -36,6 +37,7 @@
         }
 
         [TempData]
+        [UsedImplicitly]
         public string ErrorMessage { get; set; }
 
         [HttpGet]

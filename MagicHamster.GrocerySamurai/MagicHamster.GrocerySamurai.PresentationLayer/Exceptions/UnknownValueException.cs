@@ -2,8 +2,10 @@
 {
     using System;
     using System.Runtime.Serialization;
+    using JetBrains.Annotations;
 
     [Serializable]
+    [UsedImplicitly]
     public class UnknownValueException : Exception
     {
         public UnknownValueException()

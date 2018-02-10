@@ -6,6 +6,7 @@
     using System.Net;
     using System.Threading.Tasks;
     using BusinessLayer.Interfaces;
+    using JetBrains.Annotations;
     using Microsoft.AspNetCore.Mvc;
     using Model.Common;
 
@@ -27,6 +28,7 @@
             BusinessProcess = process;
         }
 
+        [UsedImplicitly]
         public IBaseProcess<T> BusinessProcess { get; set; }
 
 #pragma warning disable CA2227 // Collection properties should be read only

@@ -7,6 +7,7 @@
     using System.Net;
     using System.Threading.Tasks;
     using BusinessLayer.Interfaces;
+    using JetBrains.Annotations;
     using Microsoft.AspNetCore.Mvc;
     using Model.Common;
     using Moq;
@@ -24,6 +25,7 @@
         protected BaseController<T> controller { get; set; }
 
 #pragma warning disable CA2227 // Collection properties should be read only
+        [UsedImplicitly]
         protected List<T> data { get; set; }
 #pragma warning restore CA2227 // Collection properties should be read only
 

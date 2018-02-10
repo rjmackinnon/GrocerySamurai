@@ -15,14 +15,14 @@
     public abstract class BaseProcessTest<T>
         where T : Entity, new()
     {
-        protected BaseProcess<T> process { get; set; }
+        protected Mock<IUnitOfWork> unitOfWorkMock { get; private set; }
 
-        protected Mock<IRepository<T>> repositoryMock { get; set; }
+        private BaseProcess<T> process { get; set; }
 
-        protected Mock<IUnitOfWork> unitOfWorkMock { get; set; }
+        private Mock<IRepository<T>> repositoryMock { get; set; }
 
 #pragma warning disable CA2227 // Collection properties should be read only
-        protected List<T> testData { get; set; }
+        private List<T> testData { get; set; }
 #pragma warning restore CA2227 // Collection properties should be read only
 
         [SetUp]

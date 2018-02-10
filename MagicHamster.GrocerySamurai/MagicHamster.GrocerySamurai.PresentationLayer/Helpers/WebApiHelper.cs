@@ -5,6 +5,7 @@
     using System.Net.Http.Headers;
     using System.Text;
     using System.Threading.Tasks;
+    using JetBrains.Annotations;
     using Newtonsoft.Json;
 
     public static class WebApiHelper
@@ -28,6 +29,7 @@
             set => _client = value;
         }
 
+        [UsedImplicitly]
         public static void Init(HttpMessageHandler handler)
         {
             client = handler == null ? new HttpClient() : new HttpClient(handler);

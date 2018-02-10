@@ -8,6 +8,7 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
     using System.Threading.Tasks;
     using Exceptions;
     using Helpers;
+    using JetBrains.Annotations;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Http.Extensions;
     using Microsoft.AspNetCore.Mvc;
@@ -28,9 +29,7 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
         private string _userId;
         private INavigationHelper _navigationHelper;
 
-        public string UserId => _userId ?? (_userId = getUserId());
-
-        public INavigationHelper NavigationHelper
+        protected INavigationHelper navigationHelper
         {
             get
             {
@@ -42,12 +41,14 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
                 }
                 else if (_navigationHelper == null)
                 {
-                    _navigationHelper = GrocerySamurai.NavigationHelper.NavigationHelper.FromJson(json);
+                    _navigationHelper = NavigationHelper.FromJson(json);
                 }
 
                 return _navigationHelper;
             }
         }
+
+        private string userId => _userId ?? (_userId = getUserId());
 
         public virtual async Task<IActionResult> Create(T item)
         {
@@ -78,7 +79,7 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
         {
             var type = controllerType ?? _defaultType;
 
-            var args = UserId;
+            var args = userId;
             if (parameters != null)
             {
                 args = String.Join("/", parameters.ToArray());
@@ -103,6 +104,7 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
             return records;
         }
 
+        [UsedImplicitly]
         protected async Task<object> detailsHelper(List<string> parameters = null, string actionSuffix = null)
         {
             var args = string.Empty;
@@ -140,7 +142,7 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
 
             createAction?.Invoke(item);
 
-            ViewBag.NavigationHelper = NavigationHelper;
+            ViewBag.NavigationHelper = navigationHelper;
 
             return View(item);
         }
@@ -178,7 +180,7 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
 
             var data = JsonConvert.DeserializeObject<T>(responseData);
 
-            ViewBag.NavigationHelper = NavigationHelper;
+            ViewBag.NavigationHelper = navigationHelper;
 
             return View(data);
         }
@@ -220,6 +222,7 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
         /// </summary>
         /// <param name="responseData">Response from the API call</param>
         /// <returns>true to continue default processing, false to display page with validation messages</returns>
+        // ReSharper disable once UnusedParameter.Global
         protected virtual bool processActionResponse(string responseData)
         {
             return true;
@@ -227,14 +230,14 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
 
         protected ActionResult backHelper()
         {
-            if (NavigationHelper.Count == 0)
+            if (navigationHelper.Count == 0)
             {
                 return new OkResult();
             }
 
             TempData["FromBack"] = true;
 
-            var uri = new Uri(NavigationHelper.Remove());
+            var uri = new Uri(navigationHelper.Remove());
             saveNavigationHelper();
             return Redirect(uri.AbsoluteUri);
         }
@@ -247,7 +250,7 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
                 return;
             }
 
-            NavigationHelper.Add(Request.Headers["Referer"].First(), Request.GetDisplayUrl());
+            navigationHelper.Add(Request.Headers["Referer"].First(), Request.GetDisplayUrl());
             saveNavigationHelper();
         }
 
@@ -276,7 +279,7 @@ namespace MagicHamster.GrocerySamurai.PresentationLayer.Controllers
                 return RedirectToAction("Back");
             }
 
-            ViewBag.NavigationHelper = NavigationHelper;
+            ViewBag.NavigationHelper = navigationHelper;
 
             if (responseData.Contains("ORA-00001"))
             {

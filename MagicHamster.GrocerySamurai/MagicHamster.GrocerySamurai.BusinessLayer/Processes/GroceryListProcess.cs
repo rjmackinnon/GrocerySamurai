@@ -6,8 +6,10 @@
     using System.Threading.Tasks;
     using DataAccess.Interfaces;
     using Interfaces;
+    using JetBrains.Annotations;
     using Model.Entities;
 
+    [UsedImplicitly]
     public sealed class GroceryListProcess : BaseProcess<GroceryList>, IGroceryListProcess
     {
         public GroceryListProcess(IUnitOfWork unitOfWork)

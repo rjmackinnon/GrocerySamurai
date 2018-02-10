@@ -6,6 +6,7 @@
     using System.Text.Encodings.Web;
     using System.Threading.Tasks;
     using Extensions;
+    using JetBrains.Annotations;
     using Microsoft.AspNetCore.Authentication;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Identity;
@@ -40,6 +41,7 @@
         }
 
         [TempData]
+        [UsedImplicitly]
         public string StatusMessage { get; set; }
 
         [HttpGet]

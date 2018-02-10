@@ -10,6 +10,7 @@
     using Microsoft.EntityFrameworkCore;
     using Model.Common;
 
+    // ReSharper disable once ClassWithVirtualMembersNeverInherited.Global
     public class Repository<T> : IRepository<T>, IDisposable
         where T : Entity
     {

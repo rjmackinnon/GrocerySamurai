@@ -27,7 +27,7 @@
                 throw new ApplicationException(result.ToString());
             }
 
-            ViewBag.NavigationHelper = NavigationHelper;
+            ViewBag.NavigationHelper = navigationHelper;
             return PartialView(result);
         }
 

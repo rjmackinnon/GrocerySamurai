@@ -7,6 +7,7 @@
     using System.Threading.Tasks;
     using DataAccess.Interfaces;
     using Interfaces;
+    using JetBrains.Annotations;
     using Model.Common;
 
     public class BaseProcess<T> : IBaseProcess<T>
@@ -58,6 +59,7 @@
             return UnitOfWork.Save();
         }
 
+        [UsedImplicitly]
         internal virtual async Task<IQueryable> getAsQueryble(
             Expression<Func<T, bool>> criteria,
             List<string> childProperties = null)

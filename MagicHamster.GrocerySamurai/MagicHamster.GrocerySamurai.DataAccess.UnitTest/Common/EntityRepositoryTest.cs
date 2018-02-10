@@ -18,6 +18,7 @@
         private IRepository<T> _repository;
         private DbContextOptions<GroceryContext> _options;
 
+        // ReSharper disable once MemberCanBePrivate.Global
         protected Action<T> updateAction { get; set; }
 
         [SetUp]

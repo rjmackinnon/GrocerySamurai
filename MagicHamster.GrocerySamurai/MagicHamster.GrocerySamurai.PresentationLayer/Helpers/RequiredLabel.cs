@@ -1,5 +1,8 @@
 ﻿namespace MagicHamster.GrocerySamurai.PresentationLayer.Helpers
 {
+    using JetBrains.Annotations;
+
+    [UsedImplicitly]
     public static class RequiredLabel
     {
         /*

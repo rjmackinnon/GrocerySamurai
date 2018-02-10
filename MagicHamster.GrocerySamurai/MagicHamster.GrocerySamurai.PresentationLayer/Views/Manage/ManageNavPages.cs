@@ -1,11 +1,13 @@
 ﻿namespace MagicHamster.GrocerySamurai.PresentationLayer.Views.Manage
 {
     using System;
+    using JetBrains.Annotations;
     using Microsoft.AspNetCore.Mvc.Rendering;
     using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
     public static class ManageNavPages
     {
+        [UsedImplicitly]
         public static string ActivePageKey => "ActivePage";
 
         public static string Index => "Index";
@@ -24,6 +26,7 @@
 
         public static string TwoFactorAuthenticationNavClass(ViewContext viewContext) => PageNavClass(viewContext, TwoFactorAuthentication);
 
+        [UsedImplicitly]
         public static string PageNavClass(ViewContext viewContext, string page)
         {
             var activePage = viewContext.ViewData["ActivePage"] as string;

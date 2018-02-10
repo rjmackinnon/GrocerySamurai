@@ -9,7 +9,7 @@
     public abstract class BaseUserFilterProcessTest<T> : BaseProcessTest<T>
         where T : UserFilter, new()
     {
-        protected BaseUserFilterProcess<T> userFilterProcess { get; set; }
+        private BaseUserFilterProcess<T> userFilterProcess { get; set; }
 
         public override void Init()
         {

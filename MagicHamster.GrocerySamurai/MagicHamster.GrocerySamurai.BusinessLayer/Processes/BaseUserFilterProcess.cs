@@ -8,6 +8,7 @@
     using Interfaces;
     using Model.Common;
 
+    // ReSharper disable once ClassWithVirtualMembersNeverInherited.Global
     public class BaseUserFilterProcess<T> : BaseProcess<T>, IBaseUserFilterProcess<T>
         where T : UserFilter
     {
@@ -23,8 +24,7 @@
             int pageSize = 0,
             bool noTracking = false)
         {
-            return getByFilter(u => u.UserId == userId, orderBy, childProperties, pageSize, noTracking)
-;
+            return getByFilter(u => u.UserId == userId, orderBy, childProperties, pageSize, noTracking);
         }
     }
 }

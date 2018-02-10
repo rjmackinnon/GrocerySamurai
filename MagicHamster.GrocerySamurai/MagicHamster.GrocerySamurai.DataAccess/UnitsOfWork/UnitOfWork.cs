@@ -10,6 +10,7 @@
     using Model.Common;
     using Repositories;
 
+    // ReSharper disable once ClassWithVirtualMembersNeverInherited.Global
     public class UnitOfWork : IDisposable, IUnitOfWork
     {
         private readonly Dictionary<Type, object> _repositories;

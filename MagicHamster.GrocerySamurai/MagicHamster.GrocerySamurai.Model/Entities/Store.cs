@@ -5,8 +5,11 @@ namespace MagicHamster.GrocerySamurai.Model.Entities
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
     using Common;
+    using JetBrains.Annotations;
 
+    // ReSharper disable once ClassWithVirtualMembersNeverInherited.Global
     [Table("store")]
+    [UsedImplicitly]
     public class Store : UserFilter
     {
         public Store()
@@ -22,6 +25,7 @@ namespace MagicHamster.GrocerySamurai.Model.Entities
         [MaxLength(1000)]
         public string Description { get; set; }
 
+        [UsedImplicitly]
         public virtual ICollection<StoreItem> StoreItems { get; set; }
     }
 }

@@ -1,12 +1,14 @@
 ﻿namespace MagicHamster.GrocerySamurai.PresentationLayer.Data.Migrations
 {
     using System;
+    using JetBrains.Annotations;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.EntityFrameworkCore.Infrastructure;
     using Microsoft.EntityFrameworkCore.Metadata;
 
     [DbContext(typeof(ApplicationDbContext))]
 #pragma warning disable SA1400 // Access modifier must be declared
+    [UsedImplicitly]
     internal class ApplicationDbContextModelSnapshot : ModelSnapshot
 #pragma warning restore SA1400 // Access modifier must be declared
     {

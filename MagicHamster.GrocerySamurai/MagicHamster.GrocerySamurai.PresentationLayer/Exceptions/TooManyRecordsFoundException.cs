@@ -2,6 +2,7 @@
 {
     using System;
     using System.Runtime.Serialization;
+    using JetBrains.Annotations;
 
     [Serializable]
     public class TooManyRecordsFoundException : Exception
@@ -10,6 +11,7 @@
         {
         }
 
+        [UsedImplicitly]
         public TooManyRecordsFoundException(string message)
             : base(message)
         {

@@ -3,6 +3,7 @@
     using System;
     using Data;
     using Helpers;
+    using JetBrains.Annotations;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Identity;
@@ -13,6 +14,7 @@
     using Models;
     using Services;
 
+    [UsedImplicitly]
     public class Startup
     {
         public Startup(IConfiguration configuration)
@@ -20,9 +22,11 @@
             Configuration = configuration;
         }
 
+        [UsedImplicitly]
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
+        [UsedImplicitly]
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ApplicationDbContext>(options =>
@@ -92,6 +96,7 @@
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        [UsedImplicitly]
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             if (env.IsDevelopment())
